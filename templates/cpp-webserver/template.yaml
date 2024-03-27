@@ -46,6 +46,7 @@ spec:
         system:
           title: System
           type: string
+          default: "website-frontend"
           ui:field: EntityPicker
           ui:options:
             catalogFilter:
