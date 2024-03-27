@@ -64,7 +64,8 @@ spec:
       name: Generating Source Code from Container Library
       action: fetch:template
       input:
-        templateFileExtension: true
+        copyWithoutRender:
+          - app/crow_all.h
         url: './skeleton'
       values:
         port: ${{ parameters.port }}
