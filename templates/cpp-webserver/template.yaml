@@ -65,7 +65,7 @@ spec:
       action: fetch:template
       input:
         copyWithoutRender:
-          - "*/crow_all.h"
+          - "app/crow_all.h"
         url: './skeleton'
       values:
         port: ${{ parameters.port }}
