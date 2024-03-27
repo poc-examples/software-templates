@@ -64,6 +64,7 @@ spec:
       name: Generating Source Code from Container Library
       action: fetch:template
       input:
+        templateFileExtension: true
         url: './skeleton'
       values:
         port: ${{ parameters.port }}
@@ -73,7 +74,6 @@ spec:
       action: fetch:template
       input:
         url: ../../skeletons/catalog-info/
-        templateFileExtension: true
         values:
           orgName: ${{ parameters.orgName }}
           repoName: ${{ parameters.repoName }}
