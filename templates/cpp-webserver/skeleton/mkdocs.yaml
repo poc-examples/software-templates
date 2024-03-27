@@ -1,0 +1,41 @@
+site_name: My Project Documentation
+site_description: An example MkDocs project
+site_author: Your Name
+site_url: https://example.com/docs
+
+# Defines the directory where the site will be built
+site_dir: site
+
+# Defines the directory where your markdown files are located
+docs_dir: docs
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - About:
+    - Overview: about/overview.md
+    - Team: about/team.md
+  - User Guide:
+    - Installation: user-guide/installation.md
+    - Configuration: user-guide/configuration.md
+  - API Reference: api-reference.md
+
+# Plugins (e.g., search, techdocs-core)
+plugins:
+  - search
+  - techdocs-core
+
+# Extensions to the Markdown processor
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - tables
+
+# Additional CSS or JavaScript
+extra_css:
+  - css/custom.css
+extra_javascript:
+  - js/custom.js
