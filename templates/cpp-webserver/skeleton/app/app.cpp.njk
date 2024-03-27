@@ -7,5 +7,5 @@ int main() {
         return "Hello World!";
     });
 
-    app.port(8080).multithreaded().run();
+    app.port(${{ values.port }}).multithreaded().run();
 }

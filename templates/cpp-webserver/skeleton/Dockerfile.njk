@@ -39,6 +39,5 @@ RUN yum update \
 COPY --from=build-env /app/app /usr/local/bin/app
 
 ENV PORT ${{ values.port }}
-EXPOSE ${{ values.port }}
 
 ENTRYPOINT ["app"]

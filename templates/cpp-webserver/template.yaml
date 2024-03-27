@@ -73,8 +73,7 @@ spec:
       action: fetch:template
       input:
         url: ../../skeletons/catalog-info/
-        copyWithoutRender:
-          - app/crow_all.h
+        templateFileExtension: true
         values:
           orgName: ${{ parameters.orgName }}
           repoName: ${{ parameters.repoName }}
