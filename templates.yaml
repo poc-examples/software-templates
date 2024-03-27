@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-collection
+  description: A collection of Proof-of-Concept Software Templates that can be used with developer hub.
+spec:
+  type: url
+  targets:
+    - templates/gitlab/python-backend/template.yaml

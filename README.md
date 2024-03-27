@@ -1,9 +1,9 @@
-# Project Title
+# Software Templates
 
 - Presentation: [Slide Deck](https://docs.google.com/presentation/d/1NAMgU_SqTCjSY3XRqQJFdizHI6EJbvp6Cvk6zzDKinc/view)
 - Demonstration: [Example Deployment](https://www.youtube.com/)
 
-One or two paragraphs providing an overview of the project. Explain the problem it solves and why this project is useful.
+The templates included in this repository are used to show different types of software and how to easily deploy them.
 
 ## Why This Pattern
 
