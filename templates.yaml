@@ -6,4 +6,4 @@ metadata:
 spec:
   type: url
   targets:
-    - templates/gitlab/python-backend/template.yaml
+    - templates/cpp-webserver/template.yaml
