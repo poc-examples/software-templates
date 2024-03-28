@@ -125,9 +125,20 @@ spec:
       action: fetch:template
       input:
         url: ../../skeletons/tekton/
-        targetPath: './repo-name'
+        targetPath: './${{ parameters.repoName }}'
         values:
-          port: ${{ parameters.port }}
+          repoName: ${{ parameters.repoName }}
+          namespace: "backstage-template-test"
+
+    - id: applicationTemplate
+      name: Generating the Application
+      action: fetch:template
+      input:
+        url: ../../skeletons/manifests/
+        targetPath: './${{ parameters.repoName }}'
+        values:
+          repoName: ${{ parameters.repoName }}
+          namespace: "backstage-template-test"
 
     - id: publishManifests
       name: Publishing to the Source Code Repository
@@ -136,8 +147,8 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: './repo-name'
-        targetPath: './repo-name'
+        sourcePath: './${{ parameters.repoName }}'
+        targetPath: './${{ parameters.repoName }}'
         branchName: main
         commitAction: create
         commitMessage: "Backstage Application Added"

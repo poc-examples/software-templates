@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "${{ values.repoName }}-autocreated"
+  namespace: "openshift-gitops"
+spec:
+  destination:
+    namespace: "${{ values.namespace }}"
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: "https://github.com/poc-examples/charts"
+    path: "pipeline"
+    version: v3
+    targetRevision: HEAD
+    # helm:
+    #   valuesObject:
+    #     host: "{{ openshift.domain }}"
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: "openshift-gitops"
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - SkipDryRunOnMissingResource=true
