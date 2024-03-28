@@ -129,7 +129,7 @@ spec:
         values:
           port: ${{ parameters.port }}
 
-    - id: publish
+    - id: publishManifests
       name: Publishing to the Source Code Repository
       action: publish:gitlab
       input:
