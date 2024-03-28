@@ -137,6 +137,7 @@ spec:
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         commitAction: update
+        commitMessage: "Backstage Application Added"
         defaultBranch: main
 
   output:
