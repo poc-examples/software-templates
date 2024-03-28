@@ -138,7 +138,7 @@ spec:
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         targetPath: './repo-name'
         branchName: main
-        commitAction: update
+        commitAction: create
         commitMessage: "Backstage Application Added"
 
   output:
