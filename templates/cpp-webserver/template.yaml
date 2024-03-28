@@ -131,11 +131,11 @@ spec:
 
     - id: publishManifests
       name: Publishing to the Source Code Repository
-      action: publish:gitlab
+      action: gitlab:repo:push
       input:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
-        repoUrl: gitlab.com/self-provisioned/manifests
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
   output:
