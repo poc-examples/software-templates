@@ -135,7 +135,7 @@ spec:
       input:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
-        repoUrl: gitlab.com?owner=${{ parameters.orgName }}&repo=manifests
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
   output:
