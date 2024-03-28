@@ -136,6 +136,7 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: './repo-name'
         targetPath: './repo-name'
         branchName: main
         commitAction: create
