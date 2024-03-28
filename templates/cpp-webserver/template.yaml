@@ -136,6 +136,7 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        targetPath: './repo-name'
         branchName: main
         commitAction: update
         commitMessage: "Backstage Application Added"
