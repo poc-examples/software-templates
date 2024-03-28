@@ -60,6 +60,9 @@ spec:
 
   steps:
 
+    ########################
+    ## SET UP CONTAINER REPO
+    ########################
     - id: sourceCodeTemplate
       name: Generating Source Code from Container Library
       action: fetch:template
@@ -100,6 +103,40 @@ spec:
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
+
+    ########################
+    ## SET UP CONTAINER REPO
+    ########################
+    - id: deleteCodeTemplate
+      name: Purge Source Code from Build Directory
+      action: fs:deletes
+      input:
+        files:
+          - "*"
+
+    - id: fetchManifestsRepository
+      name: fetch the Manifests Repository
+      action: fetch:plain
+      input:
+        url: https://gitlab.com/self-provisioned/manifests/
+
+    - id: pipelinesTemplate
+      name: Generating the Pipeline
+      action: fetch:template
+      input:
+        url: ../../skeletons/tekton/
+        targetPath: './repo-name'
+        values:
+          port: ${{ parameters.port }}
+
+    - id: publish
+      name: Publishing to the Source Code Repository
+      action: publish:gitlab
+      input:
+        allowedHosts: ['gitlab.com']
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=${{ parameters.orgName }}&repo=manifests
+        defaultBranch: main
 
   output:
     links:
