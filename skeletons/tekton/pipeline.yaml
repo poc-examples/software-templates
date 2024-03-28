@@ -10,7 +10,6 @@ spec:
   source:
     repoURL: "https://github.com/poc-examples/charts"
     path: "pipeline"
-    version: v3
     targetRevision: HEAD
     # helm:
     #   valuesObject:
