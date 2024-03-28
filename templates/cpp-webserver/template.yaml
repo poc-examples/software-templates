@@ -109,7 +109,7 @@ spec:
     ########################
     - id: deleteCodeTemplate
       name: Purge Source Code from Build Directory
-      action: fs:deletes
+      action: fs:delete
       input:
         files:
           - "*"
