@@ -4,12 +4,18 @@ metadata:
   name: "${{ values.repoName }}-pipeline-autocreated"
   namespace: "openshift-gitops"
 spec:
+  ignoreDifferences:
+  - group: apps
+    kind: ServiceAccount
+    jsonPointers:
+    - /imagePullSecrets
+    - /secrets
   destination:
-    namespace: "${{ values.namespace }}"
+    namespace: "${{ values.repoName }}-pipelines"
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: "https://github.com/poc-examples/charts"
-    path: "pipeline"
+    path: "standard-pipeline"
     targetRevision: HEAD
     # helm:
     #   valuesObject:
