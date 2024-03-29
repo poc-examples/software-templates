@@ -5,7 +5,7 @@ metadata:
   namespace: "openshift-gitops"
 spec:
   ignoreDifferences:
-  - group: apps
+  - group: "*"
     kind: ServiceAccount
     jsonPointers:
     - /imagePullSecrets
