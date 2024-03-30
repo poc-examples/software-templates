@@ -9,7 +9,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: "https://github.com/poc-examples/charts"
-    path: "pipeline"
+    path: "nothing"
     targetRevision: HEAD
     # helm:
     #   valuesObject:
