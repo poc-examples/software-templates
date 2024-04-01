@@ -17,9 +17,10 @@ spec:
     chart: pipeline
     repoURL: "https://poc-examples.github.io/charts"
     version: v3
-    targetRevision: 0.1.7
+    targetRevision: 0.1.8
     helm:
       valuesObject:
+        repoName: "${{ values.repoName }}"
         targetNamespace: "${{ values.repoName }}-pipeline"
         gitAddress: "${{ values.gitAddress }}"
         username: "root"
