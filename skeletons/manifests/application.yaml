@@ -20,7 +20,6 @@ spec:
   source:
     chart: web-service
     repoURL: "https://poc-examples.github.io/charts"
-    version: v3
     targetRevision: 0.1.7
     helm:
       valuesObject:

@@ -16,7 +16,6 @@ spec:
   source:
     chart: pipeline
     repoURL: "https://poc-examples.github.io/charts"
-    version: v3
     targetRevision: 0.1.8
     helm:
       valuesObject:
