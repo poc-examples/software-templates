@@ -80,8 +80,8 @@ spec:
         copyWithoutRender:
           - "app/crow_all.h"
         url: './skeleton'
-      values:
-        port: ${{ parameters.port }}
+        values:
+          port: ${{ parameters.port }}
 
     - id: catalogTemplate
       name: Generating the Catalog Info Component
