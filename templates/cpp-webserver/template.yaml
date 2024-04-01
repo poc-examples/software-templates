@@ -31,7 +31,7 @@ spec:
           type: string
         repoName:
           title: Repository Name
-          "test"
+          default: "test"
           type: string
         gitAddress:
           title: Git Address
