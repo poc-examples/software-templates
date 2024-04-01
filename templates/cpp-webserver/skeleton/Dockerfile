@@ -9,7 +9,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN rpm -ivh \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
-RUN yum update \
+RUN yum update -y \
         && yum install -y \
             gcc-c++ \
             cmake \
@@ -30,7 +30,7 @@ FROM registry.access.redhat.com/ubi8/ubi:latest
 RUN rpm -ivh \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
-RUN yum update \
+RUN yum update -y \
         && yum install -y \
             boost1.78-devel.x86_64
 
