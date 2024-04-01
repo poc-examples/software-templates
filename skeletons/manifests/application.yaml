@@ -3,17 +3,42 @@ kind: Application
 metadata:
   name: "${{ values.repoName }}-autocreated"
   namespace: "openshift-gitops"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd-image-updater.argoproj.io/image-list: service=quay.io/rh_ee_cengleby/test
+    argocd-image-updater.argoproj.io/service.force-update: "true"
+    argocd-image-updater.argoproj.io/service.update-strategy: latest
+    argocd-image-updater.argoproj.io/service.image-name: image.repository
+    argocd-image-updater.argoproj.io/service.image-tag: image.tag
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:openshift-gitops/repo-714330673
+    argocd-image-updater.argoproj.io/git-branch: autoupdate
+    argocd-image-updater.argoproj.io/write-back-target: kustomization
 spec:
   destination:
     namespace: "${{ values.namespace }}"
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: "https://github.com/poc-examples/charts"
-    path: "nothing"
+    path: "web-service"
     targetRevision: HEAD
-    # helm:
-    #   valuesObject:
-    #     host: "{{ openshift.domain }}"
+    helm:
+      valuesObject:
+        fullnameOverride: "${{ values.repoName }}"
+        replicaCount: 1
+        image:
+          repository: quay.io/rh_ee_cengleby/test
+          pullPolicy: IfNotPresent
+          tag: "861eb71"
+        serviceAccount:
+          create: false
+        service:
+          type: ClusterIP
+          port: 8080
+        autoscaling:
+          enabled: false
+          minReplicas: 1
+          maxReplicas: 100
+          targetCPUUtilizationPercentage: 80
   project: default
   syncPolicy:
     automated:

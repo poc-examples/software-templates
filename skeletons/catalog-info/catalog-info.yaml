@@ -25,6 +25,7 @@ metadata:
     {%- if values.ci == "../../../skeletons/tekton/" %}
     tektonci/build-namespace: ${{ values.namespace }}
     {%- endif %}
+    backstage.io/kubernetes-label-selector: 'service: ${{ name }}'
     backstage.io/kubernetes-id: ${{ name }}
     backstage.io/techdocs-ref: dir:.
     {%- if values.sourceControl == "gitlab.com" %}
