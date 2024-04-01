@@ -138,7 +138,8 @@ spec:
         targetPath: './${{ parameters.repoName }}'
         values:
           repoName: ${{ parameters.repoName }}
-          namespace: "backstage-template-test"
+          gitAddress: ${{ parameters.gitAddress }}
+          namespace: ${{ parameters.namespace }}
 
     - id: applicationTemplate
       name: Generating the Application
