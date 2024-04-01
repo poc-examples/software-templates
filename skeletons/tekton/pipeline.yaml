@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "${{ values.repoName }}-pipeline-autocreated"
+  name: "${{ values.repoName }}-pipeline-sp"
   namespace: "openshift-gitops"
 spec:
   ignoreDifferences:
@@ -11,15 +11,18 @@ spec:
     - /imagePullSecrets
     - /secrets
   destination:
-    namespace: "${{ values.repoName }}-pipelines"
+    namespace: "${{ values.repoName }}-pipeline"
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: "https://github.com/poc-examples/charts"
-    path: "standard-pipeline"
-    targetRevision: HEAD
-    # helm:
-    #   valuesObject:
-    #     host: "{{ openshift.domain }}"
+    chart: pipeline
+    repoURL: "https://poc-examples.github.io/charts"
+    version: v3
+    targetRevision: 0.1.7
+    helm:
+      valuesObject:
+        targetNamespace: "${{ values.repoName }}-pipeline"
+        gitAddress: "${{ values.gitAddress }}"
+        username: "root"
   project: default
   syncPolicy:
     automated:
