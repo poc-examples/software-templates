@@ -19,6 +19,8 @@ spec:
       required:
         - orgName
         - repoName
+        - gitAddress
+        - namespace
         - owner
         - system
         - port
@@ -29,9 +31,17 @@ spec:
           type: string
         repoName:
           title: Repository Name
+          "test"
+          type: string
+        gitAddress:
+          title: Git Address
+          type: string
+        namespace:
+          title: Namespace
           type: string
         description:
           title: Description
+          default: Tests Templating in Backstage
           type: string
           description: Help others understand what this component provides
         owner:
