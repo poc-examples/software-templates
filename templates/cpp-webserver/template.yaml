@@ -20,7 +20,6 @@ spec:
         - orgName
         - repoName
         - gitAddress
-        - namespace
         - owner
         - system
         - port
@@ -35,9 +34,6 @@ spec:
           type: string
         gitAddress:
           title: Git Address
-          type: string
-        namespace:
-          title: Namespace
           type: string
         description:
           title: Description
@@ -105,7 +101,7 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=${{ parameters.orgName }}&repo=${{ parameters.repoName }}
-        defaultBranch: main
+        defaultBranch: backstage-create
 
     - id: register
       name: Registering the Catalog Info Component
@@ -139,7 +135,6 @@ spec:
         values:
           repoName: ${{ parameters.repoName }}
           gitAddress: ${{ parameters.gitAddress }}
-          namespace: ${{ parameters.namespace }}
 
     - id: applicationTemplate
       name: Generating the Application
@@ -149,7 +144,7 @@ spec:
         targetPath: 'applications/${{ parameters.repoName }}'
         values:
           repoName: ${{ parameters.repoName }}
-          namespace: ${{ parameters.namespace }}
+          gitAddress: ${{ parameters.gitAddress }}
 
     - id: kustomizationTemplate
       name: Generating the Application

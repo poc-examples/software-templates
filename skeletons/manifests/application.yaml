@@ -13,7 +13,7 @@ metadata:
     argocd-image-updater.argoproj.io/write-back-target: "kustomization:/services/${{ values.repoName }}"
 spec:
   destination:
-    namespace: "${{ values.namespace }}"
+    namespace: "${{ values.repoName }}-service"
     server: 'https://kubernetes.default.svc'
   source:
     path: "services/${{ values.repoName }}"
