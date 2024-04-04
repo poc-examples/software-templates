@@ -1,44 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "${{ values.repoName }}-sp"
+  name: "${{ values.repoName }}-service"
   namespace: "openshift-gitops"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
     argocd-image-updater.argoproj.io/image-list: "service=quay.io/rh_ee_cengleby/${{ values.repoName }}"
     argocd-image-updater.argoproj.io/service.force-update: "true"
     argocd-image-updater.argoproj.io/service.update-strategy: latest
-    argocd-image-updater.argoproj.io/service.image-name: image.repository
-    argocd-image-updater.argoproj.io/service.image-tag: image.tag
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:openshift-gitops/repo-714330673
-    argocd-image-updater.argoproj.io/git-branch: autoupdate
-    argocd-image-updater.argoproj.io/write-back-target: kustomization
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:openshift-gitops/self-provisioned-repository
+    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/write-back-target: "kustomization:/services/${{ values.repoName }}"
 spec:
   destination:
     namespace: "${{ values.namespace }}"
     server: 'https://kubernetes.default.svc'
   source:
-    chart: web-service
-    repoURL: "https://poc-examples.github.io/charts"
-    targetRevision: 0.1.7
-    helm:
-      valuesObject:
-        fullnameOverride: "${{ values.repoName }}"
-        replicaCount: 1
-        image:
-          repository: "quay.io/rh_ee_cengleby/${{ values.repoName }}"
-          pullPolicy: IfNotPresent
-          tag: "861eb71"
-        serviceAccount:
-          create: false
-        service:
-          type: ClusterIP
-          port: 8080
-        autoscaling:
-          enabled: false
-          minReplicas: 1
-          maxReplicas: 100
-          targetCPUUtilizationPercentage: 80
+    path: "services/${{ values.repoName }}"
+    repoURL: "https://${{ values.gitAddress }}/self-provisioned/manifests"
+    targetRevision: HEAD
   project: default
   syncPolicy:
     automated:

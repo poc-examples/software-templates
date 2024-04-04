@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+
+  - name: web-service
+    repo: "https://poc-examples.github.io/charts"
+    version: 0.1.7
+    valuesInline:   
+      fullnameOverride: "${{ values.repoName }}"
+      replicaCount: 1
+      image:
+        repository: "quay.io/rh_ee_cengleby/${{ values.repoName }}"
+        pullPolicy: IfNotPresent
+        tag: "861eb71"
+      serviceAccount:
+        create: false
+      service:
+        type: ClusterIP
+        port: 8080
+      autoscaling:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 100
+        targetCPUUtilizationPercentage: 80
