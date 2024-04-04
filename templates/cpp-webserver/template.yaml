@@ -101,7 +101,7 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=${{ parameters.orgName }}&repo=${{ parameters.repoName }}
-        defaultBranch: backstage-create
+        defaultBranch: main
 
     - id: register
       name: Registering the Catalog Info Component
