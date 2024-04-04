@@ -167,8 +167,21 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: '.'
-        targetPath: '.'
+        sourcePath: 'applications/${{ parameters.repoName }}'
+        targetPath: 'applications/${{ parameters.repoName }}'
+        branchName: backstage-${{ parameters.repoName }}-service
+        commitAction: create
+        commitMessage: "Backstage Application Added"
+
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts: ['gitlab.com']
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: 'services/${{ parameters.repoName }}'
+        targetPath: 'services/${{ parameters.repoName }}'
         branchName: backstage-${{ parameters.repoName }}-service
         commitAction: create
         commitMessage: "Backstage Application Added"
