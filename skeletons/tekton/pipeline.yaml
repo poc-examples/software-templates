@@ -1,22 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "${{ values.repoName }}-pipeline-sp"
+  name: "${{ values.repoName }}-pipeline"
   namespace: "openshift-gitops"
 spec:
-  ignoreDifferences:
-  - group: "*"
-    kind: ServiceAccount
-    jsonPointers:
-    - /imagePullSecrets
-    - /secrets
   destination:
     namespace: "${{ values.repoName }}-pipeline"
     server: 'https://kubernetes.default.svc'
   source:
     chart: pipeline
     repoURL: "https://poc-examples.github.io/charts"
-    targetRevision: 0.1.8
+    targetRevision: 0.1.10
     helm:
       valuesObject:
         repoName: "${{ values.repoName }}"
