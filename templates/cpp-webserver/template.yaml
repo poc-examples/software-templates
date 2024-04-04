@@ -114,9 +114,9 @@ spec:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
 
-    ########################
-    ## SET UP CONTAINER REPO
-    ########################
+    #########################
+    ## Write Deployment Files
+    #########################
     - id: deleteCodeTemplate
       name: Purge Source Code from Build Directory
       action: fs:delete
@@ -135,7 +135,7 @@ spec:
       action: fetch:template
       input:
         url: ../../skeletons/tekton/
-        targetPath: './${{ parameters.repoName }}'
+        targetPath: 'applications/${{ parameters.repoName }}'
         values:
           repoName: ${{ parameters.repoName }}
           gitAddress: ${{ parameters.gitAddress }}
@@ -146,10 +146,19 @@ spec:
       action: fetch:template
       input:
         url: ../../skeletons/manifests/
-        targetPath: './${{ parameters.repoName }}'
+        targetPath: 'applications/${{ parameters.repoName }}'
         values:
           repoName: ${{ parameters.repoName }}
-          namespace: "backstage-template-test"
+          namespace: ${{ parameters.namespace }}
+
+    - id: kustomizationTemplate
+      name: Generating the Application
+      action: fetch:template
+      input:
+        url: ./deployment/
+        targetPath: 'services/${{ parameters.repoName }}'
+        values:
+          repoName: ${{ parameters.repoName }}
 
     - id: publishManifests
       name: Publishing to the Source Code Repository
@@ -158,9 +167,9 @@ spec:
         allowedHosts: ['gitlab.com']
         description: ${{ parameters.description }}
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: './${{ parameters.repoName }}'
-        targetPath: './${{ parameters.repoName }}'
-        branchName: main
+        sourcePath: '.'
+        targetPath: '.'
+        branchName: backstage-${{ parameters.repoName }}-service
         commitAction: create
         commitMessage: "Backstage Application Added"
 
