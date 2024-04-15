@@ -10,7 +10,7 @@ spec:
   source:
     chart: pipeline
     repoURL: "https://poc-examples.github.io/charts"
-    targetRevision: 0.1.12
+    targetRevision: 0.1.100
     helm:
       valuesObject:
         repoName: "${{ values.repoName }}"
