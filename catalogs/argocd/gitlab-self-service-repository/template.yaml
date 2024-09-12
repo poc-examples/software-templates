@@ -75,7 +75,7 @@ spec:
   output:
     links:
       - title: Application
-        url: https://argocd-instance/${{ parameters.argoinstance }}/applications/${{ parameters.appName }}
+        url: https://argocd-instance/${{ parameters.argoInstance }}/applications/${{ parameters.appName }}
       - title: ArgoCD Instance
         icon: catalog
-        entityRef: ${{ parameters.argoinstance }}
+        entityRef: ${{ parameters.argoInstance }}
