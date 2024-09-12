@@ -65,10 +65,10 @@ spec:
       name: Create ArgoCD Resources
       action: argocd:create-resources
       input:
-        appName: ${{ parameters.name }}
-        argoInstance: ${{ parameters.argoinstance }}
+        appName: ${{ parameters.appName }}
+        argoInstance: ${{ parameters.argoInstance }}
         namespace: ${{ parameters.namespace }}
-        repoUrl: ${{ parameters.remoteUrl }}
+        repoUrl: ${{ parameters.repoUrl }}
         # labelValue: ${{ parameters.name }}
         path: ${{ parameters.path }}
 
