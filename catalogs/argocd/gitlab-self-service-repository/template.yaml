@@ -20,17 +20,30 @@ spec:
 
   parameters:
     - title: Provide information about the new ArgoCD Resource
+      ui:group: general
       required:
         - appName
-        - argoInstance
-        - namespace
         - repoUrl
-        - labelValue
-        - path
       properties:
         appName:
           title: Application Name
           description: The name of the application to be created in ArgoCD.
+          type: string
+        repoUrl:
+          title: Repository Url
+          description: The URL of the GitLab repository that contains the application source code.
+          type: string
+
+    - title: Provide information about the new ArgoCD Resource
+      ui:group: argocd
+      required:
+        - argoInstance
+        - namespace
+        - path
+      properties:
+        namespace:
+          title: Application Namespace
+          description: The Kubernetes namespace where the application will be deployed.
           type: string
         argoInstance:
           title: ArgoCD Instance
@@ -38,24 +51,6 @@ spec:
           enum:
             - main
           type: string
-        namespace:
-          title: Application Namespace
-          description: The Kubernetes namespace where the application will be deployed.
-          type: string
-        repoUrl:
-          title: Repository Url
-          description: The URL of the GitLab repository that contains the application source code.
-          type: string
-        # labelValue:
-        #   title: Owner
-        #   description: add this
-        #   type: string
-        #   ui:field: EntityPicker
-        #   ui:options:
-        #     catalogFilter:
-        #       kind:
-        #         - Group
-        #         - User
         path:
           title: ArgoCD Path Field
           description: The path in the repository that contains the ArgoCD manifests.
