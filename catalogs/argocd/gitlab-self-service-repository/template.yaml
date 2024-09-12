@@ -49,7 +49,7 @@ spec:
           title: ArgoCD Instance
           description: The ArgoCD instance where the application will be deployed. Select from the available options.
           enum:
-            - service:main
+            - main
           type: string
         path:
           title: ArgoCD Path Field
@@ -77,4 +77,4 @@ spec:
         url: https://argocd-instance/${{ parameters.argoInstance }}/applications/${{ parameters.appName }}
       - title: ArgoCD Instance
         icon: catalog
-        entityRef: ${{ parameters.argoInstance }}
+        url: https://argocd-instance/${{ parameters.argoInstance }}
