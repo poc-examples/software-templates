@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-tekton-pipelines-collection
+  description: |
+    A collection of Tekton Pipelines templates designed to standardize and launch
+    various pipeline types for continuous integration and delivery. This catalog
+    provides ready-to-use pipeline configurations for Red Hat OpenShift AI environments,
+    streamlining the setup and demonstration of pipeline processes and best practices.
+spec:
+  type: url
+  targets:
+    - catalogs/openshift-ai/cpp-webserver/template.yaml

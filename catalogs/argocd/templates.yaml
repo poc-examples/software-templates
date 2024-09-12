@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-argocd-collection
+  description: |
+    A collection of templates for ArgoCD, including configurations for creating
+    application repositories, syncing templates, and other ArgoCD-specific use cases.
+    This catalog is designed to streamline the demonstration and integration of ArgoCD
+    within Red Hat OpenShift AI environments, facilitating quick setups and clear explanations.
+spec:
+  type: url
+  targets:
+    - catalogs/argocd/gitlab-self-service-repository/template.yaml

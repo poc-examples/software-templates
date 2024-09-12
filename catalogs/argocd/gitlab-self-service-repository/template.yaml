@@ -1,0 +1,195 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: gitlab-self-service-repository
+  title: Create a GitLab Self-Service Repository
+  description: |
+    This template automates the creation of a GitLab repository from a predefined skeleton,
+    and sets up an ArgoCD application to synchronize changes from the repository automatically.
+    It simplifies the process of integrating GitLab and ArgoCD, enabling self-service repository
+    creation with seamless continuous deployment capabilities.
+  tags:
+    - gitlab
+    - argocd
+    - automation
+    - devops
+spec:
+  owner: devops-team
+  system: poc-examples
+  type: ci-cd-integration
+
+  # JUST A TEST TO MAKE SURE LOCATION ROUTE WORK BEFORE CONTINUING
+  parameters:
+    - title: Provide information about the new component
+      required:
+        - orgName
+        - repoName
+        - gitAddress
+        - owner
+        - system
+        - port
+      properties:
+        orgName:
+          title: Organization Name
+          default: "self-provisioned"
+          type: string
+        repoName:
+          title: Repository Name
+          default: "test"
+          type: string
+        gitAddress:
+          title: Git Address
+          type: string
+        description:
+          title: Description
+          default: Tests Templating in Backstage
+          type: string
+          description: Help others understand what this component provides
+        owner:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+        system:
+          title: System
+          type: string
+          default: "website-frontend"
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - System
+        port:
+          title: Port
+          type: number
+          default: 8080
+          description: Override the port exposed for the application
+
+  steps:
+
+    ########################
+    ## SET UP CONTAINER REPO
+    ########################
+    - id: sourceCodeTemplate
+      name: Generating Source Code from Container Library
+      action: fetch:template
+      input:
+        copyWithoutRender:
+          - "app/crow_all.h"
+        url: './skeleton'
+        values:
+          port: ${{ parameters.port }}
+
+    - id: catalogTemplate
+      name: Generating the Catalog Info Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-info/
+        values:
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          applicationType: api
+          description: ${{ parameters.description }}
+          port: ${{ parameters.port }}
+          sourceControl: gitlab.com
+
+    - id: publish
+      name: Publishing to the Source Code Repository
+      action: publish:gitlab
+      input:
+        allowedHosts: ['gitlab.com']
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=${{ parameters.orgName }}&repo=${{ parameters.repoName }}
+        defaultBranch: main
+
+    - id: register
+      name: Registering the Catalog Info Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+    #########################
+    ## Write Deployment Files
+    #########################
+    - id: deleteCodeTemplate
+      name: Purge Source Code from Build Directory
+      action: fs:delete
+      input:
+        files:
+          - "*"
+
+    - id: fetchManifestsRepository
+      name: fetch the Manifests Repository
+      action: fetch:plain
+      input:
+        url: https://gitlab.com/self-provisioned/manifests/
+
+    - id: pipelinesTemplate
+      name: Generating the Pipeline
+      action: fetch:template
+      input:
+        url: ../../skeletons/tekton/
+        targetPath: 'applications/${{ parameters.repoName }}'
+        values:
+          repoName: ${{ parameters.repoName }}
+          gitAddress: ${{ parameters.gitAddress }}
+
+    - id: applicationTemplate
+      name: Generating the Application
+      action: fetch:template
+      input:
+        url: ../../skeletons/manifests/
+        targetPath: 'applications/${{ parameters.repoName }}'
+        values:
+          repoName: ${{ parameters.repoName }}
+          gitAddress: ${{ parameters.gitAddress }}
+
+    - id: kustomizationTemplate
+      name: Generating the Application
+      action: fetch:template
+      input:
+        url: ./deployment/
+        targetPath: 'services/${{ parameters.repoName }}'
+        values:
+          repoName: ${{ parameters.repoName }}
+
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts: ['gitlab.com']
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: 'applications/${{ parameters.repoName }}'
+        targetPath: 'applications/${{ parameters.repoName }}'
+        branchName: backstage-${{ parameters.repoName }}-service
+        commitAction: create
+        commitMessage: "Backstage Application Added"
+
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts: ['gitlab.com']
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: 'services/${{ parameters.repoName }}'
+        targetPath: 'services/${{ parameters.repoName }}'
+        branchName: backstage-${{ parameters.repoName }}-service
+        commitAction: create
+        commitMessage: "Backstage Application Added"
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open the Catalog Info Component
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
