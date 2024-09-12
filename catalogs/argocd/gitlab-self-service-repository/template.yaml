@@ -30,21 +30,21 @@ spec:
       properties:
         appName:
           title: Application Name
-          description: add this
+          description: The name of the application to be created in ArgoCD.
           type: string
         argoInstance:
           title: ArgoCD Instance
-          description: add this
+          description: The ArgoCD instance where the application will be deployed. Select from the available options.
           enum:
             - main
           type: string
         namespace:
           title: Application Namespace
-          description: add this
+          description: The Kubernetes namespace where the application will be deployed.
           type: string
         repoUrl:
           title: Repository Url
-          description: add this
+          description: The URL of the GitLab repository that contains the application source code.
           type: string
         # labelValue:
         #   title: Owner
@@ -58,7 +58,7 @@ spec:
         #         - User
         path:
           title: ArgoCD Path Field
-          description: add this
+          description: The path in the repository that contains the ArgoCD manifests.
           type: string
 
   steps:
