@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-rhoi-collection
+  description: |
+    A collection of Proof-of-Concept Red Hat OpenShift AI Software Templates
+    that can be used with Developer Hub for developers to use and adapt.
+spec:
+  type: url
+  targets:
+    - catalog/app-services/cpp-webserver/template.yaml
