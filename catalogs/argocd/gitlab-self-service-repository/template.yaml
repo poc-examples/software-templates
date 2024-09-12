@@ -19,7 +19,7 @@ spec:
   type: ci-cd-integration
 
   parameters:
-    - title: Provide information about the new ArgoCD Resource
+    - title: General Application Information
       ui:group: general
       required:
         - appName
@@ -34,7 +34,7 @@ spec:
           description: The URL of the GitLab repository that contains the application source code.
           type: string
 
-    - title: Provide information about the new ArgoCD Resource
+    - title: ArgoCD Configuration
       ui:group: argocd
       required:
         - argoInstance
