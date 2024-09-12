@@ -10,4 +10,4 @@ metadata:
 spec:
   type: url
   targets:
-    - gitlab-self-service-repository/template.yaml
+    - ./gitlab-self-service-repository/template.yaml
