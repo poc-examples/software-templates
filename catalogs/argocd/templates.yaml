@@ -10,4 +10,4 @@ metadata:
 spec:
   type: url
   targets:
-    - catalogs/argocd/gitlab-self-service-repository/template.yaml
+    - gitlab-self-service-repository/template.yaml
