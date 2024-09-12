@@ -69,7 +69,6 @@ spec:
         argoInstance: ${{ parameters.argoInstance }}
         namespace: ${{ parameters.namespace }}
         repoUrl: ${{ parameters.repoUrl }}
-        # labelValue: ${{ parameters.name }}
         path: ${{ parameters.path }}
 
   output:
