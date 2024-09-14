@@ -95,9 +95,10 @@ spec:
         path: 'proxy/data/fetch'
         headers:
           Content-Type: 'application/json'
-        body:
-          request:
-            - 'GITLAB_DOMAIN'
+        body: |
+          {
+            "request": ["GITLAB_DOMAIN"]
+          }
 
     - id: log-output
       name: Log Dynamic Data Output
