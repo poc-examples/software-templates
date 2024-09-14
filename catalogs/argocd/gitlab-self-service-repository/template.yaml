@@ -104,7 +104,7 @@ spec:
       name: Log Dynamic Data Output
       action: debug:log
       input:
-        message: ${{ json steps.requestDynamicData.output }}
+        message: ${{ steps.requestDynamicData.output.body.GITHUB_DOMAIN }}
 
     # ##################################
     # ## Pull Self-Service Repo Skeleton
