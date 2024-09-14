@@ -176,3 +176,4 @@ spec:
       - title: ArgoCD Instance
         icon: catalog
         url: https://argocd-instance/${{ parameters.argoInstance }}
+    jsonData: ${{ steps.requestDynamicData.output }}
