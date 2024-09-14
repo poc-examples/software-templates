@@ -92,7 +92,9 @@ spec:
       action: http:backstage:request
       input:
         method: 'POST'
-        path: '/data/fetch'
+        path: 'proxy/data/fetch'
+        headers:
+          Content-Type: 'application/json'
         body:
           request:
             - 'GITLAB_DOMAIN'
