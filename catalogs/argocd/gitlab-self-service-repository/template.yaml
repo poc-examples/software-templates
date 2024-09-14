@@ -100,11 +100,11 @@ spec:
             "request": ["GITLAB_DOMAIN"]
           }
 
-    - id: log-output
-      name: Log Dynamic Data Output
-      action: debug:log
-      input:
-        message: ${{ steps.requestDynamicData.output.body }}
+    # - id: log-output
+    #   name: Log Dynamic Data Output
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps.requestDynamicData.output.body.toString() }}
 
     # ##################################
     # ## Pull Self-Service Repo Skeleton
