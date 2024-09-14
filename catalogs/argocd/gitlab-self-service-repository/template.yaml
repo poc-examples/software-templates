@@ -92,7 +92,7 @@ spec:
       action: http:backstage:request
       input:
         method: 'POST'
-        url: '/data/fetch'
+        path: '/data/fetch'
         body:
           request:
             - 'GITLAB_DOMAIN'
