@@ -104,7 +104,7 @@ spec:
       name: Log Dynamic Data Output
       action: debug:log
       input:
-        message: ${{ steps.requestDynamicData.output.body.GITHUB_DOMAIN }}
+        message: ${{ steps.requestDynamicData.output.body }}
 
     # ##################################
     # ## Pull Self-Service Repo Skeleton
@@ -176,4 +176,7 @@ spec:
       - title: ArgoCD Instance
         icon: catalog
         url: https://argocd-instance/${{ parameters.argoInstance }}
-    data: ${{ steps.requestDynamicData.output.body.GITLAB_DOMAIN }}
+    text:
+      - title: Http Request Output
+        content: |
+          ${{ steps.requestDynamicData.output.body["GITLAB_DOMAIN"] }}
