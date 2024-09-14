@@ -176,4 +176,4 @@ spec:
       - title: ArgoCD Instance
         icon: catalog
         url: https://argocd-instance/${{ parameters.argoInstance }}
-    jsonData: ${{ steps.requestDynamicData.output }}
+    data: ${{ steps.requestDynamicData.output.body.GITLAB_DOMAIN }}
