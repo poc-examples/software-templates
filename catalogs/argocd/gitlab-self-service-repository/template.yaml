@@ -104,7 +104,7 @@ spec:
       name: Log Dynamic Data Output
       action: debug:log
       input:
-        message: 'Fetched data: ${{ steps.requestDynamicData.output }}'
+        message: ${{ json steps.requestDynamicData.output }}
 
     # ##################################
     # ## Pull Self-Service Repo Skeleton
