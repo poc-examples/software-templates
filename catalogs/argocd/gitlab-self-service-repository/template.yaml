@@ -97,14 +97,8 @@ spec:
           Content-Type: 'application/json'
         body: |
           {
-            "request": ["GITLAB_DOMAIN"]
+            "request": ["DOMAIN"]
           }
-
-    # - id: log-output
-    #   name: Log Dynamic Data Output
-    #   action: debug:log
-    #   input:
-    #     message: ${{ steps.requestDynamicData.output.body.toString() }}
 
     # ##################################
     # ## Pull Self-Service Repo Skeleton
@@ -155,19 +149,19 @@ spec:
     #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
     #     catalogInfoPath: /catalog-info.yaml
 
-    # ######################################
-    # ## Test ArgoCD Resources Configuration
-    # ######################################
-    # - id: create-argocd-resources
-    #   name: Create ArgoCD Resources
-    #   action: argocd:create-resources
-    #   input:
-    #     appName: ${{ parameters.appName }}
-    #     projectName: "self-service"
-    #     argoInstance: ${{ parameters.argoInstance }}
-    #     namespace: ${{ parameters.namespace }}
-    #     repoUrl: ${{ parameters.repoUrl }}
-    #     path: ${{ parameters.path }}
+    ######################################
+    ## Test ArgoCD Resources Configuration
+    ######################################
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.appName }}
+        projectName: "self-service"
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: langflow
+        repoUrl: https://github.com/poc-examples/supporting-charts.git
+        path: charts/langflow
 
   output:
     links:
@@ -179,4 +173,4 @@ spec:
     text:
       - title: Http Request Output
         content: |
-          ${{ steps.requestDynamicData.output.body["GITLAB_DOMAIN"] }}
+          ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
