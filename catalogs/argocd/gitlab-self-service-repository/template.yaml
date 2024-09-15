@@ -157,7 +157,6 @@ spec:
       action: argocd:create-resources
       input:
         appName: ${{ parameters.appName }}
-        projectName: "self-service"
         argoInstance: ${{ parameters.argoInstance }}
         namespace: langflow
         repoUrl: https://github.com/poc-examples/supporting-charts.git
