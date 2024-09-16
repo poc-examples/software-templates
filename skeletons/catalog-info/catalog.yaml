@@ -1,18 +1,52 @@
+{%- if values.componentName %}
+  {%- set name = values.componentName %}
+{%- else %}
+  {%- set name = values.repoName %}
+{% endif -%}
+
 apiVersion: backstage.io/v1alpha1
-kind: ${{ parameters.entityKind | default('Component') }}
+{%- if values.entityKind %}
+kind: ${{ values.entityKind }}
+{%- else %}
+kind: Component
+{%- endif %}
 metadata:
-  name: ${{ parameters.repoName }}
-  title: ${{ parameters.title | default('') }}
-  description: ${{ parameters.description | default('') }}
+  {%- if values.title %}
+  title: ${{ values.title }}
+  {%- endif %}
+  {%- if values.description %}
+  description: ${{ values.description }}
+  {%- endif %}
   annotations:
-    argocd/app-name: ${{ parameters.repoName }}
+    {%- if values.hostUrl %}
+    argocd/app-name: ${{ name }}
+    {%- endif %}
+    {%- if values.ci == "../../../skeletons/tekton/" %}
+    tektonci/build-namespace: ${{ values.namespace }}
+    {%- endif %}
     backstage.io/techdocs-ref: dir:.
-    ${{ parameters.sourceControl | toLowerCase() }}.com/project-slug: ${{ parameters.orgName }}/${{ parameters.repoName }}
+    {%- if values.sourceControl == "gitlab.com" %}
+    gitlab.com/project-slug: ${{ values.orgName }}/${{ values.repoName }}
+    {%- elif values.sourceControl == "github.com" %}
+    github.com/project-slug: ${{ values.orgName }}/${{ values.repoName }}
+    {%- elif values.sourceControl == "dev.azure.com" %}
+    dev.azure.com/project-repo: ${{ values.orgName }}/${{ values.repoName }}
+    {%- endif %}
 spec:
-  system: ${{ parameters.system | default('') }}
-  lifecycle: ${{ parameters.lifecycle | default('production') }}
-  owner: ${{ parameters.owner }}
+  {%- if values.system %}
+  system: ${{ values.system }}
+  {%- endif %}
+  {%- if values.lifecycle %}
+  lifecycle: ${{ values.lifecycle }}
+  {%- else %}
+  lifecycle: production
+  {%- endif %}
+  owner: ${{ values.owner }}
+  {%- if values.dependsOn %}
   dependsOn:
-    - ${{ parameters.dependsOn | default('') }}
+    - ${{ values.dependsOn }}
+  {%- endif %}
+  {%- if values.partOf %}
   partOf:
-    - ${{ parameters.partOf | default('') }}
+    - ${{ values.partOf }}
+  {%- endif %}

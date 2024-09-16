@@ -129,29 +129,29 @@ spec:
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
-    # ########################
-    # ## Register Catalog Info
-    # ########################
-    # - id: registerCatalog
-    #   name: Register Catalog Info
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-    #     catalogInfoPath: /catalog-info.yaml
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: Register Catalog Info
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
 
-    # #####################################
-    # # Test ArgoCD Resources Configuration
-    # #####################################
-    # - id: createArgocdResources
-    #   name: Create ArgoCD Resources
-    #   action: argocd:create-resources
-    #   input:
-    #     appName: root-self-service
-    #     argoInstance: ${{ parameters.argoInstance }}
-    #     projectName: root-self-service
-    #     namespace: root-self-service
-    #     repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
-    #     path: applications
+    #####################################
+    # Test ArgoCD Resources Configuration
+    #####################################
+    - id: createArgocdResources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: root-self-service
+        argoInstance: ${{ parameters.argoInstance }}
+        projectName: root-self-service
+        namespace: root-self-service
+        repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
+        path: applications
 
   output:
     links:
