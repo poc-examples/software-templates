@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: gitlab-self-service-repository
+  name: setup-root-self-service-repository
   title: Create a GitLab Self-Service Repository
   description: |
     This template automates the creation of a GitLab repository from a predefined skeleton,
@@ -100,44 +100,44 @@ spec:
             "request": ["DOMAIN"]
           }
 
-    # ##################################
-    # ## Pull Self-Service Repo Skeleton
-    # ##################################
-    # - id: pullRepositorySkeleton
-    #   name: Pull Self-Service Skeleton
-    #   action: fetch:template
-    #   input:
-    #     url: './skeleton'
+    ##################################
+    ## Pull Self-Service Repo Skeleton
+    ##################################
+    - id: pullRepositorySkeleton
+      name: Pull Self-Service Skeleton
+      action: fetch:template
+      input:
+        url: './skeleton'
 
-    # ########################
-    # ## GENERATE CATALOG INFO
-    # ########################
-    # - id: templateCatalog
-    #   name: Generate Catalog Info
-    #   action: fetch:template
-    #   input:
-    #     url: ../../../skeletons/catalog-info/catalog.yaml
-    #     values:
-    #       orgName: ${{ parameters.organizationName }}
-    #       repoName: ${{ parameters.repositoryName }}
-    #       owner: ${{ parameters.owner }}
-    #       system: "self-service"
-    #       description: |
-    #         ${{ parameters.description }}
-    #       sourceControl: ${{ parameters.repoUrl }}
+    ########################
+    ## GENERATE CATALOG INFO
+    ########################
+    - id: templateCatalog
+      name: Generate Catalog Info
+      action: fetch:template
+      input:
+        url: ../../../skeletons/catalog-info/catalog.yaml
+        values:
+          orgName: ${{ parameters.organizationName }}
+          repoName: ${{ parameters.repositoryName }}
+          owner: ${{ parameters.owner }}
+          system: "self-service"
+          description: |
+            ${{ parameters.description }}
+          sourceControl: ${{ parameters.repoUrl }}
 
-    # #################################
-    # ## Create Self-Service Repository
-    # #################################
-    # - id: publish
-    #   name: Create Self-Service Repository
-    #   action: publish:gitlab
-    #   input:
-    #     allowedHosts:
-    #       - 'gitlab.com'
-    #     description: ${{ parameters.description }}
-    #     repoUrl: gitlab.com?owner=${{ parameters.organizationName }}&repo=${{ parameters.repositoryName }}
-    #     defaultBranch: main
+    #################################
+    ## Create Self-Service Repository
+    #################################
+    - id: publish
+      name: Create Self-Service Repository
+      action: publish:gitlab
+      input:
+        allowedHosts:
+          - 'gitlab.com'
+        description: ${{ parameters.description }}
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        defaultBranch: main
 
     # ########################
     # ## Register Catalog Info
@@ -152,16 +152,16 @@ spec:
     ######################################
     ## Test ArgoCD Resources Configuration
     ######################################
-    - id: create-argocd-resources
-      name: Create ArgoCD Resources
-      action: argocd:create-resources
-      input:
-        appName: ${{ parameters.appName }}
-        argoInstance: ${{ parameters.argoInstance }}
-        projectName: self-service
-        namespace: langflow
-        repoUrl: https://github.com/poc-examples/supporting-charts.git
-        path: charts/langflow
+    # - id: createArgocdResources
+    #   name: Create ArgoCD Resources
+    #   action: argocd:create-resources
+    #   input:
+    #     appName: root-self-service
+    #     argoInstance: ${{ parameters.argoInstance }}
+    #     projectName: root-self-service
+    #     namespace: root-self-service
+    #     repoUrl: https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git
+    #     path: applications
 
   output:
     links:
