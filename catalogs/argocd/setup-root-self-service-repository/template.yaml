@@ -122,7 +122,7 @@ spec:
       name: Generate Catalog Info
       action: fetch:template
       input:
-        url: ../../skeletons/catalog-info/catalog.yaml
+        url: ../../../skeletons/catalog-info/catalog.yaml
         values:
           orgName: ${{ parameters.organizationName }}
           repoName: ${{ parameters.repositoryName }}
