@@ -113,22 +113,22 @@ spec:
       input:
         url: './skeleton'
 
-    ########################
-    ## GENERATE CATALOG INFO
-    ########################
-    - id: templateCatalog
-      name: Generate Catalog Info
-      action: fetch:template
-      input:
-        url: ../../../skeletons/catalog-info/catalog.yaml
-        values:
-          orgName: ${{ parameters.organizationName }}
-          repoName: ${{ parameters.repositoryName }}
-          owner: ${{ parameters.owner }}
-          system: "root-self-service"
-          description: |
-            ${{ parameters.description }}
-          sourceControl: ${{ parameters.repoUrl }}
+    # ########################
+    # ## GENERATE CATALOG INFO
+    # ########################
+    # - id: templateCatalog
+    #   name: Generate Catalog Info
+    #   action: fetch:template
+    #   input:
+    #     url: ../../../skeletons/catalog-info/catalog.yaml
+    #     values:
+    #       orgName: ${{ parameters.organizationName }}
+    #       repoName: ${{ parameters.repositoryName }}
+    #       owner: ${{ parameters.owner }}
+    #       system: "root-self-service"
+    #       description: |
+    #         ${{ parameters.description }}
+    #       sourceControl: ${{ parameters.repoUrl }}
 
     #################################
     ## Create Self-Service Repository
