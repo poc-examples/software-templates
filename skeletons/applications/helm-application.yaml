@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "${{ values.repoName }}"
+  namespace: "openshift-gitops"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: "${{ values.namespace }}"
+    server: 'https://kubernetes.default.svc'
+  source:
+    chart: "${{ values.chart }}"
+    repoURL: "${{ values.repoUrl }}"
+    targetRevision: HEAD
+    {%- if values.valuesObject %}
+    helm:
+      valuesObject:
+        {% raw %}
+        {{ values.valuesObject }}
+        {% endraw %}
+    {%- endif %}
+  project: ${{ values.projectName }}
+  syncPolicy:
+    automated:
+      {%- if values.automated.prune %}
+      prune: "${{ values.automated.prune }}"
+      {%- endif %}
+      {%- if values.automated.selfHeal %}
+      selfHeal: "${{ values.automated.selfHeal }}"
+      {%- endif %}
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: "openshift-gitops"
+    syncOptions:
+      {%- if values.createNamespace %}
+      - CreateNamespace=${{ values.createNamespace }}
+      {%- endif %}
+      - Validate=false
+      - SkipDryRunOnMissingResource=true
