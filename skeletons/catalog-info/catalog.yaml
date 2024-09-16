@@ -11,7 +11,6 @@ kind: ${{ values.entityKind }}
 kind: Component
 {%- endif %}
 metadata:
-  name: ${{ name }}
   {%- if values.title %}
   title: ${{ values.title }}
   {%- endif %}
@@ -25,8 +24,6 @@ metadata:
     {%- if values.ci == "../../../skeletons/tekton/" %}
     tektonci/build-namespace: ${{ values.namespace }}
     {%- endif %}
-    backstage.io/kubernetes-label-selector: 'service: ${{ name }}'
-    backstage.io/kubernetes-id: ${{ name }}
     backstage.io/techdocs-ref: dir:.
     {%- if values.sourceControl == "gitlab.com" %}
     gitlab.com/project-slug: ${{ values.orgName }}/${{ values.repoName }}
@@ -36,7 +33,6 @@ metadata:
     dev.azure.com/project-repo: ${{ values.orgName }}/${{ values.repoName }}
     {%- endif %}
 spec:
-  type: ${{ values.applicationType }}
   {%- if values.system %}
   system: ${{ values.system }}
   {%- endif %}
