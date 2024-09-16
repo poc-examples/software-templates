@@ -179,4 +179,4 @@ spec:
     text:
       - title: Http Request Output
         content: |
-          ${{ steps.publish.remoteUrl }}
+          ${{ steps['publish'].output.remoteUrl }}
