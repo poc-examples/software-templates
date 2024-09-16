@@ -158,6 +158,7 @@ spec:
       input:
         appName: ${{ parameters.appName }}
         argoInstance: ${{ parameters.argoInstance }}
+        projectName: self-service
         namespace: langflow
         repoUrl: https://github.com/poc-examples/supporting-charts.git
         path: charts/langflow
