@@ -24,14 +24,14 @@ spec:
   type: Service
   parameters:
 
-    - title: Repository Information
-      ui:group: repository
-      required:
+    # - title: Repository Information
+    #   ui:group: repository
+    #   required:
         # - organizationName
         # - repositoryName
         # - owner
         # - repoUrl
-      properties:
+      # properties:
         # repoUrl:
         #   title: Repository Url
         #   description: |
