@@ -167,7 +167,7 @@ spec:
         argoInstance: ${{ parameters.argoInstance }}
         projectName: root-self-service
         namespace: root-self-service
-        repoUrl: https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        repoUrl: ${{ steps.publish.remoteUrl }}
         path: applications
 
   output:
