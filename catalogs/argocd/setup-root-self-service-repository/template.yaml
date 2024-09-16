@@ -156,19 +156,19 @@ spec:
     #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
     #     catalogInfoPath: /catalog-info.yaml
 
-    #####################################
-    # Test ArgoCD Resources Configuration
-    #####################################
-    - id: createArgocdResources
-      name: Create ArgoCD Resources
-      action: argocd:create-resources
-      input:
-        appName: root-self-service
-        argoInstance: ${{ parameters.argoInstance }}
-        projectName: root-self-service
-        namespace: root-self-service
-        repoUrl: ${{ steps.publish.remoteUrl }}
-        path: applications
+    # #####################################
+    # # Test ArgoCD Resources Configuration
+    # #####################################
+    # - id: createArgocdResources
+    #   name: Create ArgoCD Resources
+    #   action: argocd:create-resources
+    #   input:
+    #     appName: root-self-service
+    #     argoInstance: ${{ parameters.argoInstance }}
+    #     projectName: root-self-service
+    #     namespace: root-self-service
+    #     repoUrl: ${{ steps.publish.remoteUrl }}
+    #     path: applications
 
   output:
     links:
@@ -179,4 +179,4 @@ spec:
     text:
       - title: Http Request Output
         content: |
-          ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
+          ${{ steps.publish.remoteUrl }}
