@@ -16,19 +16,21 @@ metadata:
     - automation
     - devops
     - poc-examples
+    - self-service
     - one-time-use
 spec:
   owner: devops-team
-  system: poc-examples
+  system: self-service
   type: Service
   parameters:
 
     - title: Repository Information
       ui:group: repository
       required:
-        - organizationName
-        - repositoryName
-        - owner
+        # - organizationName
+        # - repositoryName
+        # - owner
+        - repoUrl
       properties:
         repoUrl:
           title: Repository Url
@@ -41,32 +43,32 @@ spec:
           ui:options:
             allowedHosts:
               - gitlab.com
-        organizationName:
-          title: Application Name
-          description: The name of the organization under which the repository will be created in GitLab.
-          type: string
-        repositoryName:
-          title: Repository Url
-          description: "The name of the new GitLab repository to hold your applications source code."
-          type: string
-        owner:
-          type: string
-          description: The owner of the repository. This is usually a team or individual responsible for managing the repository.
-          ui:field: OwnerPicker
+        # organizationName:
+        #   title: Application Name
+        #   description: The name of the organization under which the repository will be created in GitLab.
+        #   type: string
+        # repositoryName:
+        #   title: Repository Url
+        #   description: "The name of the new GitLab repository to hold your applications source code."
+        #   type: string
+        # owner:
+        #   type: string
+        #   description: The owner of the repository. This is usually a team or individual responsible for managing the repository.
+        #   ui:field: OwnerPicker
 
     - title: ArgCD Application Information
       ui:group: argocd
       required:
-        - appName
+        # - appName
         - repoUrl
         - argoInstance
         - namespace
         - path
       properties:
-        appName:
-          title: Application Name
-          description: The name of the ArgoCD application that will manage the continuous deployment of your project.
-          type: string
+        # appName:
+        #   title: Application Name
+        #   description: The name of the ArgoCD application that will manage the continuous deployment of your project.
+        #   type: string
         repoUrl:
           title: Repository Url
           description: The GitLab repository URL that contains the source code for this application.
@@ -139,7 +141,8 @@ spec:
       input:
         allowedHosts:
           - 'gitlab.com'
-        description: ${{ parameters.description }}
+        description: |
+          Self-Service Repository
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
