@@ -115,22 +115,22 @@ spec:
       input:
         url: './skeleton'
 
-    # ########################
-    # ## GENERATE CATALOG INFO
-    # ########################
-    # - id: templateCatalog
-    #   name: Generate Catalog Info
-    #   action: fetch:template
-    #   input:
-    #     url: ../../../skeletons/catalog-info/catalog.yaml
-    #     values:
-    #       orgName: ${{ parameters.organizationName }}
-    #       repoName: ${{ parameters.repositoryName }}
-    #       owner: ${{ parameters.owner }}
-    #       system: "root-self-service"
-    #       description: |
-    #         ${{ parameters.description }}
-    #       sourceControl: ${{ parameters.repoUrl }}
+    ########################
+    ## GENERATE CATALOG INFO
+    ########################
+    - id: templateCatalog
+      name: Generate Catalog Info
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-info/catalog.yaml
+        values:
+          orgName: ${{ parameters.organizationName }}
+          repoName: ${{ parameters.repositoryName }}
+          owner: ${{ parameters.owner }}
+          system: "root-self-service"
+          description: |
+            ${{ parameters.description }}
+          sourceControl: ${{ parameters.repoUrl }}
 
     #################################
     ## Create Self-Service Repository
@@ -156,19 +156,19 @@ spec:
     #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
     #     catalogInfoPath: /catalog-info.yaml
 
-    #####################################
-    # Test ArgoCD Resources Configuration
-    #####################################
-    - id: createArgocdResources
-      name: Create ArgoCD Resources
-      action: argocd:create-resources
-      input:
-        appName: root-self-service
-        argoInstance: ${{ parameters.argoInstance }}
-        projectName: root-self-service
-        namespace: root-self-service
-        repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
-        path: applications
+    # #####################################
+    # # Test ArgoCD Resources Configuration
+    # #####################################
+    # - id: createArgocdResources
+    #   name: Create ArgoCD Resources
+    #   action: argocd:create-resources
+    #   input:
+    #     appName: root-self-service
+    #     argoInstance: ${{ parameters.argoInstance }}
+    #     projectName: root-self-service
+    #     namespace: root-self-service
+    #     repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
+    #     path: applications
 
   output:
     links:
