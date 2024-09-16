@@ -153,27 +153,26 @@ spec:
     #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
     #     catalogInfoPath: /catalog-info.yaml
 
-    ######################################
-    ## Test ArgoCD Resources Configuration
-    ######################################
-    # - id: createArgocdResources
-    #   name: Create ArgoCD Resources
-    #   action: argocd:create-resources
-    #   input:
-    #     appName: root-self-service
-    #     argoInstance: ${{ parameters.argoInstance }}
-    #     projectName: root-self-service
-    #     namespace: root-self-service
-    #     repoUrl: https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git
-    #     path: applications
+    #####################################
+    # Test ArgoCD Resources Configuration
+    #####################################
+    - id: createArgocdResources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: root-self-service
+        argoInstance: ${{ parameters.argoInstance }}
+        projectName: root-self-service
+        namespace: root-self-service
+        repoUrl: https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        path: applications
 
   output:
     links:
-      - title: Application
-        url: https://argocd-instance/${{ parameters.argoInstance }}/applications/${{ parameters.appName }}
-      - title: ArgoCD Instance
-        icon: catalog
-        url: https://argocd-instance/${{ parameters.argoInstance }}
+      - title: GitOps Application
+        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+      - title: GitLab Repository
+        url: https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests
     text:
       - title: Http Request Output
         content: |
