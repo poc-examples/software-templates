@@ -15,11 +15,12 @@ metadata:
     - argocd
     - automation
     - devops
+    - poc-examples
     - one-time-use
 spec:
   owner: devops-team
   system: poc-examples
-  type: ci-cd-integration
+  type: Service
   parameters:
 
     - title: Repository Information
