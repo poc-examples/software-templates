@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: setup-root-self-service-repository
-  title: Create a GitLab Self-Service Repository
+  name: root-self-service-repository
+  title: Create a GitLab Root Self-Service Repository
   description: |
     This template automates the creation of a GitLab repository from a predefined skeleton,
     and sets up an ArgoCD application to synchronize changes from the repository automatically.
