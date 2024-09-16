@@ -159,7 +159,3 @@ spec:
         url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
-    text:
-      - title: Http Request Output
-        content: |
-          ${{ steps['publish'].output.remoteUrl }}
