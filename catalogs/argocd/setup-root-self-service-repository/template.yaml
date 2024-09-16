@@ -4,11 +4,12 @@ metadata:
   name: root-self-service-repository
   title: Create a GitLab Root Self-Service Repository (One-Time Use)
   description: |
-    One Time Use: This template automates the one-time creation of a GitLab repository from a predefined skeleton 
-    and configures an ArgoCD application to automatically synchronize changes from the repository. 
-    It is designed to be used only once, setting up a root repository that integrates GitLab and ArgoCD 
-    for seamless continuous deployment. Any additional root repository must be created manually 
-    to prevent conflicts and maintain a streamlined demo environment.
+    One-Time Use: This template automates the creation of a GitLab root repository from a predefined 
+    skeleton and configures an ArgoCD application to automatically synchronize changes from the 
+    repository. The root repository is intended to serve as the central point for managing applications. 
+    Any team-based self-service repositories will attach their applications to this root repository 
+    and will be synced from it, ensuring a cohesive and streamlined continuous deployment process. 
+    This template is intended for single use to prevent conflicts with the root structure.
   tags:
     - gitlab
     - argocd
