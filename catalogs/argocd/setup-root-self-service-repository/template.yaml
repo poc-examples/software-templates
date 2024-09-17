@@ -43,7 +43,7 @@ spec:
     ## Request Dynamic Data
     #######################
     - id: requestDynamicData
-      name: Fetch Dynamic Data
+      name: "Fetch Dynamic Data"
       action: http:backstage:request
       input:
         method: 'POST'
@@ -59,7 +59,7 @@ spec:
     ## Template the Repository
     ##########################
     - id: pullRepositorySkeleton
-      name: Pull Self-Service Skeleton
+      name: "Pull Self-Service Skeleton"
       action: fetch:template
       input:
         url: './skeleton'
@@ -78,7 +78,7 @@ spec:
     ## Create Self-Service Repository
     #################################
     - id: publish
-      name: Create Self-Service Repository
+      name: "Create Self-Service Repository"
       action: publish:gitlab
       input:
         allowedHosts:
@@ -92,7 +92,7 @@ spec:
     ## Register Catalog Info
     ########################
     - id: registerCatalog
-      name: Register Catalog Info
+      name: "Register Catalog Info"
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
