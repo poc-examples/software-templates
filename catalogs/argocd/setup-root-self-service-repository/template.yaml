@@ -98,18 +98,18 @@ spec:
         repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
 
-    #####################################
-    # ArgoCD Resources Configuration
-    #####################################
-    # - id: createArgocdResources
-    #   name: Create ArgoCD Resources
-    #   action: argocd:create-resources
-    #   input:
-    #     appName: "root-self-service"
-    #     argoInstance: ${{ parameters.argoInstance }}
-    #     namespace: "root-self-service"
-    #     repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
-    #     path: "app"
+    ##################################
+    ## ArgoCD Resources Configuration
+    ##################################
+    - id: createArgocdResources
+      name: "Create ArgoCD Resources"
+      action: argocd:create-resources
+      input:
+        appName: "root-self-service"
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: "root-self-service"
+        repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
+        path: "_init_"
 
   output:
     links:
