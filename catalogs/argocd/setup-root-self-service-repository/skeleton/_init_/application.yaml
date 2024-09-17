@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: "sync-root-projects"
-  namespace: "openshift-gitops"
+  namespace: "root-self-service"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
