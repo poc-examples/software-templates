@@ -107,7 +107,6 @@ spec:
       input:
         appName: root-self-service
         argoInstance: ${{ parameters.argoInstance }}
-        projectName: root-self-service
         namespace: root-self-service
         repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
         path: "app"
