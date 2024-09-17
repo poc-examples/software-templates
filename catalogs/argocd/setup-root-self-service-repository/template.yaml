@@ -55,9 +55,9 @@ spec:
             "request": ["DOMAIN"]
           }
 
-    ###########################
-    ## Template the Application
-    ###########################
+    ##########################
+    ## Template the Repository
+    ##########################
     - id: pullRepositorySkeleton
       name: Pull Self-Service Skeleton
       action: fetch:template
@@ -99,17 +99,17 @@ spec:
         catalogInfoPath: /catalog-info.yaml
 
     #####################################
-    # Test ArgoCD Resources Configuration
+    # ArgoCD Resources Configuration
     #####################################
-    - id: createArgocdResources
-      name: Create ArgoCD Resources
-      action: argocd:create-resources
-      input:
-        appName: "root-self-service"
-        argoInstance: ${{ parameters.argoInstance }}
-        namespace: "root-self-service"
-        repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
-        path: "app"
+    # - id: createArgocdResources
+    #   name: Create ArgoCD Resources
+    #   action: argocd:create-resources
+    #   input:
+    #     appName: "root-self-service"
+    #     argoInstance: ${{ parameters.argoInstance }}
+    #     namespace: "root-self-service"
+    #     repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
+    #     path: "app"
 
   output:
     links:
