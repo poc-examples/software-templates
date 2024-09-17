@@ -148,8 +148,8 @@ spec:
         description: |
           placeholder
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: 'applications'
-        targetPath: 'applications'
+        sourcePath: "applications/${{ parameters.dataConnectorName }}.yaml"
+        targetPath: "applications/${{ parameters.dataConnectorName }}.yaml"
         branchName: main
         commitAction: create
         commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"

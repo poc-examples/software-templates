@@ -1,0 +1,161 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: team-self-service-repository
+  title: Create a GitLab Team Centered Self-Service Repository
+  description: |
+    One-Time Use: This template automates the creation of a GitLab root repository from a predefined 
+    skeleton and configures an ArgoCD application to automatically synchronize changes from the 
+    repository. The root repository is intended to serve as the central point for managing applications. 
+    Any team-based self-service repositories will attach their applications to this root repository 
+    and will be synced from it, ensuring a cohesive and streamlined continuous deployment process. 
+    This template is intended for single use to prevent conflicts with the root structure.
+  tags:
+    - gitlab
+    - argocd
+    - automation
+    - devops
+    - poc-examples
+    - self-service
+    - one-time-use
+spec:
+  owner: devops-team
+  system: self-service
+  type: Service
+  parameters:
+
+    # - title: Repository Information
+    #   ui:group: repository
+    #   required:
+        # - organizationName
+        # - repositoryName
+        # - owner
+        # - repoUrl
+      # properties:
+        # repoUrl:
+        #   title: Repository Url
+        #   description: |
+        #     The URL of the existing GitLab repository that will be linked to this application.
+        #     Ensure the repository is hosted on one of the allowed GitLab instances. 
+        #     The repository must contain the necessary application source code or ArgoCD configuration files.
+        #   type: string
+        #   ui:field: RepoUrlPicker
+        #   ui:options:
+        #     allowedHosts:
+        #       - gitlab.com
+        # organizationName:
+        #   title: Application Name
+        #   description: The name of the organization under which the repository will be created in GitLab.
+        #   type: string
+        # repositoryName:
+        #   title: Repository Url
+        #   description: "The name of the new GitLab repository to hold your applications source code."
+        #   type: string
+        # owner:
+        #   type: string
+        #   description: The owner of the repository. This is usually a team or individual responsible for managing the repository.
+        #   ui:field: OwnerPicker
+
+    - title: ArgCD Application Information
+      ui:group: argocd
+      required:
+        # - appName
+        # - repoUrl
+        - argoInstance
+        # - namespace
+        # - path
+      properties:
+        # appName:
+        #   title: Application Name
+        #   description: The name of the ArgoCD application that will manage the continuous deployment of your project.
+        #   type: string
+        # repoUrl:
+        #   title: Repository Url
+        #   description: The GitLab repository URL that contains the source code for this application.
+        #   type: string
+        # namespace:
+        #   title: Application Namespace
+        #   description: The Kubernetes namespace where the application will be deployed by ArgoCD.
+        #   type: string
+        argoInstance:
+          title: ArgoCD Instance
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          enum:
+            - main
+          type: string
+        # path:
+        #   title: ArgoCD Path Field
+        #   description: The path within the GitLab repository where the ArgoCD configuration files (manifests) are located.
+        #   type: string
+
+  steps:
+
+    #######################
+    ## Request Dynamic Data
+    #######################
+    - id: requestDynamicData
+      name: Fetch Dynamic Data
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: 'proxy/data/fetch'
+        headers:
+          Content-Type: 'application/json'
+        body: |
+          {
+            "request": ["DOMAIN"]
+          }
+
+    ##################################
+    ## Pull Self-Service Repo Skeleton
+    ##################################
+    - id: pullRepositorySkeleton
+      name: Pull Self-Service Skeleton
+      action: fetch:template
+      input:
+        url: './skeleton'
+
+    #################################
+    ## Create Self-Service Repository
+    #################################
+    - id: publish
+      name: Create Self-Service Repository
+      action: publish:gitlab
+      input:
+        allowedHosts:
+          - 'gitlab.com'
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        defaultBranch: main
+
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: Register Catalog Info
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+    #####################################
+    # Test ArgoCD Resources Configuration
+    #####################################
+    - id: createArgocdResources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: root-self-service
+        argoInstance: ${{ parameters.argoInstance }}
+        projectName: root-self-service
+        namespace: root-self-service
+        repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
+        path: applications
+
+  output:
+    links:
+      - title: GitOps Application
+        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+      - title: GitLab Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
