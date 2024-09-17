@@ -69,7 +69,7 @@ spec:
           type: string
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
-          maxLength: 15
+          maxLength: 30
         defaultRegion:
           title: Bucket Region
           description: The buckets aws region.
