@@ -70,8 +70,8 @@ spec:
             path: "projects"
           projectName: "self-service"
           automated:
-            prune: false
-            selfHeal: true
+            prune: "false"
+            selfHeal: "true"
           createNamespace: "false"
 
     #################################
