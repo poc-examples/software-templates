@@ -69,63 +69,47 @@ spec:
           - catalog-info.yaml
           - projects
         values:
+          targetRevision: "main"
           repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
-
-
-    # ###########################
-    # ## Template the Application
-    # ###########################
-    # - id: pullApplicationSkeleton
-    #   name: "Template Self-Service Application"
-    #   action: fetch:template
-    #   input:
-    #     url: './application'
-    #     targetPath: './_init_'
-    #     values:
-    #       targetRevision: "main"
-    #       repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
-    #       path: "projects"
-    #       projectName: "self-service"
-    #       prune: "false"
-    #       selfHeal: "true"
-    #       createNamespace: "false"
+          path: "projects"
+          projectName: "self-service"
 
     #################################
     ## Create Self-Service Repository
     #################################
-    # - id: publish
-    #   name: "Create Self-Service Repository"
-    #   action: publish:gitlab
-    #   input:
-    #     allowedHosts:
-    #       - 'gitlab.com'
-    #     description: |
-    #       Self-Service Repository
-    #     repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-    #     defaultBranch: main
+    - id: publish
+      name: "Create Self-Service Repository"
+      action: publish:gitlab
+      input:
+        allowedHosts:
+          - 'gitlab.com'
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        defaultBranch: main
 
     ########################
     ## Register Catalog Info
     ########################
-    # - id: registerCatalog
-    #   name: "Register Catalog Info"
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
-    #     catalogInfoPath: /catalog-info.yaml
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
 
     #################################
     ## ArgoCD Resources Configuration
     #################################
-    # - id: createArgocdResources
-    #   name: "Create ArgoCD Resources"
-    #   action: argocd:create-resources
-    #   input:
-    #     appName: "root-self-service"
-    #     argoInstance: ${{ parameters.argoInstance }}
-    #     namespace: "root-self-service"
-    #     repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
-    #     path: "applications"
+    - id: createArgocdResources
+      name: "Create ArgoCD Resources"
+      action: argocd:create-resources
+      input:
+        appName: "root-self-service"
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: "root-self-service"
+        repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
+        path: "applications"
 
   output:
     links:
