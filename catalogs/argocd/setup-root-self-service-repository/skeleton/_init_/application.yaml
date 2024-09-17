@@ -11,25 +11,19 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: "${{ values.repoUrl }}"
-    targetRevision: "${{ values.targetRevision }}"
-    path: "${{ values.path }}"
+    targetRevision: "main"
+    path: "projects"
     directory:
       recurse: true
-  project: ${{ values.projectName }}
+  project: "self-service"
   syncPolicy:
     automated:
-      {%- if values.prune %}
-      prune: "${{ values.prune }}"
-      {%- endif %}
-      {%- if values.selfHeal %}
-      selfHeal: "${{ values.selfHeal }}"
-      {%- endif %}
+      prune: false
+      selfHeal: true
     managedNamespaceMetadata:
       labels:
         argocd.argoproj.io/managed-by: "openshift-gitops"
     syncOptions:
-      {%- if values.createNamespace %}
-      - CreateNamespace=${{ values.createNamespace }}
-      {%- endif %}
+      - CreateNamespace=true
       - Validate=false
       - SkipDryRunOnMissingResource=true

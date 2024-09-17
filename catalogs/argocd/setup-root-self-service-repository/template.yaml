@@ -63,24 +63,27 @@ spec:
       action: fetch:template
       input:
         url: './skeleton'
-
-    ##########################
-    ## Template the Application
-    ##########################
-    - id: pullApplicationSkeleton
-      name: "Template Self-Service Application"
-      action: fetch:template
-      input:
-        url: './application'
-        targetPath: './_init_'
         values:
-          targetRevision: "main"
           repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
-          path: "projects"
-          projectName: "self-service"
-          prune: "false"
-          selfHeal: "true"
-          createNamespace: "false"
+
+
+    # ###########################
+    # ## Template the Application
+    # ###########################
+    # - id: pullApplicationSkeleton
+    #   name: "Template Self-Service Application"
+    #   action: fetch:template
+    #   input:
+    #     url: './application'
+    #     targetPath: './_init_'
+    #     values:
+    #       targetRevision: "main"
+    #       repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+    #       path: "projects"
+    #       projectName: "self-service"
+    #       prune: "false"
+    #       selfHeal: "true"
+    #       createNamespace: "false"
 
     #################################
     ## Create Self-Service Repository
