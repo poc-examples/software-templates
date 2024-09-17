@@ -105,10 +105,10 @@ spec:
       name: Create ArgoCD Resources
       action: argocd:create-resources
       input:
-        appName: root-self-service
+        appName: "root-self-service"
         argoInstance: ${{ parameters.argoInstance }}
-        namespace: root-self-service
-        repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
+        namespace: "root-self-service"
+        repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "app"
 
   output:
