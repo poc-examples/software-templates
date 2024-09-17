@@ -159,8 +159,8 @@ spec:
         description: |
           placeholder
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: "projects/${{ parameters.projectName }}/"
-        targetPath: "projects/${{ parameters.projectName }}/"
+        sourcePath: "./projects/${{ parameters.projectName }}"
+        targetPath: "./projects/${{ parameters.projectName }}"
         branchName: main
         commitAction: create
         commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"
