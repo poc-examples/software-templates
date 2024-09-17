@@ -70,7 +70,7 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          repoUrl: "https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+          repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
           path: "projects"
           projectName: "self-service"
  
