@@ -145,7 +145,7 @@ spec:
       input:
         files:
           - from: applications/application.yaml
-          - to: applications/${{ parameters.dataConnectorName }}.yaml
+            to: applications/${{ parameters.dataConnectorName }}.yaml
 
     ##########################
     ## Push Repository Changes
