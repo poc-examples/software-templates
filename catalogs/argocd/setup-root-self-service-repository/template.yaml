@@ -77,16 +77,16 @@ spec:
     #################################
     ## Create Self-Service Repository
     #################################
-    - id: publish
-      name: "Create Self-Service Repository"
-      action: publish:gitlab
-      input:
-        allowedHosts:
-          - 'gitlab.com'
-        description: |
-          Self-Service Repository
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        defaultBranch: main
+    # - id: publish
+    #   name: "Create Self-Service Repository"
+    #   action: publish:gitlab
+    #   input:
+    #     allowedHosts:
+    #       - 'gitlab.com'
+    #     description: |
+    #       Self-Service Repository
+    #     repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+    #     defaultBranch: main
 
     # ########################
     # ## Register Catalog Info
