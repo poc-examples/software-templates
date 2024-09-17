@@ -13,13 +13,6 @@ spec:
     chart: "${{ values.chart.name }}"
     repoURL: "${{ values.chart.repoUrl }}"
     targetRevision: "${{ values.chart.chartVersion }}"
-    {%- if values.valuesObject %}
-    helm:
-      valuesObject:
-        {% raw %}
-        {{ values.valuesObject }}
-        {% endraw %}
-    {%- endif %}
   project: ${{ values.projectName }}
   syncPolicy:
     automated:
