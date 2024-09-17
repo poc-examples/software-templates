@@ -144,8 +144,8 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: application/application.yaml
-          - to: application/${{ parameters.dataConnectorName }}.yaml
+          - from: applications/application.yaml
+          - to: applications/${{ parameters.dataConnectorName }}.yaml
 
     ##########################
     ## Push Repository Changes
