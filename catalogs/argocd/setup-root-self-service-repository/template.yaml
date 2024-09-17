@@ -63,8 +63,14 @@ spec:
       action: fetch:template
       input:
         url: './skeleton'
+        copyWithoutTemplating:
+          - README.md
+          - LICENSE
+          - catalog-info.yaml
+          - projects
+          - _init_
         values:
-          repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+          repoUrl: "words"
 
 
     # ###########################
