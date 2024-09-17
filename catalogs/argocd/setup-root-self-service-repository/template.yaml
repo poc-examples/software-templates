@@ -70,7 +70,7 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+          repoUrl: "https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git"
           path: "projects"
           projectName: "self-service"
 
@@ -114,6 +114,6 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
