@@ -74,14 +74,12 @@ spec:
         url: './application'
         targetPath: './_init_'
         values:
-          app:
-            targetRevision: "main"
-            repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
-            path: "projects"
+          targetRevision: "main"
+          repoUrl: "https://gitlab.apps.${{ steps.requestDynamicData.output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+          path: "projects"
           projectName: "self-service"
-          automated:
-            prune: "false"
-            selfHeal: "true"
+          prune: "false"
+          selfHeal: "true"
           createNamespace: "false"
 
     #################################

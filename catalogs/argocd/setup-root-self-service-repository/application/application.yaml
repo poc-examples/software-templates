@@ -10,19 +10,19 @@ spec:
     namespace: "openshift-gitops"
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: "${{ values.app.repoUrl }}"
-    targetRevision: "${{ values.app.targetRevision }}"
-    path: "${{ values.app.path }}"
+    repoURL: "${{ values.repoUrl }}"
+    targetRevision: "${{ values.targetRevision }}"
+    path: "${{ values.path }}"
     directory:
       recurse: true
   project: ${{ values.projectName }}
   syncPolicy:
     automated:
-      {%- if values.automated.prune %}
-      prune: "${{ values.automated.prune }}"
+      {%- if values.prune %}
+      prune: "${{ values.prune }}"
       {%- endif %}
-      {%- if values.automated.selfHeal %}
-      selfHeal: "${{ values.automated.selfHeal }}"
+      {%- if values.selfHeal %}
+      selfHeal: "${{ values.selfHeal }}"
       {%- endif %}
     managedNamespaceMetadata:
       labels:
