@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "${{ values.repoName }}"
+  name: "${{ values.applicationName }}"
   namespace: "openshift-gitops"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -10,9 +10,9 @@ spec:
     namespace: "${{ values.namespace }}"
     server: 'https://kubernetes.default.svc'
   source:
-    chart: "${{ values.chart }}"
-    repoURL: "${{ values.repoUrl }}"
-    targetRevision: HEAD
+    chart: "${{ values.chart.name }}"
+    repoURL: "${{ values.chart.repoUrl }}"
+    targetRevision: "${{ values.chart.chartVersion }}"
     {%- if values.valuesObject %}
     helm:
       valuesObject:

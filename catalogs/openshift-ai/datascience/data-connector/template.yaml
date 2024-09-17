@@ -1,0 +1,162 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: data-connector
+  title: Red Hat OpenShift AI - Data Connector
+  description: |
+    This template automates the setup of a Red Hat OpenShift AI Data Connector. It provides a predefined 
+    structure for integrating data sources with OpenShift AI, enabling seamless data flow between different 
+    applications and data repositories. The template helps teams easily configure data connections, 
+    ensuring that data pipelines are consistently synced with AI workloads and ArgoCD applications 
+    for continuous integration and deployment.
+  tags:
+    - openshift-ai
+    - data-connector
+    - automation
+    - data-science
+    - data-pipelines
+    - argocd
+
+spec:
+  owner: data-science
+  system: self-service
+  type: Data-Connector
+  parameters:
+
+    - title: ArgoCD Selection
+      ui:group: argocd
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: ArgoCD Instance
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          enum:
+            - main
+          type: string
+
+    - title: Data Connector Settings
+      ui:group: data-connector
+      required:
+        - dataConnectorName
+        - targetNamespace
+        - projectName
+      properties:
+        dataConnectorName:
+          title: Data Connector Name
+          description: The name of the data connector.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        targetNamespace:
+          title: Target Namespace
+          description: The namespace where the data connector will be deployed.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        projectName:
+          title: Project Name
+          description: The project where the data connector is integrated.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        bucketName:
+          title: Bucket Name
+          description: The name of the bucket.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 15
+        defaultRegion:
+          title: Bucket Region
+          description: The buckets aws region.
+          default: "us-east-1"
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 15
+
+  steps:
+
+    #######################
+    ## Request Dynamic Data
+    #######################
+    - id: requestDynamicData
+      name: Fetch Dynamic Data
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: 'proxy/data/fetch'
+        headers:
+          Content-Type: 'application/json'
+        body: |
+          {
+            "request": ["DOMAIN"]
+          }
+
+    #####################################
+    ## Clone the Self-Service Respository
+    #####################################
+    - id: fetchManifestsRepository
+      name: fetch the Manifests Repository
+      action: fetch:plain
+      input:
+        url: https://gitlab.com/self-provisioned/manifests/
+
+    ###########################
+    ## Template the Application
+    ###########################
+    - id: applicationTemplate
+      name: Template Helm Application
+      action: fetch:template
+      input:
+        url: "../../../skeletons/applications/helm-application.yaml"
+        targetPath: "applications/${{ parameters.dataConnectorName }}.yaml"
+        values:
+          repoName: "${{ parameters.dataConnectorName }}-dc"
+          namespace: "${{ parameters.targetNamespace }}"
+          chart:
+            name: "data-connector"
+            chartUrl: "https://poc-examples.github.io/supporting-charts"
+            chartVersion: "0.1.2"
+          projectName: "${{ parameters.projectName }}"
+          automated:
+            prune: true
+            selfHeal: true
+          createNamespace: "true"
+          valuesObject:
+            clusterSecretStoreName: "kubernetes-secrets-store"
+            dataConnection:
+              name: "${{ parameters.dataConnectorName }}"
+              config:
+                defaultRegion: "${{ parameters.defaultRegion }}"
+                bucketName: "${{ parameters.bucketName }}"
+              secretRef: aws-credentials
+
+    ##########################
+    ## Push Repository Changes
+    ##########################
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts:
+          - 'gitlab.com'
+        description: |
+          placeholder
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: 'applications'
+        targetPath: 'applications'
+        branchName: main
+        commitAction: create
+        commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"
+
+  output:
+    links:
+      - title: GitOps Application
+        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+      - title: GitLab Repository
+        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git

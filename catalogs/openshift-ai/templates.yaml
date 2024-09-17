@@ -8,4 +8,4 @@ metadata:
 spec:
   type: url
   targets:
-    - ./services/cpp-webserver/template.yaml
+    - ./datascience/data-connector/template.yaml
