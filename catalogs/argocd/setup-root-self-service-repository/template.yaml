@@ -58,21 +58,21 @@ spec:
     ##########################
     ## Template the Repository
     ##########################
-    - id: pullRepositorySkeleton
-      name: "Pull Self-Service Skeleton"
-      action: fetch:template
-      input:
-        url: './skeleton'
-        values:
-          app:
-            targetRevision: "main"
-            repoUrl: "https://gitlab.apps.${{ steps["requestDynamicData"].output.body["DOMAIN"] }}/self-provisioned/manifests.git"
-            path: "projects"
-          projectName: "self-service"
-          automated:
-            prune: "false"
-            selfHeal: "true"
-          createNamespace: "false"
+    # - id: pullRepositorySkeleton
+    #   name: "Pull Self-Service Skeleton"
+    #   action: fetch:template
+    #   input:
+    #     url: './skeleton'
+    #     values:
+    #       app:
+    #         targetRevision: "main"
+    #         repoUrl: "https://gitlab.apps.${{ steps["requestDynamicData"].output.body["DOMAIN"] }}/self-provisioned/manifests.git"
+    #         path: "projects"
+    #       projectName: "self-service"
+    #       automated:
+    #         prune: "false"
+    #         selfHeal: "true"
+    #       createNamespace: "false"
 
     #################################
     ## Create Self-Service Repository
