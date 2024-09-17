@@ -110,7 +110,7 @@ spec:
         projectName: root-self-service
         namespace: root-self-service
         repoUrl: ${{ steps['publish'].output.remoteUrl }}.git
-        path: "./_init_"
+        path: "app"
 
   output:
     links:
