@@ -113,8 +113,8 @@ spec:
       name: Template Helm Application
       action: fetch:template
       input:
-        url: "../../../skeletons/applications/helm-application.yaml"
-        targetPath: "applications/${{ parameters.dataConnectorName }}.yaml"
+        url: "../../../skeletons/applications/helm/"
+        targetPath: "applications/"
         values:
           repoName: "${{ parameters.dataConnectorName }}-dc"
           namespace: "${{ parameters.targetNamespace }}"
@@ -136,6 +136,17 @@ spec:
                 bucketName: "${{ parameters.bucketName }}"
               secretRef: aws-credentials
 
+    ##############
+    ## Rename File
+    ##############
+    - id: changeTemplateName
+      name: Change Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: application/application.yaml
+          - to: application/${{ parameters.dataConnectorName }}.yaml
+
     ##########################
     ## Push Repository Changes
     ##########################
@@ -148,8 +159,8 @@ spec:
         description: |
           placeholder
         repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: "applications/${{ parameters.dataConnectorName }}.yaml"
-        targetPath: "applications/${{ parameters.dataConnectorName }}.yaml"
+        sourcePath: "applications/"
+        targetPath: "applications/"
         branchName: main
         commitAction: create
         commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"
