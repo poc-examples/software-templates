@@ -145,7 +145,7 @@ spec:
       input:
         files:
           - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.dataConnectorName }}.yaml"
+            to: "projects/${{ parameters.projectName }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
 
     ##########################
     ## Push Repository Changes

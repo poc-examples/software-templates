@@ -11,7 +11,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     chart: "${{ values.chart.name }}"
-    repoURL: "${{ values.chart.repoUrl }}"
+    repoURL: "${{ values.chart.chartUrl }}"
     targetRevision: "${{ values.chart.chartVersion }}"
   project: ${{ values.projectName }}
   syncPolicy:
