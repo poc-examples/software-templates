@@ -113,7 +113,7 @@ spec:
       name: Template Helm Application
       action: fetch:template
       input:
-        url: "../../../skeletons/applications/helm/"
+        url: "../../../../skeletons/applications/helm/"
         targetPath: "applications/"
         values:
           repoName: "${{ parameters.dataConnectorName }}-dc"
