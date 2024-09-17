@@ -109,7 +109,7 @@ spec:
         argoInstance: ${{ parameters.argoInstance }}
         namespace: "root-self-service"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
-        path: "applications"
+        path: "_init_"
 
   output:
     links:
