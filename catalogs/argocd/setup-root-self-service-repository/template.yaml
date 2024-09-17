@@ -73,7 +73,7 @@ spec:
           repoUrl: "https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git"
           path: "projects"
           projectName: "self-service"
-
+ 
     #################################
     ## Create Self-Service Repository
     #################################
