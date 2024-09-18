@@ -97,15 +97,6 @@ spec:
             "request": ["DOMAIN"]
           }
 
-    #####################################
-    ## Clone the Self-Service Respository
-    #####################################
-    - id: fetchManifestsRepository
-      name: fetch the Manifests Repository
-      action: fetch:plain
-      input:
-        url: https://gitlab.com/self-provisioned/manifests/
-
     ###########################
     ## Template the Application
     ###########################
