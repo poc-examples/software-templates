@@ -1,17 +1,16 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: data-connector
-  title: Red Hat OpenShift AI - Data Connector
+  name: data-science-project
+  title: Red Hat OpenShift AI - Data Science Project
   description: |
-    This template automates the setup of a Red Hat OpenShift AI Data Connector. It provides a predefined 
-    structure for integrating data sources with OpenShift AI, enabling seamless data flow between different 
-    applications and data repositories. The template helps teams easily configure data connections, 
-    ensuring that data pipelines are consistently synced with AI workloads and ArgoCD applications 
-    for continuous integration and deployment.
+    This template automates the setup of a Red Hat OpenShift AI Data Science Project. It provides 
+    a unified project for integrating rhoai resources. The template helps teams easily 
+    configure datascience projects, ensuring that all resources are consistently are merged 
+    together under a unified project.
   tags:
     - openshift-ai
-    - data-connector
+    - data-science-project
     - automation
     - data-science
     - data-pipelines
@@ -20,7 +19,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: Data-Connector
+  type: DataScience-Project
   parameters:
 
     - title: ArgoCD Selection
@@ -35,7 +34,7 @@ spec:
             - main
           type: string
 
-    - title: Data Connector Settings
+    - title: DataScience Project Settings
       ui:group: data-connector
       required:
         - dataConnectorName
@@ -116,7 +115,7 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectName }}/"
         values:
-          repoName: "${{ parameters.dataConnectorName }}-ds-project"
+          repoName: "${{ parameters.projectName }}-ds-project"
           namespace: "openshift-gitops"
           chart:
             name: "data-science-project"

@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
-  name: poc-examples-rhoi-collection
+  name: poc-examples-rhoai-collection
   description: |
     A collection of Proof-of-Concept Red Hat OpenShift AI Software Templates
     that can be used with Developer Hub for developers to use and adapt.
@@ -9,3 +9,4 @@ spec:
   type: url
   targets:
     - ./datascience/data-connector/template.yaml
+    - ./datascience/project/template.yaml
