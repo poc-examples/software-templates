@@ -86,6 +86,7 @@ spec:
         values:
           repoName: "${{ parameters.projectName }}-ds-project"
           namespace: "openshift-gitops"
+          syncWave: "-1"
           chart:
             name: "data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
