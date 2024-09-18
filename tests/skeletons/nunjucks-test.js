@@ -10,7 +10,10 @@ const yamlFile = process.argv[2];
 const yamlContent = yaml.load(fs.readFileSync(path.join("use-cases/", yamlFile), 'utf8'));
 
 // Collect The Template
-const template = fs.readFileSync(path.join(__dirname, yamlContent["template"]), 'utf8');
+let template = fs.readFileSync(path.join(__dirname, yamlContent["template"]), 'utf8');
+
+// Replace all instances of "${{" with "{{"
+template = template.replace(/\${{/g, '{{');
 
 // Render the template with the YAML content
 const renderedOutput = nunjucks.renderString(template, yamlContent);
