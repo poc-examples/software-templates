@@ -127,9 +127,9 @@ spec:
             prune: true
             selfHeal: true
           createNamespace: "true"
-          valuesObject:
+          valuesObject: |
             clusterSecretStoreName: "kubernetes-secrets-store"
-            dataConnection: |
+            dataConnection:
               name: ${{ parameters.dataConnectorName }}
               config:
                 defaultRegion: ${{ parameters.defaultRegion }}
