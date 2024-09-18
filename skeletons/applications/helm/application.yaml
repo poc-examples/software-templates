@@ -16,7 +16,7 @@ spec:
     {%- if values.valuesObject %}
     helm:
       valuesObject:
-${{ values.valuesObject | indent(8, true) }}
+${{ values.valuesObject | safe | indent(8, true) }}
     {%- endif %}
   project: ${{ values.projectName }}
   syncPolicy:
