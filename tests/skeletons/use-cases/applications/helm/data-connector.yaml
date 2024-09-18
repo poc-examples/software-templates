@@ -1,4 +1,4 @@
-template: "skeletons/applications/helm/application.njk"
+template: "skeletons/applications/helm/application.yaml"
 values:
   repoName: "my-data-connector-dc"
   namespace: "my-namespace"
