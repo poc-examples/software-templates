@@ -13,14 +13,19 @@ spec:
     chart: "${{ values.chart.name }}"
     repoURL: "${{ values.chart.chartUrl }}"
     targetRevision: "${{ values.chart.chartVersion }}"
+    {%- if values.valuesObject %}
+    helm:
+      valuesObject:
+${{ values.valuesObject | indent(8, true) }}
+    {%- endif %}
   project: ${{ values.projectName }}
   syncPolicy:
     automated:
       {%- if values.automated.prune %}
-      prune: "${{ values.automated.prune }}"
+      prune: ${{ values.automated.prune }}
       {%- endif %}
       {%- if values.automated.selfHeal %}
-      selfHeal: "${{ values.automated.selfHeal }}"
+      selfHeal: ${{ values.automated.selfHeal }}
       {%- endif %}
     managedNamespaceMetadata:
       labels:

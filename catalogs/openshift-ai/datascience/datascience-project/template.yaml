@@ -122,18 +122,18 @@ spec:
             name: "data-connector"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.2"
-          projectName: "self-service"
+          projectName: "${{ parameters.projectName }}"
           automated:
             prune: true
             selfHeal: true
           createNamespace: "true"
           valuesObject:
             clusterSecretStoreName: "kubernetes-secrets-store"
-            dataConnection: |
-              name: ${{ parameters.dataConnectorName }}
+            dataConnection:
+              name: "${{ parameters.dataConnectorName }}"
               config:
-                defaultRegion: ${{ parameters.defaultRegion }}
-                bucketName: ${{ parameters.bucketName }}
+                defaultRegion: "${{ parameters.defaultRegion }}"
+                bucketName: "${{ parameters.bucketName }}"
               secretRef: aws-credentials
 
     ##############
