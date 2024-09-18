@@ -35,7 +35,7 @@ spec:
           type: string
 
     - title: DataScience Project Settings
-      ui:group: data-connector
+      ui:group: data-project
       required:
         - projectName
       properties:
@@ -90,7 +90,7 @@ spec:
             name: "data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.0"
-          projectName: "${{ parameters.projectName }}"
+          projectName: "self-service"
           automated:
             prune: true
             selfHeal: true
