@@ -37,24 +37,8 @@ spec:
     - title: DataScience Project Settings
       ui:group: data-connector
       required:
-        - dataConnectorName
-        - targetNamespace
         - projectName
       properties:
-        dataConnectorName:
-          title: Data Connector Name
-          description: The name of the data connector.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
-        targetNamespace:
-          title: Target Namespace
-          description: The namespace where the data connector will be deployed.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
         projectName:
           title: Project Name
           description: The project where the data connector is integrated.
@@ -62,21 +46,6 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
-        bucketName:
-          title: Bucket Name
-          description: The name of the bucket.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
-        defaultRegion:
-          title: Bucket Region
-          description: The buckets aws region.
-          default: "us-east-1"
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 15
 
   steps:
 
