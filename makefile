@@ -12,3 +12,12 @@ run-tests:
 			nunjucks-test node nunjucks-test.js $$file; \
 	done
 
+render:
+	@echo -e "--- Rendering Skeletons --- \n"
+	@for file in $(YAML_FILES); do \
+		echo "Rendering Test Case - $$file"; \
+		podman run --rm -it \
+			-v $(shell pwd)/tests/skeletons/use-cases:/tests/use-cases:z \
+			-v $(shell pwd)/skeletons:/tests/skeletons:z \
+			nunjucks-test nunjucks-render.js $$file; \
+	done

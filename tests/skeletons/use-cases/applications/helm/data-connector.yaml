@@ -45,7 +45,7 @@ expected: |
               bucketName: "my-bucket"
             secretRef: "aws-credentials"
           
-    project: my-project
+    project: "my-project"
     syncPolicy:
       automated:
         prune: true

@@ -4,7 +4,11 @@ metadata:
   name: "${{ values.repoName }}"
   namespace: "openshift-gitops"
   annotations:
+    {%- if values.syncWave %}
+    argocd.argoproj.io/sync-wave: "${{ values.syncWave }}"
+    {%- else %}
     argocd.argoproj.io/sync-wave: "1"
+    {%- endif %}
 spec:
   destination:
     namespace: "${{ values.namespace }}"
@@ -18,7 +22,7 @@ spec:
       valuesObject:
 ${{ values.valuesObject | safe | indent(8, true) }}
     {%- endif %}
-  project: ${{ values.projectName }}
+  project: "${{ values.projectName }}"
   syncPolicy:
     automated:
       {%- if values.automated.prune %}

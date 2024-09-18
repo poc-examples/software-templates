@@ -116,25 +116,19 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectName }}/"
         values:
-          repoName: "${{ parameters.dataConnectorName }}-dc"
-          namespace: "${{ parameters.targetNamespace }}"
+          repoName: "${{ parameters.dataConnectorName }}-ds-project"
+          namespace: "openshift-gitops"
           chart:
-            name: "data-connector"
+            name: "data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.2"
+            chartVersion: "0.1.0"
           projectName: "${{ parameters.projectName }}"
           automated:
             prune: true
             selfHeal: true
-          createNamespace: "true"
+          createNamespace: "false"
           valuesObject:
-            clusterSecretStoreName: "kubernetes-secrets-store"
-            dataConnection:
-              name: "${{ parameters.dataConnectorName }}"
-              config:
-                defaultRegion: "${{ parameters.defaultRegion }}"
-                bucketName: "${{ parameters.bucketName }}"
-              secretRef: aws-credentials
+            project: ${{ parameters.projectName }}
 
     ##############
     ## Rename File
@@ -145,7 +139,7 @@ spec:
       input:
         files:
           - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
+            to: "projects/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -163,7 +157,7 @@ spec:
         targetPath: "./projects/${{ parameters.projectName }}"
         branchName: main
         commitAction: create
-        commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"
+        commitMessage: "Created ${{ parameters.projectName }} Data Science Project"
 
   output:
     links:

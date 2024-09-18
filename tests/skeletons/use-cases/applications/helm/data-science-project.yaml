@@ -1,0 +1,49 @@
+template: "skeletons/applications/helm/application.yaml"
+values:
+  repoName: "test-project-ds-project"
+  namespace: "openshift-gitops"
+  syncWave: "-1"
+  chart:
+    name: "data-science-project"
+    chartUrl: "https://poc-examples.github.io/supporting-charts"
+    chartVersion: "0.1.0"
+  projectName: "test-project"
+  automated:
+    prune: true
+    selfHeal: true
+  createNamespace: "false"
+  valuesObject: |
+    project: "test-project"
+expected: |
+  apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: "test-project-ds-project"
+    namespace: "openshift-gitops"
+    annotations:
+      argocd.argoproj.io/sync-wave: "-1"
+  spec:
+    destination:
+      namespace: "openshift-gitops"
+      server: 'https://kubernetes.default.svc'
+    source:
+      chart: "data-science-project"
+      repoURL: "https://poc-examples.github.io/supporting-charts"
+      targetRevision: "0.1.0"
+      helm:
+        valuesObject:
+          project: "test-project"
+          
+    project: "test-project"
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      managedNamespaceMetadata:
+        labels:
+          argocd.argoproj.io/managed-by: "openshift-gitops"
+      syncOptions:
+        - CreateNamespace=false
+        - Validate=false
+        - SkipDryRunOnMissingResource=true
+

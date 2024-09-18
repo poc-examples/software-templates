@@ -9,6 +9,7 @@ RUN npm install nunjucks js-yaml
 
 # Copy test script, template file, and values file to the container
 COPY nunjucks-test.js .
+COPY nunjucks-render.js .
 
 # Run the test script
 CMD ["node", "nunjucks-test.js"]
