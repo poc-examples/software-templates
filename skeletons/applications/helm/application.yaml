@@ -22,10 +22,10 @@ ${{ values.valuesObject | indent(8, true) }}
   syncPolicy:
     automated:
       {%- if values.automated.prune %}
-      prune: ${{ values.automated.prune | safe }}
+      prune: ${{ values.automated.prune }}
       {%- endif %}
       {%- if values.automated.selfHeal %}
-      selfHeal: ${{ values.automated.selfHeal | safe }}
+      selfHeal: ${{ values.automated.selfHeal }}
       {%- endif %}
     managedNamespaceMetadata:
       labels:
