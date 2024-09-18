@@ -127,7 +127,7 @@ spec:
             prune: true
             selfHeal: true
           createNamespace: "false"
-          valuesObject:
+          valuesObject: |
             project: ${{ parameters.projectName }}
 
     ##############
