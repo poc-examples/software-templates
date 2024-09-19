@@ -41,7 +41,6 @@ spec:
       required:
         - projectName
         - modelName
-        - storageSize
       properties:
         projectName:
           title: Project Name
@@ -57,14 +56,6 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
-        storageSize:
-          title: Storage Size
-          description: The storage size of the workbench working directory.
-          default: "100Gi"
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 8
 
     - title: Model Serving Settings
       ui:group: data-model-serving
