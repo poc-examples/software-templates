@@ -74,9 +74,6 @@ spec:
           title: Model Path
           description: The path to the Model in Data Connector.
           type: string
-          pattern: "^[a-zA-Z][a-zA-Z0-9-/]+$"
-          minLength: 3
-          maxLength: 150
 
   steps:
 
