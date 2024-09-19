@@ -1,0 +1,158 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: data-workbench
+  title: Red Hat OpenShift AI - Workbench
+  description: |
+    This template automates the provisioning of a Workbench in Red Hat OpenShift AI. It provides a 
+    structured environment for data scientists and developers to build, test, and deploy AI models 
+    seamlessly within OpenShift AI. The template sets up the required infrastructure for AI workloads, 
+    including workbenches for collaborative experimentation, model training, and integration with other 
+    AI services. Teams can leverage this workbench for streamlined AI development with built-in support 
+    for continuous integration and deployment through ArgoCD.
+  tags:
+    - openshift-ai
+    - workbench
+    - automation
+    - data-science
+    - ai-workloads
+    - argocd
+
+spec:
+  owner: data-science
+  system: self-service
+  type: Workbench
+  parameters:
+
+    - title: ArgoCD Selection
+      ui:group: argocd
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: ArgoCD Instance
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          enum:
+            - main
+          type: string
+
+    - title: Workbench Settings
+      ui:group: data-workbench
+      required:
+        - dataConnectorName
+        - projectName
+        - workbenchName
+        - storageSize
+      properties:
+        dataConnectorName:
+          title: Data Connector Name
+          description: The name of the data connector.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        projectName:
+          title: Project Name
+          description: The project where the data connector is integrated.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        workbenchName:
+          title: Workbench Name
+          description: The name of the workbench.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        storageSize:
+          title: Storage Size
+          description: The storage size of the workbench working directory.
+          default: "100Gi"
+          type: string
+          pattern: "^[0-9]+[KMGTP]i$"
+          minLength: 3
+          maxLength: 6
+
+  steps:
+
+    #######################
+    ## Request Dynamic Data
+    #######################
+    - id: requestDynamicData
+      name: Fetch Dynamic Data
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: 'proxy/data/fetch'
+        headers:
+          Content-Type: 'application/json'
+        body: |
+          {
+            "request": ["DOMAIN"]
+          }
+
+    ###########################
+    ## Template the Application
+    ###########################
+    - id: applicationTemplate
+      name: Template Helm Application
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/applications/helm/"
+        targetPath: "projects/${{ parameters.projectName }}/"
+        values:
+          repoName: "${{ parameters.workbenchName }}-workbench"
+          namespace: "${{ parameters.projectName }}"
+          chart:
+            name: "data-workbench"
+            chartUrl: "https://poc-examples.github.io/supporting-charts"
+            chartVersion: "0.1.0"
+          projectName: "${{ parameters.projectName }}"
+          automated:
+            prune: true
+            selfHeal: true
+          createNamespace: "true"
+          valuesObject: |
+            domain: ${{ steps['requestDynamicData'].output.body["DOMAIN"] }}
+            user: cluster-admin
+            namespace: "${{ parameters.projectName }}"
+            notebookName: "${{ parameters.workbenchName }}"
+            storageSize: "${{ parameters.storageSize }}"
+            dataConnectionName: "${{ parameters.dataConnectorName }}"
+
+    ##############
+    ## Rename File
+    ##############
+    - id: changeTemplateName
+      name: Change Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "projects/${{ parameters.projectName }}/application.yaml"
+            to: "projects/${{ parameters.projectName }}/${{ parameters.workbenchName }}-workbench.yaml"
+
+    ##########################
+    ## Push Repository Changes
+    ##########################
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts:
+          - 'gitlab.com'
+        description: |
+          placeholder
+        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        sourcePath: "./projects/${{ parameters.projectName }}"
+        targetPath: "./projects/${{ parameters.projectName }}"
+        branchName: main
+        commitAction: create
+        commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
+
+  output:
+    links:
+      - title: GitOps Application
+        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+      - title: GitLab Repository
+        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git

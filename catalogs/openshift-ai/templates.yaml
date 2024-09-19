@@ -10,3 +10,5 @@ spec:
   targets:
     - ./datascience/data-connector/template.yaml
     - ./datascience/project/template.yaml
+    - ./datascience/workbench/template.yaml
+    # - ./datascience/single-model-server/template.yaml
