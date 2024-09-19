@@ -36,21 +36,13 @@ spec:
             - main
           type: string
 
-    - title: Workbench Settings
-      ui:group: data-workbench
+    - title: Model Serving Settings
+      ui:group: data-model-serving
       required:
-        - dataConnectorName
         - projectName
-        - workbenchName
+        - modelName
         - storageSize
       properties:
-        dataConnectorName:
-          title: Data Connector Name
-          description: The name of the data connector.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
         projectName:
           title: Project Name
           description: The project where the data connector is integrated.
@@ -58,9 +50,9 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
-        workbenchName:
-          title: Workbench Name
-          description: The name of the workbench.
+        modelName:
+          title: Model Name
+          description: The name of the Model.
           type: string
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
@@ -73,6 +65,27 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 8
+
+    - title: Model Serving Settings
+      ui:group: data-model-serving
+      required:
+        - dataConnectorName
+        - modelPath
+      properties:
+        dataConnectorName:
+          title: Data Connector Name
+          description: The name of the data connector.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        modelPath:
+          title: Model Path
+          description: The path to the Model in Data Connector.
+          type: string
+          pattern: "^[a-zA-Z][a-zA-Z0-9-/]+$"
+          minLength: 3
+          maxLength: 30
 
   steps:
 
@@ -102,10 +115,10 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectName }}/"
         values:
-          repoName: "${{ parameters.workbenchName }}-workbench"
+          repoName: "${{ parameters.modelName }}-model-server"
           namespace: "${{ parameters.projectName }}"
           chart:
-            name: "data-workbench"
+            name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.0"
           projectName: "${{ parameters.projectName }}"
@@ -114,12 +127,16 @@ spec:
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            domain: ${{ steps['requestDynamicData'].output.body["DOMAIN"] }}
-            user: cluster-admin
-            namespace: "${{ parameters.projectName }}"
-            notebookName: "${{ parameters.workbenchName }}"
-            storageSize: "${{ parameters.storageSize }}"
-            dataConnectionName: "${{ parameters.dataConnectorName }}"
+            serviceName: ${{ parameters.modelName }}
+            servingRuntime: multi-gpu-vllm-runtime
+            replicas: 1
+            GPUCount: 2
+            dataConnection:
+              name: ${{ parameters.dataConnectorName }}
+              modelPath: ${{ parameters.modelPath }}
+            resources:
+              cpu: "2"
+              mem: 35Gi
 
     ##############
     ## Rename File
@@ -130,7 +147,7 @@ spec:
       input:
         files:
           - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.workbenchName }}-workbench.yaml"
+            to: "projects/${{ parameters.projectName }}/${{ parameters.modelName }}-model-server.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -148,7 +165,7 @@ spec:
         targetPath: "./projects/${{ parameters.projectName }}"
         branchName: main
         commitAction: create
-        commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
+        commitMessage: "Created ${{ parameters.modelName }} Model Server"
 
   output:
     links:
