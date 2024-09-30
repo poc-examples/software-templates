@@ -72,7 +72,7 @@ spec:
           targetRevision: "main"
           domain: ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
           path: "projects"
-          projectName: "self-service"
+          projectName: "system"
  
     #################################
     ## Create Self-Service Repository
