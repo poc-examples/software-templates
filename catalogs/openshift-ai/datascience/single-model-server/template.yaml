@@ -108,7 +108,7 @@ spec:
           chart:
             name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.0"
+            chartVersion: "0.1.1"
           projectName: "${{ parameters.projectName }}"
           automated:
             prune: true

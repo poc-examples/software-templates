@@ -34,6 +34,7 @@ ${{ values.valuesObject | safe | indent(8, true) }}
     managedNamespaceMetadata:
       labels:
         argocd.argoproj.io/managed-by: "openshift-gitops"
+${{ values.namespaceLabels | safe | indent(10, true) }}
     syncOptions:
       {%- if values.createNamespace %}
       - CreateNamespace=${{ values.createNamespace }}

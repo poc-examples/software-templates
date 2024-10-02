@@ -46,6 +46,13 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
+        argoInstance:
+          title: Enabled Model Mesh
+          description: Whether Model Mesh is enabled or not in the datascience project.
+          enum:
+            - "false"
+            - "true"
+          type: string
 
   steps:
 
@@ -87,6 +94,9 @@ spec:
             prune: true
             selfHeal: true
           createNamespace: "false"
+          namespaceLabels: |
+            opendatahub.io/dashboard: "true"
+            modelmesh-enabled: "false"
           valuesObject: |
             project: ${{ parameters.projectName }}
 
