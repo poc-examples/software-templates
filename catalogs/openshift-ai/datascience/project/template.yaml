@@ -46,7 +46,7 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
-        argoInstance:
+        modelMesh:
           title: Enabled Model Mesh
           description: Whether Model Mesh is enabled or not in the datascience project.
           enum:
@@ -96,7 +96,7 @@ spec:
           createNamespace: "false"
           namespaceLabels: |
             opendatahub.io/dashboard: "true"
-            modelmesh-enabled: "false"
+            modelmesh-enabled: "${{ parameters.modelMesh }}"
           valuesObject: |
             project: ${{ parameters.projectName }}
 
