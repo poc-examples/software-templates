@@ -88,17 +88,15 @@ spec:
           chart:
             name: "data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.0"
+            chartVersion: "0.1.2"
           projectName: "self-service"
           automated:
             prune: true
             selfHeal: true
           createNamespace: "false"
-          namespaceLabels: |
-            opendatahub.io/dashboard: "true"
-            modelmesh-enabled: "${{ parameters.modelMesh }}"
           valuesObject: |
             project: ${{ parameters.projectName }}
+            modelMesh: "${{ parameters.modelMesh }}"
 
     ##############
     ## Rename File
