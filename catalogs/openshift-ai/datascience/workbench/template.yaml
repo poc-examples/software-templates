@@ -44,6 +44,14 @@ spec:
         - workbenchName
         - storageSize
       properties:
+        enableCUDA:
+          title: Project Name
+          description: The project where the data connector is integrated.
+          default: "false"
+          enum:
+            - "true"
+            - "false"
+          type: string
         dataConnectorName:
           title: Data Connector Name
           description: The name of the data connector.
@@ -107,7 +115,7 @@ spec:
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.0"
+            chartVersion: "0.1.3"
           projectName: "${{ parameters.projectName }}"
           automated:
             prune: true
@@ -120,6 +128,7 @@ spec:
             notebookName: "${{ parameters.workbenchName }}"
             storageSize: "${{ parameters.storageSize }}"
             dataConnectionName: "${{ parameters.dataConnectorName }}"
+            enabledCUDA: ${{ parameters.enableCUDA }}
 
     ##############
     ## Rename File
