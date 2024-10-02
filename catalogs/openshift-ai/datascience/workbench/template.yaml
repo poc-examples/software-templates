@@ -57,17 +57,12 @@ spec:
           description: Set the number of GPUs to be allocated to the Workbench.
           default: 0
           type: number
-          ui:field: select
           enum:
             - 0
             - 1
             - 2
             - 3
             - 4
-          ui:conditional:
-            - key: enableCUDA
-              operator: "=="
-              value: "true"
         dataConnectorName:
           title: Data Connector Name
           description: The name of the data connector.
