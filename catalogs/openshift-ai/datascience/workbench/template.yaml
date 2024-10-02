@@ -45,13 +45,27 @@ spec:
         - storageSize
       properties:
         enableCUDA:
-          title: Project Name
-          description: The project where the data connector is integrated.
+          title: Enable CUDA
+          description: Enables CUDA support for Workbench.
           default: "false"
           enum:
             - "true"
             - "false"
           type: string
+        numGPU:
+          title: Number of GPUs
+          description: Set the number of GPUs to be allocated to the Workbench.
+          type: number
+          ui:field: select
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          ui:conditional:
+            - key: enableCUDA
+              operator: "=="
+              value: "true"
         dataConnectorName:
           title: Data Connector Name
           description: The name of the data connector.
