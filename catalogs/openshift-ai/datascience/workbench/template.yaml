@@ -126,7 +126,7 @@ spec:
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.13"
+            chartVersion: "0.1.16"
           projectName: "${{ parameters.projectName }}"
           automated:
             prune: true
