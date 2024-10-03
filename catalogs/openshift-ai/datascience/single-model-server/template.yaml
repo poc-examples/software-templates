@@ -64,7 +64,7 @@ spec:
           title: Memory Limit
           description: The Memory Limit for the running model(Mi,Gi).
           type: string
-          default: 35Gi""
+          default: "35Gi"
         cpuLimit:
           title: CPU Limit
           description: The CPU Limit for the running model(1000m).
