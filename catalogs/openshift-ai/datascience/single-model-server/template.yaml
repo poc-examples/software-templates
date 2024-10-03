@@ -52,8 +52,14 @@ spec:
         numGPU:
           title: Number of GPU
           description: The Number of GPUs to provide to running model.
-          type: int
           default: 1
+          type: number
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
         memoryLimit:
           title: Memory Limit
           description: The Memory Limit for the running model(Mi,Gi).
