@@ -49,6 +49,21 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
+        numGPU:
+          title: Number of GPU
+          description: The Number of GPUs to provide to running model.
+          type: int
+          default: 1
+        memoryLimit:
+          title: Memory Limit
+          description: The Memory Limit for the running model(Mi,Gi).
+          type: string
+          default: 35Gi""
+        cpuLimit:
+          title: CPU Limit
+          description: The CPU Limit for the running model(1000m).
+          type: string
+          default: "1000m"
         modelName:
           title: Model Name
           description: The name of the Model.
@@ -118,13 +133,13 @@ spec:
             serviceName: ${{ parameters.modelName }}
             servingRuntime: multi-gpu-vllm-runtime
             replicas: 1
-            GPUCount: 2
+            GPUCount: ${{ parameters.numGPU }}
             dataConnection:
               name: ${{ parameters.dataConnectorName }}
               modelPath: ${{ parameters.modelPath }}
             resources:
-              cpu: "2"
-              mem: 35Gi
+              cpu: "${{ parameters.cpuLimit }}"
+              mem: "${{ parameters.memoryLimit }}"
 
     ##############
     ## Rename File
