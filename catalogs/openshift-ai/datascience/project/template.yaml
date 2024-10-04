@@ -46,13 +46,6 @@ spec:
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
           maxLength: 30
-        modelMesh:
-          title: Enabled Model Mesh
-          description: Whether Model Mesh is enabled or not in the datascience project.
-          enum:
-            - "false"
-            - "true"
-          type: string
 
   steps:
 
@@ -88,7 +81,7 @@ spec:
           chart:
             name: "data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.2"
+            chartVersion: "0.1.3"
           projectName: "self-service"
           automated:
             prune: true
@@ -96,7 +89,6 @@ spec:
           createNamespace: "false"
           valuesObject: |
             project: ${{ parameters.projectName }}
-            modelMesh: "${{ parameters.modelMesh }}"
 
     ##############
     ## Rename File
