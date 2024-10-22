@@ -47,7 +47,7 @@ spec:
       action: http:backstage:request
       input:
         method: 'POST'
-        path: 'proxy/data/fetch'
+        path: '/proxy/data/fetch'
         headers:
           Content-Type: 'application/json'
         body: |
