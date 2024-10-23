@@ -33,23 +33,32 @@ spec:
       properties:
         argoInstance:
           title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          type: string
+          description: The ArgoCD instance that will manage this application
           ui:field: EntityPicker
           ui:options:
             catalogFilter:
               - kind: System
                 spec.type: argocd
-          type: string
         gitlabInstance:
           title: GitLab Instance
-          description: The GitLab instance to create a self-service repository in.
+          type: string
+          description: The GitLab instance to create a self-service repository in
           ui:field: EntityPicker
           ui:options:
             catalogFilter:
               - kind: System
                 spec.type: gitlab
+        gitlabOwner:
+          title: GitLab Owner
           type: string
-
+          default: self-provisioned
+          description: The GitLab repository owner
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: manifests
+          description: The GitLab self-service repository
   steps:
 
     ##########################
@@ -82,7 +91,7 @@ spec:
           - ${{ parameters.gitlabInstance.spec.url | 'gitlab.com' }}
         description: |
           Self-Service Repository
-        repoUrl: gitlab.consulting.redhat.com?owner=self-provisioned&repo=manifests
+        repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: ${{ parameters.gitlabInstance.spec.url | 'gitlab.com' }}?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
