@@ -85,7 +85,7 @@ spec:
       name: Debug
       action: debug:log
       input:
-        extra: ${{ parameters.gitlabInstance | ParseEntityRef }}
+        message: ${{ parameters.gitlabInstance | ParseEntityRef }}
 
 
     #################################
