@@ -76,17 +76,9 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          domain: ${{ parameters.argoInstance.spec.domain | parseEntityRef }}
+          domain: kechung.tamlab.rdu2.redhat.com #${{ parameters.argoInstance | parseEntityRef | pick('name') }}
           path: "projects"
           projectName: "system"
-
-
-    - id: debug
-      name: Debug
-      action: debug:log
-      input:
-        message: ${{ parameters.gitlabInstance | ParseEntityRef }}
-
 
     #################################
     ## Create Self-Service Repository
@@ -96,10 +88,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ parameters.gitlabInstance.entity | parseEntityRef }}
+          - ${{ parameters.gitlabInstance | parseEntityRef | pick('name') }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ parameters.gitlabInstance }}
+        repoUrl: ${{ parameters.gitlabInstance | parseEntityRef | pick('name') }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: ${{ parameters.gitlabInstance | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: main
@@ -112,7 +104,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ parameters.argoInstance | parseEntityRef }}
+        argoInstance: ${{ parameters.argoInstance | parseEntityRef | pick('name') }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
@@ -130,6 +122,6 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: ${{ parameters.argoInstance | parseEntityRef }}/applications/openshift-gitops/root-self-service
+        url: ${{ parameters.argoInstance | parseEntityRef | pick('name') }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}

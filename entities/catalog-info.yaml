@@ -1,8 +1,8 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: tamlab
-  description: TAM Lab ArgoCD
+  name: openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
+  description: ArgoCD
   tags:
     - argocd
 spec:
