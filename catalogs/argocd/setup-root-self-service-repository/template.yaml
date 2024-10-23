@@ -99,8 +99,9 @@ spec:
           - ${{ parameters.gitlabInstance | parseEntityRef }}
         description: |
           Self-Service Repository
+        repoUrl: ${{ parameters.gitlabInstance.entity.metadata.name }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        repoUrl: ${{ parameters.gitlabInstance | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        #repoUrl: ${{ parameters.gitlabInstance | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: main
 
     #################################
