@@ -79,7 +79,15 @@ spec:
           domain: ${{ parameters.argoInstance.spec.domain | parseEntityRef }}
           path: "projects"
           projectName: "system"
- 
+
+
+    - id: debug
+      name: Debug
+      action: debug:log
+      input:
+        extra: ${{ parameters.gitlabInstance | ParseEntityRef }}
+
+
     #################################
     ## Create Self-Service Repository
     #################################
@@ -88,11 +96,11 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ parameters.gitlabInstance.spec.url | parseEntityRef }}
+          - ${{ parameters.gitlabInstance | parseEntityRef }}
         description: |
           Self-Service Repository
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        repoUrl: ${{ parameters.gitlabInstance.spec.url | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: ${{ parameters.gitlabInstance | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: main
 
     #################################
@@ -103,7 +111,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ parameters.argoInstance.spec.url | parseEntityRef }}
+        argoInstance: ${{ parameters.argoInstance | parseEntityRef }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
@@ -121,6 +129,6 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: ${{ parameters.argoInstance.spec.url | parseEntityRef }}/applications/openshift-gitops/root-self-service
+        url: ${{ parameters.argoInstance | parseEntityRef }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
