@@ -96,10 +96,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ parameters.gitlabInstance.entity.metadata.name | parseEntityRef }}
+          - ${{ parameters.gitlabInstance.entity | parseEntityRef }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ parameters.gitlabInstance.entity.metadata.name }}
+        repoUrl: ${{ parameters.gitlabInstance.entity }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: ${{ parameters.gitlabInstance | parseEntityRef }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: main
