@@ -29,31 +29,28 @@ spec:
       ui:group: argocd
       required:
         - argoInstance
+        - gitlabInstance
       properties:
         argoInstance:
           title: ArgoCD Instance
           description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: System
+                spec.type: argocd
+          type: string
+        gitlabInstance:
+          title: GitLab Instance
+          description: The GitLab instance to create a self-service repository in.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: System
+                spec.type: gitlab
           type: string
 
   steps:
-
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: "Fetch Dynamic Data"
-      action: http:backstage:request
-      input:
-        method: 'POST'
-        path: '/proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
 
     ##########################
     ## Template the Repository
@@ -70,7 +67,7 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          domain: ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
+          domain: ${{ parameters.argoInstance.spec.domain }}
           path: "projects"
           projectName: "system"
  
@@ -82,10 +79,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - 'gitlab.consulting.redhat.com'
+          - ${{ parameters.gitlabInstance }}
         description: |
           Self-Service Repository
-        repoUrl: gitlab.consulting.redhat.com?owner=self-provisioned&repo=manifests
+        repoUrl: ${{ parameters.gitlabInstance }}?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
     #################################
@@ -114,6 +111,6 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: ${{ parameters.argoInstance }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}

@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: tamlab
+  description: TAM Lab ArgoCD
+  tags:
+    - argocd
+spec:
+  type: argocd
+  url: https://openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
+  domain: kechung.tamlab.rdu2.redhat.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: gitlab.consulting.redhat.com
+  description: GitLab Consulting
+  tags:
+    - gitlab
+spec:
+  type: gitlab
+  url: https://gitlab.consulting.redhat.com
