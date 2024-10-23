@@ -8,7 +8,8 @@ metadata:
 spec:
   type: argocd
   url: https://openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
-  domain: kechung.tamlab.rdu2.redhat.com
+  cluster: kechung.tamlab.rdu2.redhat.com
+  owner: devops-team
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
@@ -20,3 +21,4 @@ metadata:
 spec:
   type: gitlab
   url: https://gitlab.consulting.redhat.com
+  owner: devops-team
