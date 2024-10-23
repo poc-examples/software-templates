@@ -82,7 +82,8 @@ spec:
           - ${{ parameters.gitlabInstance.spec.url | 'gitlab.com' }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ parameters.gitlabInstance.spec.url | 'gitlab.com' }} + '?owner=self-provisioned&repo=manifests'
+        repoUrl: gitlab.consulting.redhat.com?owner=self-provisioned&repo=manifests
+        #repoUrl: ${{ parameters.gitlabInstance.spec.url | 'gitlab.com' }}?owner=self-provisioned&repo=manifests
         defaultBranch: main
 
     #################################
