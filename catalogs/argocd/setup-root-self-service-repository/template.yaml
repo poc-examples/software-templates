@@ -96,7 +96,7 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ parameters.gitlabInstance | parseEntityRef }}
+          - ${{ parameters.gitlabInstance.entity.metadata.name | parseEntityRef }}
         description: |
           Self-Service Repository
         repoUrl: ${{ parameters.gitlabInstance.entity.metadata.name }}
