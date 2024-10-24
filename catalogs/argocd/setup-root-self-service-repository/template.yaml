@@ -96,7 +96,6 @@ spec:
         copyWithoutTemplating:
           - README.md
           - LICENSE
-          - catalog-info.yaml
           - projects
         values:
           targetRevision: "main"
@@ -149,3 +148,6 @@ spec:
         url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
