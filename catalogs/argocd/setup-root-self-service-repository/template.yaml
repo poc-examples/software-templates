@@ -48,7 +48,11 @@ spec:
           title: GitLab Instance
           type: string
           description: GitLab instance
-          default: gitlab.com
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: gitlab
         gitlabOwner:
           title: GitLab Owner
           type: string
@@ -67,21 +71,11 @@ spec:
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: "Fetch Dynamic Data"
-      action: http:backstage:request
+    - action: catalog:fetch
+      id: fetchGitlabEntity
+      name: Fetch Gitlab Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.gitlabInstance }}
 
     ##########################
     ## Template the Repository
@@ -98,7 +92,7 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          domain: ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
+          domain: kechung.tamlab.rdu2.redhat.com # ${{ ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
           path: "projects"
           projectName: "system"
 
@@ -110,10 +104,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ parameters.gitlabInstance }}
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | 'gitlab.com' }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ parameters.gitlabInstance }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | 'gitlab2.com' }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch | main }}
 

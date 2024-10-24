@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: tamlab
+  description: 
+  tags:
+    - argocd
+spec:
+  type: argocd
+  url: openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
+  cluster: kechung.tamlab.rdu2.redhat.com
+  owner: devops-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: gitlab
+  description: GitLab Consulting
+  tags:
+    - gitlab
+spec:
+  type: gitlab
+  url: gitlab.consulting.redhat.com
+  owner: devops-team

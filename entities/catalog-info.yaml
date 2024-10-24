@@ -1,24 +1,13 @@
 apiVersion: backstage.io/v1alpha1
-kind: System
+kind: Location
 metadata:
-  name: tamlab
-  description: ArgoCD
-  tags:
-    - argocd
+  namespace: default
+  name: resource-configs
+  annotations:
+    backstage.io/source-location: url:https://github.com/kevchu3/software-templates/blob/main/entities/catalog-info.yaml
+  description: Resource configurations
 spec:
-  type: argocd
-  url: openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
-  cluster: kechung.tamlab.rdu2.redhat.com
+  type: url
   owner: devops-team
----
-apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: gitlab.consulting.redhat.com
-  description: GitLab Consulting
-  tags:
-    - gitlab
-spec:
-  type: gitlab
-  url: gitlab.consulting.redhat.com
-  owner: devops-team
+  targets:
+    - resources.yaml
