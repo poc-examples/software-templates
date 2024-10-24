@@ -32,10 +32,13 @@ spec:
       properties:
         argoInstance:
           title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
           type: string
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: argocd
 
     - title: GitLab Repository Information
       required:
@@ -72,6 +75,11 @@ spec:
   steps:
 
     - action: catalog:fetch
+      id: fetchArgoEntity
+      name: Fetch ArgoCD Entity
+      input:
+        entityRef: ${{ parameters.argoInstance }}
+    - action: catalog:fetch
       id: fetchGitlabEntity
       name: Fetch Gitlab Entity
       input:
@@ -81,7 +89,7 @@ spec:
       name: Log Message
       action: debug:log
       input:
-        message: ${{ steps['fetchGitlabEntity'].output.entity.spec.url | dump }}
+        message: ${{ steps['fetchArgoEntity'].output.entity.spec.url | dump }}
 
     ##########################
     ## Template the Repository
@@ -98,7 +106,7 @@ spec:
           - projects
         values:
           targetRevision: "main"
-          domain: kechung.tamlab.rdu2.redhat.com # ${{ ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
+          domain: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
           path: "projects"
           projectName: "system"
 
@@ -124,7 +132,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ parameters.argoInstance }}
+        argoInstance: ${{ steps['fetchArgoEntity'].output.entity.spec.url }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
@@ -142,6 +150,6 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
