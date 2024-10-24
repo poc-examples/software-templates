@@ -117,8 +117,8 @@ spec:
           Self-Service Repository
         repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch }}
-      settings:
-        visibility: "public"
+        settings:
+          visibility: "public"
 
     #################################
     ## ArgoCD Resources Configuration
