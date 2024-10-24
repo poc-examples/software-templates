@@ -82,12 +82,6 @@ spec:
       name: Log Message
       action: debug:log
       input:
-        message: ${{ steps['fetchGitlabEntity'] | dump }}
-
-    - id: log2-message
-      name: Log2 Message
-      action: debug:log
-      input:
         message: ${{ steps['fetchGitlabEntity'].output.entity.spec.url | dump }}
 
     ##########################
@@ -120,8 +114,8 @@ spec:
           - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        #repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch | main }}
 
     #################################
