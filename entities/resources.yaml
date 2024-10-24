@@ -15,11 +15,23 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: gitlab
+  name: gitlab-consulting
   description: GitLab Consulting
   tags:
     - gitlab
 spec:
   type: gitlab
   url: gitlab.consulting.redhat.com
+  owner: devops-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: gitlab-cee
+  description: GitLab CEE
+  tags:
+    - gitlab
+spec:
+  type: gitlab
+  url: gitlab.cee.redhat.com
   owner: devops-team
