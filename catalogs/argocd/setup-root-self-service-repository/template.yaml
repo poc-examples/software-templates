@@ -96,6 +96,7 @@ spec:
         copyWithoutTemplating:
           - README.md
           - LICENSE
+          - catalog-info.yaml
           - projects
         values:
           targetRevision: "main"

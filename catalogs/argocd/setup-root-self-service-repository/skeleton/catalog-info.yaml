@@ -14,4 +14,4 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: ${{ user.entity }}
+  owner: devops-team
