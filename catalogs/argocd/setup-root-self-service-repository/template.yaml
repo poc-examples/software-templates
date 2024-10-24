@@ -88,10 +88,7 @@ spec:
       name: Log2 Message
       action: debug:log
       input:
-        message: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}
-
-
-
+        message: ${{ steps['fetchGitlabEntity'].output.entity.spec.url | dump }}
 
     ##########################
     ## Template the Repository
@@ -120,10 +117,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url | 'gitlab.com' }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url | 'gitlab.com' }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch | main }}
 
