@@ -7,6 +7,7 @@ metadata:
     - argocd
 spec:
   type: argocd
+  instance: main
   url: openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
   cluster: kechung.tamlab.rdu2.redhat.com
   owner: devops-team

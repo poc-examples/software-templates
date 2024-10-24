@@ -85,12 +85,6 @@ spec:
       input:
         entityRef: ${{ parameters.gitlabInstance }}
 
-    - id: log-message
-      name: Log Message
-      action: debug:log
-      input:
-        message: ${{ steps['fetchArgoEntity'].output.entity.spec.url | dump }}
-
     ##########################
     ## Template the Repository
     ##########################
@@ -132,7 +126,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ steps['fetchArgoEntity'].output.entity.spec.url }}
+        argoInstance: ${{ steps['fetchArgoEntity'].output.entity.spec.instance }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
