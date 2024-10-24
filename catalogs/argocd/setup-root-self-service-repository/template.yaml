@@ -77,6 +77,22 @@ spec:
       input:
         entityRef: ${{ parameters.gitlabInstance }}
 
+
+    - id: log-message
+      name: Log Message
+      action: debug:log
+      input:
+        message: ${{ steps['fetchGitlabEntity'] | dump }}
+
+    - id: log2-message
+      name: Log2 Message
+      action: debug:log
+      input:
+        message: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}
+
+
+
+
     ##########################
     ## Template the Repository
     ##########################
