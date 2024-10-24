@@ -1,37 +1,25 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: tamlab
-  description: TAM Lab ArgoCD
+  name: argocd
+  description: ArgoCD instance
   tags:
     - argocd
 spec:
   type: argocd
   instance: main
-  url: openshift-gitops-server-openshift-gitops.apps.kechung.tamlab.rdu2.redhat.com
-  cluster: kechung.tamlab.rdu2.redhat.com
+  url: openshift-gitops-server-openshift-gitops.apps.cluster.redhat.com
+  cluster: cluster.redhat.com
   owner: devops-team
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: gitlab-consulting
-  description: GitLab Consulting
+  name: gitlab
+  description: GitLab instance
   tags:
     - gitlab
 spec:
   type: gitlab
-  url: gitlab.consulting.redhat.com
-  owner: devops-team
----
-apiVersion: backstage.io/v1alpha1
-kind: Resource
-metadata:
-  name: gitlab-cee
-  description: GitLab CEE
-  tags:
-    - gitlab
-spec:
-  type: gitlab
-  url: gitlab.cee.redhat.com
+  url: gitlab.com
   owner: devops-team

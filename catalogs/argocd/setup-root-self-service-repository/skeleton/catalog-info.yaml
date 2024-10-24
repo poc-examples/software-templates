@@ -13,6 +13,5 @@ metadata:
     gitlab.com/project-slug: self-service/root-self-service-repository
 spec:
   type: service
-  system: root-self-service
   lifecycle: production
-  owner: devops-team
+  owner: ${{ user.entity }}
