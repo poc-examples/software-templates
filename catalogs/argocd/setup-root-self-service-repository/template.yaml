@@ -104,10 +104,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | 'gitlab.com' }}
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | 'gitlab2.com' }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.domain.url | dump }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         #repoUrl: gitlab.consulting.redhat.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch | main }}
 
