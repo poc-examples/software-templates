@@ -8,10 +8,10 @@ metadata:
     It enables teams to attach their team-based repositories and synchronize applications with 
     the root repository, ensuring a streamlined continuous deployment process via ArgoCD.
   annotations:
-    argocd/app-name: root-self-service-repository
+    argocd/app-selector: backstage-name=root-self-service
     backstage.io/techdocs-ref: dir:.
-    gitlab.com/project-slug: self-service/root-self-service-repository
+    gitlab.com/project-slug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
 spec:
   type: service
   lifecycle: production
-  owner: devops-team
+  owner: ${{ user.entity }}

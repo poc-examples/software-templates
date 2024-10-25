@@ -74,6 +74,12 @@ spec:
 
   steps:
 
+    - id: debug
+      name: Debug
+      action: debug:log
+      input:
+        message: ${{ user.entity | dump }}
+
     - action: catalog:fetch
       id: fetchArgoEntity
       name: Fetch ArgoCD Entity
@@ -96,7 +102,6 @@ spec:
         copyWithoutTemplating:
           - README.md
           - LICENSE
-          - catalog-info.yaml
           - projects
         values:
           targetRevision: "main"
