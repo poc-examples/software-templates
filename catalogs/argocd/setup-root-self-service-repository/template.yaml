@@ -104,6 +104,7 @@ spec:
           projectName: "system"
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           gitlabProjectSlug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
+          gitlabInstance: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
 
     #################################
     ## Create Self-Service Repository

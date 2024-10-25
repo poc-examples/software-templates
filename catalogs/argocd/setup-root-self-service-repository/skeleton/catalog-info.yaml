@@ -11,6 +11,7 @@ metadata:
     argocd/app-selector: backstage-name=root-self-service
     backstage.io/techdocs-ref: dir:.
     gitlab.com/project-slug: ${{ values.gitlabProjectSlug }}
+    gitlab.com/instance: ${{ values.gitlabInstance }}
 spec:
   type: service
   lifecycle: production
