@@ -14,4 +14,4 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: {{ values.owner }}
+  owner: ${{ values.owner }}
