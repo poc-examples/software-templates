@@ -101,7 +101,7 @@ spec:
           targetRevision: "main"
           domain: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
           path: "projects"
-          projectName: "system"
+          projectName: "default"
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           gitlabProjectSlug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
           gitlabInstance: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}

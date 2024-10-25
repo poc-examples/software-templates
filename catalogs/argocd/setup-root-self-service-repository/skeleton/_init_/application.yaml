@@ -5,12 +5,14 @@ metadata:
   namespace: "openshift-gitops"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+  labels:
+    backstage-name: root-self-service
 spec:
   destination:
     namespace: "openshift-gitops"
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: "https://gitlab.apps.${{ values.domain }}/self-provisioned/manifests.git"
+    repoURL: "https://${{ values.gitlabInstance }}/${{ values.gitlabProjectSlug }}.git"
     targetRevision: "${{ values.targetRevision }}"
     path: "${{ values.path }}"
     directory:
