@@ -102,6 +102,8 @@ spec:
           domain: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
           path: "projects"
           projectName: "system"
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          gitlabProjectSlug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
 
     #################################
     ## Create Self-Service Repository
