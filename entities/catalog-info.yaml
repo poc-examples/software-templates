@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  namespace: default
+  name: resource-configs
+  annotations:
+    backstage.io/source-location: url:https://github.com/kevchu3/software-templates/blob/main/entities/catalog-info.yaml
+  description: Resource configurations
+spec:
+  type: url
+  owner: devops-team
+  targets:
+    - resources.yaml

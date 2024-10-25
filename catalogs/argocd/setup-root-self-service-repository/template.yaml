@@ -32,28 +32,58 @@ spec:
       properties:
         argoInstance:
           title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
           type: string
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: argocd
+
+    - title: GitLab Repository Information
+      required:
+        - gitlabInstance
+        - gitlabOwner
+        - gitlabRepository
+        - gitlabBranch
+      properties:
+        gitlabInstance:
+          title: GitLab Instance
+          type: string
+          description: GitLab instance
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: gitlab
+        gitlabOwner:
+          title: GitLab Owner
+          type: string
+          default: self-provisioned
+          description: GitLab repository owner
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: manifests
+          description: GitLab self-service repository
+        gitlabBranch:
+          title: GitLab Branch
+          type: string
+          default: main
+          description: GitLab repository branch
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: "Fetch Dynamic Data"
-      action: http:backstage:request
+    - action: catalog:fetch
+      id: fetchArgoEntity
+      name: Fetch ArgoCD Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.argoInstance }}
+    - action: catalog:fetch
+      id: fetchGitlabEntity
+      name: Fetch Gitlab Entity
+      input:
+        entityRef: ${{ parameters.gitlabInstance }}
 
     ##########################
     ## Template the Repository
@@ -66,14 +96,16 @@ spec:
         copyWithoutTemplating:
           - README.md
           - LICENSE
-          - catalog-info.yaml
           - projects
         values:
           targetRevision: "main"
-          domain: ${{ steps.requestDynamicData.output.body["DOMAIN"] }}
+          domain: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
           path: "projects"
           projectName: "system"
- 
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          gitlabProjectSlug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
+          gitlabInstance: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+
     #################################
     ## Create Self-Service Repository
     #################################
@@ -82,11 +114,13 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - 'gitlab.com'
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
         description: |
           Self-Service Repository
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        defaultBranch: main
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        defaultBranch: ${{ parameters.gitlabBranch }}
+        settings:
+          visibility: "public"
 
     #################################
     ## ArgoCD Resources Configuration
@@ -96,7 +130,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ parameters.argoInstance }}
+        argoInstance: ${{ steps['fetchArgoEntity'].output.entity.spec.instance }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
@@ -114,6 +148,9 @@ spec:
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

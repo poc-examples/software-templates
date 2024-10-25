@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: argocd
+  description: ArgoCD instance
+  tags:
+    - argocd
+spec:
+  type: argocd
+  instance: main
+  url: openshift-gitops-server-openshift-gitops.apps.cluster.redhat.com
+  cluster: cluster.redhat.com
+  owner: devops-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: gitlab
+  description: GitLab instance
+  tags:
+    - gitlab
+spec:
+  type: gitlab
+  url: gitlab.com
+  owner: devops-team
