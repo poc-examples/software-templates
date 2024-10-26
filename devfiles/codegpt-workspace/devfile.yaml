@@ -1,0 +1,16 @@
+schemaVersion: 2.2.0
+metadata:
+  name: minimal-vscode-workspace
+components:
+  - name: vscode-editor
+    container:
+      image: 'quay.io/devfile/universal-developer-image:latest'
+      memoryLimit: 512Mi
+      cpuLimit: 1000m
+      mountSources: true
+      volumeMounts: 
+        - name: vscode-extensions
+          path: /home/user/.vscode/extensions
+  - name: vscode-extensions
+    volume:
+      size: 1Gi
