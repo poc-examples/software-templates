@@ -1,6 +1,11 @@
 schemaVersion: 2.2.0
 metadata:
   name: minimal-vscode-workspace
+projects:
+  - name: software-templates
+    git: 
+      remotes:
+        origin: "https://github.com/poc-examples/software-templates.git"
 components:
   - name: vscode-editor
     container:
