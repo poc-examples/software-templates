@@ -19,6 +19,20 @@ components:
   - name: vscode-extensions
     volume:
       size: 1Gi
-attributes:
-  .che/che-theia-plugins.yaml: |
-    - id: redhat/java/latest
+commands:
+  - id: install-codegpt
+    exec:
+      label: "Install CodeGPT"
+      commandLine: "DanielSanMedium.dscodegpt"
+      component: vscode-editor
+      workingDir: /projects
+      group:
+        kind: build
+        isDefault: true
+  - id: restart-code-oss
+    exec:
+      label: "Restart Code-OSS"
+      commandLine: "killall code-oss"
+      component: vscode-editor
+      group:
+        kind: build
