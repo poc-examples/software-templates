@@ -20,9 +20,5 @@ components:
     volume:
       size: 1Gi
 attributes:
-  .vscode/extensions.json: |
-    {
-      "recommendations": [
-        "python.python"
-      ]
-    }
+  .che/che-theia-plugins.yaml: |
+    - id: redhat/java/latest
