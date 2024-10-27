@@ -9,7 +9,7 @@ projects:
 components:
   - name: vscode-editor
     container:
-      image: 'quay.io/eclipse/che-plugin-sidecar-remote-ssh:latest'
+      image: 'quay.io/devfile/universal-developer-image:latest'
       memoryLimit: 512Mi
       cpuLimit: 1000m
       mountSources: true
@@ -19,13 +19,10 @@ components:
   - name: vscode-extensions
     volume:
       size: 1Gi
-commands:
-  - id: install-python-extension
-    exec:
-      label: "Install Python Extension"
-      commandLine: "code-server --install-extension ms-python.python"
-      component: vscode-editor
-      workingDir: /projects
-      group:
-        kind: build
-        isDefault: true
+attributes:
+  .vscode/extensions.json: |
+    {
+      "recommendations": [
+        "python.python"
+      ]
+    }
