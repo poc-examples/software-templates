@@ -20,12 +20,11 @@ components:
     volume:
       size: 1Gi
 commands:
-  - id: install-codegpt
+  - id: install
     exec:
-      label: "Install CodeGPT"
-      commandLine: "code-oss --install-extension danielsanmedium.dscodegpt"
       component: vscode-editor
-      workingDir: /projects
+      commandLine: "code-oss --install-extension danielsanmedium.dscodegpt"
+      workingDir: /project/src
       group:
-        kind: run
+        kind: build
         isDefault: true
