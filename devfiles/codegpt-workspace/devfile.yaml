@@ -27,5 +27,5 @@ commands:
       component: vscode-editor
       workingDir: /projects
       group:
-        kind: run
+        kind: build
         isDefault: true
