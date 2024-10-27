@@ -19,3 +19,13 @@ components:
   - name: vscode-extensions
     volume:
       size: 1Gi
+commands:
+  - id: install-python-extension
+    exec:
+      label: "Install Python Extension"
+      commandLine: "code-server --install-extension ms-python.python"
+      component: vscode-editor
+      workingDir: /projects
+      group:
+        kind: build
+        isDefault: true
