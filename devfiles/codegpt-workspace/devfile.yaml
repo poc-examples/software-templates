@@ -23,16 +23,9 @@ commands:
   - id: install-codegpt
     exec:
       label: "Install CodeGPT"
-      commandLine: "DanielSanMedium.dscodegpt"
+      commandLine: "code --install-extension danielsanmedium.dscodegpt"
       component: vscode-editor
       workingDir: /projects
       group:
         kind: build
         isDefault: true
-  - id: restart-code-oss
-    exec:
-      label: "Restart Code-OSS"
-      commandLine: "killall code-oss"
-      component: vscode-editor
-      group:
-        kind: build
