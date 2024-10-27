@@ -19,10 +19,13 @@ components:
   - name: vscode-extensions
     volume:
       size: 1Gi
-attributes:
-  .vscode/extensions.json: |
-    {
-      "recommendations": [
-        "danielsanmedium.dscodegpt"
-      ]
-    }
+commands:
+  - id: install-codegpt
+    exec:
+      label: "Install CodeGPT"
+      commandLine: "code-oss --install-extension danielsanmedium.dscodegpt"
+      component: vscode-editor
+      workingDir: /projects
+      group:
+        kind: run
+        isDefault: true
