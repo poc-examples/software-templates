@@ -8,8 +8,8 @@ metadata:
 spec:
   type: argocd
   instance: main
-  url: openshift-gitops-server-openshift-gitops.apps.cluster.redhat.com
-  cluster: cluster.redhat.com
+  url: openshift-gitops-server-openshift-gitops.apps.cluster.example.com
+  cluster: cluster.example.com
   owner: devops-team
 ---
 apiVersion: backstage.io/v1alpha1
