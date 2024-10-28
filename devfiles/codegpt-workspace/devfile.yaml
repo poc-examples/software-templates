@@ -16,9 +16,10 @@ components:
       volumeMounts: 
         - name: vscode-extensions
           path: /home/user/.vscode/extensions
+      command: ['sh', '-c', 'code --install-extension DanielSanMedium.dscodegpt']
   - name: vscode-extensions
     volume:
       size: 1Gi
-attributes:
-  .che/che-theia-plugins.yaml: |
-    - id: danielsanmedium/dscodegpt/latest
+# attributes:
+#   .che/che-theia-plugins.yaml: |
+#     - id: danielsanmedium/dscodegpt/latest
