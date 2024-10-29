@@ -29,10 +29,13 @@ spec:
       properties:
         argoInstance:
           title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
           type: string
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: argocd
 
     - title: DataScience Project Settings
       ui:group: data-project
@@ -47,23 +50,50 @@ spec:
           minLength: 3
           maxLength: 30
 
+    - title: GitLab Repository Information
+      required:
+        - gitlabInstance
+        - gitlabOwner
+        - gitlabRepository
+        - gitlabBranch
+      properties:
+        gitlabInstance:
+          title: GitLab Instance
+          type: string
+          description: GitLab instance
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: gitlab
+        gitlabOwner:
+          title: GitLab Owner
+          type: string
+          default: self-provisioned
+          description: GitLab repository owner
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: manifests
+          description: GitLab self-service repository
+        gitlabBranch:
+          title: GitLab Branch
+          type: string
+          default: main
+          description: GitLab repository branch
+
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: Fetch Dynamic Data
-      action: http:backstage:request
+    - action: catalog:fetch
+      id: fetchArgoEntity
+      name: Fetch ArgoCD Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.argoInstance }}
+    - action: catalog:fetch
+      id: fetchGitlabEntity
+      name: Fetch Gitlab Entity
+      input:
+        entityRef: ${{ parameters.gitlabInstance }}
 
     ###########################
     ## Template the Application
@@ -109,19 +139,19 @@ spec:
       action: gitlab:repo:push
       input:
         allowedHosts:
-          - 'gitlab.com'
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
         description: |
           placeholder
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         sourcePath: "./projects/${{ parameters.projectName }}"
         targetPath: "./projects/${{ parameters.projectName }}"
-        branchName: main
+        branchName: ${{ parameters.gitlabBranch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.projectName }} Data Science Project"
 
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        url: https://${{ steps['fetchGitlabEntity'].output.entity.spec.url }}/${{ steps['publishManifests'].output.projectPath }}
