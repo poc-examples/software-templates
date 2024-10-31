@@ -14,6 +14,7 @@ metadata:
     - automation
     - data-science
     - data-pipelines
+    - gitlab
     - argocd
 
 spec:
@@ -21,27 +22,21 @@ spec:
   system: self-service
   type: DataScience-Project
   parameters:
-
-    - title: ArgoCD Selection
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          type: string
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          ui:field: EntityPicker
-          ui:options:
-            catalogFilter:
-              - kind: Resource
-                spec.type: argocd
-
     - title: DataScience Project Settings
       ui:group: data-project
       required:
+        - rootSelfServiceRepo
         - projectName
       properties:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
         projectName:
           title: Project Name
           description: The project where the data connector is integrated.
@@ -50,50 +45,17 @@ spec:
           minLength: 3
           maxLength: 30
 
-    - title: GitLab Repository Information
-      required:
-        - gitlabInstance
-        - gitlabOwner
-        - gitlabRepository
-        - gitlabBranch
-      properties:
-        gitlabInstance:
-          title: GitLab Instance
-          type: string
-          description: GitLab instance
-          ui:field: EntityPicker
-          ui:options:
-            catalogFilter:
-              - kind: Resource
-                spec.type: gitlab
-        gitlabOwner:
-          title: GitLab Owner
-          type: string
-          default: self-provisioned
-          description: GitLab repository owner
-        gitlabRepository:
-          title: GitLab Repository
-          type: string
-          default: manifests
-          description: GitLab self-service repository
-        gitlabBranch:
-          title: GitLab Branch
-          type: string
-          default: main
-          description: GitLab repository branch
-
   steps:
 
+    #################
+    ## Fetch Entities
+    #################
+
     - action: catalog:fetch
-      id: fetchArgoEntity
-      name: Fetch ArgoCD Entity
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
       input:
-        entityRef: ${{ parameters.argoInstance }}
-    - action: catalog:fetch
-      id: fetchGitlabEntity
-      name: Fetch Gitlab Entity
-      input:
-        entityRef: ${{ parameters.gitlabInstance }}
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
 
     ###########################
     ## Template the Application
@@ -119,17 +81,36 @@ spec:
           createNamespace: "false"
           valuesObject: |
             project: ${{ parameters.projectName }}
+        
+    - id: templateProjectEntity
+      name: Template Project Entity
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/backstage/data-science-project"
+        targetPath: "backstage/${{ parameters.projectName }}/"
+        values:
+          name: ${{ parameters.projectName }}
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
     ##############
     ## Rename File
     ##############
-    - id: changeTemplateName
-      name: Change Template Name
+    - id: changeProjectTemplateName
+      name: Change Project Template Name
       action: fs:rename
       input:
         files:
           - from: "projects/${{ parameters.projectName }}/application.yaml"
             to: "projects/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml"
+
+    - id: changeBackstageTemplateName
+      name: Change Backstage Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "backstage/${{ parameters.projectName }}/data-science-project.yaml"
+            to: "backstage/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -139,19 +120,30 @@ spec:
       action: gitlab:repo:push
       input:
         allowedHosts:
-          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+          - ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}
         description: |
           placeholder
-        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        sourcePath: "./projects/${{ parameters.projectName }}"
-        targetPath: "./projects/${{ parameters.projectName }}"
-        branchName: ${{ parameters.gitlabBranch }}
+        repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
+        branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.projectName }} Data Science Project"
+
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml
 
   output:
     links:
       - title: GitOps Application
-        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://${{ steps['fetchGitlabEntity'].output.entity.spec.url }}/${{ steps['publishManifests'].output.projectPath }}
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

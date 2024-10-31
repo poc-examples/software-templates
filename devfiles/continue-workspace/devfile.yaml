@@ -1,6 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
-  name: minimal-vscode-workspace
+  name: ai-enabled-codespace
 projects:
   - name: software-templates
     git: 

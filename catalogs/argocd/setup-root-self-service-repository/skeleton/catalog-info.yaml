@@ -10,9 +10,17 @@ metadata:
   annotations:
     argocd/app-selector: backstage-name=root-self-service
     backstage.io/techdocs-ref: dir:.
-    gitlab.com/project-slug: ${{ values.gitlabProjectSlug }}
+    gitlab.com/project-slug: ${{ values.gitlabOwner }}/${{ values.gitlabRepository }}
     gitlab.com/instance: ${{ values.gitlabInstance }}
 spec:
-  type: service
+  type: self-service
   lifecycle: production
   owner: ${{ values.owner }}
+  argocd:
+    cluster: ${{ values.argoCluster }}
+    url: ${{ values.argoUrl }}
+  gitlab:
+    instance: ${{ values.gitlabInstance }}
+    owner: ${{ values.gitlabOwner }}
+    repository: ${{ values.gitlabRepository }}
+    branch: ${{ values.gitlabBranch }}

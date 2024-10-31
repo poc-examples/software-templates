@@ -25,7 +25,7 @@ spec:
   type: Service
   parameters:
 
-    - title: ArgCD Application Information
+    - title: ArgoCD Application Information
       ui:group: argocd
       required:
         - argoInstance
@@ -74,6 +74,10 @@ spec:
 
   steps:
 
+    #################
+    ## Fetch Entities
+    #################
+
     - action: catalog:fetch
       id: fetchArgoEntity
       name: Fetch ArgoCD Entity
@@ -96,15 +100,19 @@ spec:
         copyWithoutTemplating:
           - README.md
           - LICENSE
+          - backstage
           - projects
         values:
-          targetRevision: "main"
-          domain: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
+          targetRevision: ${{ parameters.gitlabBranch }}
           path: "projects"
           projectName: "default"
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
-          gitlabProjectSlug: ${{ parameters.gitlabOwner }}/${{ parameters.gitlabRepository }}
+          argoCluster: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
+          argoUrl: ${{ steps['fetchArgoEntity'].output.entity.spec.url }}
           gitlabInstance: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+          gitlabOwner: ${{ parameters.gitlabOwner }}
+          gitlabRepository: ${{ parameters.gitlabRepository }}
+          gitlabBranch: ${{ parameters.gitlabBranch }}
 
     #################################
     ## Create Self-Service Repository

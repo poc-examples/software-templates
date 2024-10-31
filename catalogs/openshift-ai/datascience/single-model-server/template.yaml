@@ -24,31 +24,31 @@ spec:
   type: Single-Model-Server
   parameters:
 
-    - title: ArgoCD Selection
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
-          type: string
-
     - title: Model Serving Settings
       ui:group: data-model-serving
       required:
+        - rootSelfServiceRepo
         - projectName
         - modelName
       properties:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
         projectName:
           title: Project Name
-          description: The project where the data connector is integrated.
           type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
+          description: The project where the data connector is integrated.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-science-project
         numGPU:
           title: Number of GPU
           description: The Number of GPUs to provide to running model.
@@ -98,27 +98,21 @@ spec:
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: Fetch Dynamic Data
-      action: http:backstage:request
+    #################
+    ## Fetch Entities
+    #################
+
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
 
     ###########################
     ## Template the Application
     ###########################
     - id: applicationTemplate
-      name: Template Helm Application
+      name: Template Helm Application:template
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
@@ -176,9 +170,19 @@ spec:
         commitAction: create
         commitMessage: "Created ${{ parameters.modelName }} Model Server"
 
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publishManifests"].output.repoContentsUrl }}
+        catalogInfoPath: /model-server-entity.yaml
+
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}

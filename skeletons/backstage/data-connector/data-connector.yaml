@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: Data connector
+  tags:
+    - data-connector
+spec:
+  type: data-connector
+  lifecycle: production
+  owner: ${{ values.owner }}
+  subcomponentOf: ${{ values.subcomponentOf }}
+  dependsOn:
+    - ${{ values.dependsOn }}

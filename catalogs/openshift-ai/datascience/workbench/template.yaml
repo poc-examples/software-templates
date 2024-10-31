@@ -16,6 +16,7 @@ metadata:
     - automation
     - data-science
     - ai-workloads
+    - gitlab
     - argocd
 
 spec:
@@ -23,27 +24,43 @@ spec:
   system: self-service
   type: Workbench
   parameters:
-
-    - title: ArgoCD Selection
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
-          type: string
-
+                
     - title: Workbench Settings
       ui:group: data-workbench
       required:
+        - rootSelfServiceRepo
         - dataConnectorName
         - projectName
         - workbenchName
         - storageSize
       properties:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
+        projectName:
+          title: Project Name
+          type: string
+          description: The project where the data connector is integrated.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-science-project
+        dataConnectorName:
+          title: Data Connector Name
+          type: string
+          description: The name of the data connector.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-connector
         enableCUDA:
           title: Enable CUDA
           description: Enables CUDA support for Workbench.
@@ -63,20 +80,6 @@ spec:
             - 2
             - 3
             - 4
-        dataConnectorName:
-          title: Data Connector Name
-          description: The name of the data connector.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
-        projectName:
-          title: Project Name
-          description: The project where the data connector is integrated.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
         workbenchName:
           title: Workbench Name
           description: The name of the workbench.
@@ -95,21 +98,15 @@ spec:
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: Fetch Dynamic Data
-      action: http:backstage:request
+    #################
+    ## Fetch Entities
+    #################
+
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
 
     ###########################
     ## Template the Application
@@ -133,7 +130,7 @@ spec:
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            domain: ${{ steps['requestDynamicData'].output.body["DOMAIN"] }}
+            domain: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.cluster }}
             user: cluster-admin
             namespace: "${{ parameters.projectName }}"
             notebookName: "${{ parameters.workbenchName }}"
@@ -161,19 +158,19 @@ spec:
       action: gitlab:repo:push
       input:
         allowedHosts:
-          - 'gitlab.com'
+          - ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}
         description: |
           placeholder
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
+        repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         sourcePath: "./projects/${{ parameters.projectName }}"
         targetPath: "./projects/${{ parameters.projectName }}"
-        branchName: main
+        branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
 
   output:
     links:
       - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}

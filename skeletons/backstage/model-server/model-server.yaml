@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: Model server
+  tags:
+    - model-server
+spec:
+  type: model-server
+  lifecycle: production
+  owner: ${{ values.owner }}
