@@ -2,13 +2,13 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.name }}
-  description: Model server
+  description: Workbench
   annotations:
-    argocd/app-selector: backstage-name=${{ values.projectName }},model-server=${{ values.name }}
+    argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
   tags:
-    - model-server
+    - workbench
 spec:
-  type: model-server
+  type: workbench
   lifecycle: production
   owner: ${{ values.owner }}
   subcomponentOf: ${{ values.subcomponentOf }}

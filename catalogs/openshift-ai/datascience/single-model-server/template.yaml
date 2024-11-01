@@ -29,7 +29,7 @@ spec:
       ui:group: data-model-serving
       required:
         - rootSelfServiceRepo
-        - projectName
+        - projectEntity
         - modelName
       properties:
         rootSelfServiceRepo:
@@ -41,7 +41,7 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: self-service
-        projectName:
+        projectEntity:
           title: Project Name
           type: string
           description: The project where the data connector is integrated.
@@ -82,10 +82,10 @@ spec:
     - title: Model Serving Settings
       ui:group: data-model-serving
       required:
-        - dataConnectorName
+        - dataConnectorEntity
         - modelPath
       properties:
-        dataConnectorName:
+        dataConnectorEntity:
           title: Data Connector Name
           type: string
           description: The name of the data connector.
@@ -119,15 +119,18 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
+        targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.modelName }}-model-server"
-          namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
+          labels:
+            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            model-server: ${{ parameters.modelName }}
           chart:
             name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.1"
-          projectName: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
@@ -138,7 +141,7 @@ spec:
             replicas: 1
             GPUCount: ${{ parameters.numGPU }}
             dataConnection:
-              name: ${{ parameters.dataConnectorName | parseEntityRef | pick('name') }}
+              name: ${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}
               modelPath: ${{ parameters.modelPath }}
             resources:
               cpu: "${{ parameters.cpuLimit }}"
@@ -149,11 +152,12 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/backstage/model-server"
-        targetPath: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
+        targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
+          projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
           name: ${{ parameters.modelName }}
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
-          subcomponentOf: ${{ parameters.projectName }}
+          subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
     ##############
@@ -164,16 +168,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/application.yaml"
-            to: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
 
     - id: changeBackstageTemplateName
       name: Change Backstage Template Name
       action: fs:rename
       input:
         files:
-          - from: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/model-server.yaml"
-            to: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/model-server.yaml"
+            to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -199,7 +203,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
-        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.modelName}}-model-server.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName}}-model-server.yaml
 
   output:
     links:

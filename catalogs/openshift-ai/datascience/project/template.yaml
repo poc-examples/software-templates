@@ -69,6 +69,8 @@ spec:
         values:
           repoName: "${{ parameters.projectName }}-ds-project"
           namespace: "openshift-gitops"
+          labels:
+            project: ${{ parameters.projectName }}
           syncWave: "-1"
           chart:
             name: "data-science-project"

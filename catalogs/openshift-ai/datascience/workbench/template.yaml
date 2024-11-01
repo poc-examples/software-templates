@@ -29,8 +29,8 @@ spec:
       ui:group: data-workbench
       required:
         - rootSelfServiceRepo
-        - projectName
-        - dataConnectorName
+        - projectEntity
+        - dataConnectorEntity
         - workbenchName
         - storageSize
       properties:
@@ -43,7 +43,7 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: self-service
-        projectName:
+        projectEntity:
           title: Project Name
           type: string
           description: The project where the data connector is integrated.
@@ -52,7 +52,7 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: data-science-project
-        dataConnectorName:
+        dataConnectorEntity:
           title: Data Connector Name
           type: string
           description: The name of the data connector.
@@ -116,15 +116,18 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
+        targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.workbenchName }}-workbench"
-          namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
+          labels:
+            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            workbench: ${{ parameters.workbenchName }}
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.19"
-          projectName: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
@@ -132,13 +135,26 @@ spec:
           valuesObject: |
             domain: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.cluster }}
             user: cluster-admin
-            namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+            namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
             notebookName: "${{ parameters.workbenchName }}"
             storageSize: "${{ parameters.storageSize }}"
-            dataConnectionName: "${{ parameters.dataConnectorName | parseEntityRef | pick('name') }}"
+            dataConnectionName: "${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}"
             enabledCUDA: ${{ parameters.enableCUDA }}
             numGPU: "${{ parameters.numGPU }}"
 
+    - id: templateModelServerEntity
+      name: Template Model Server Entity
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/backstage/workbench"
+        targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
+        values:
+          projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+          name: ${{ parameters.workbenchName }}
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          subcomponentOf: ${{ parameters.projectEntity }}
+          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+    
     ##############
     ## Rename File
     ##############
@@ -147,8 +163,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/application.yaml"
-            to: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
+
+    - id: changeBackstageTemplateName
+      name: Change Backstage Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/workbench.yaml"
+            to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -166,9 +190,22 @@ spec:
         commitAction: create
         commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
 
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName}}-workbench.yaml
+
   output:
     links:
       - title: GitOps Application
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

@@ -3,6 +3,8 @@ kind: Component
 metadata:
   name: ${{ values.name }}
   description: Data connector
+  annotations:
+    argocd/app-selector: backstage-name=${{ values.projectName }},data-connector=${{ values.name }}
   tags:
     - data-connector
 spec:

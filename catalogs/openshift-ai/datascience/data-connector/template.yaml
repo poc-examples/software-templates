@@ -28,7 +28,7 @@ spec:
       ui:group: data-connector
       required:
         - rootSelfServiceRepo
-        - projectName
+        - projectEntity
         - dataConnectorName
         - bucketName
         - defaultRegion
@@ -42,7 +42,7 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: self-service
-        projectName:
+        projectEntity:
           title: Project Name
           type: string
           description: The project where the data connector is integrated.
@@ -94,15 +94,18 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
+        targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.dataConnectorName }}-dc"
-          namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
+          labels:
+            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            data-connector: ${{ parameters.dataConnectorName }}
           chart:
             name: "data-connector"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.2"
-          projectName: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
+          projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
@@ -121,11 +124,12 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/backstage/data-connector"
-        targetPath: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
+        targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
+          projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
           name: ${{ parameters.dataConnectorName }}
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
-          subcomponentOf: ${{ parameters.projectName }}
+          subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
     ##############
@@ -136,16 +140,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/application.yaml"
-            to: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
 
     - id: changeBackstageTemplateName
       name: Change Backstage Template Name
       action: fs:rename
       input:
         files:
-          - from: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/data-connector.yaml"
-            to: "backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/data-connector.yaml"
+            to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName }}-data-connector.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -171,7 +175,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
-        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName}}-data-connector.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName}}-data-connector.yaml
 
   output:
     links:
