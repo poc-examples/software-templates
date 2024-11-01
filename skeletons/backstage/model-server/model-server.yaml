@@ -3,6 +3,7 @@ kind: Component
 metadata:
   name: ${{ values.name }}
   description: Model server
+  argocd/app-selector: backstage-name=${{ values.projectName }},model-server=${{ values.name }}
   tags:
     - model-server
 spec:

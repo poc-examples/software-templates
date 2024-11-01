@@ -3,6 +3,7 @@ kind: Component
 metadata:
   name: ${{ values.name }}
   description: Data science project
+  argocd/app-selector: backstage-name=${{ values.name }}
   tags:
     - data-science-project
 spec:

@@ -9,6 +9,19 @@ metadata:
     {%- else %}
     argocd.argoproj.io/sync-wave: "1"
     {%- endif %}
+  {%- if values.labels.project %}
+  labels:
+    backstage-name: ${{ values.labels.project }}
+    {%- if values.labels.data-connector %}
+    data-connector: ${{ values.labels.data-connector }}
+    {%- endif %}
+    {%- if values.labels.model-server %}
+    model-server: ${{ values.labels.model-server }}
+    {%- endif %}
+    {%- if values.labels.workbench %}
+    workbench: ${{ values.labels.workbench }}
+    {%- endif %}
+  {%- endif %}
 spec:
   destination:
     namespace: "${{ values.namespace }}"

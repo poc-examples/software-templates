@@ -2,12 +2,12 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.name }}
-  description: Data connector
-  argocd/app-selector: backstage-name=${{ values.projectName }},data-connector=${{ values.name }}
+  description: Workbench
+  argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
   tags:
-    - data-connector
+    - workbench
 spec:
-  type: data-connector
+  type: workbench
   lifecycle: production
   owner: ${{ values.owner }}
   subcomponentOf: ${{ values.subcomponentOf }}
