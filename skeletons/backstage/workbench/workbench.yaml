@@ -3,7 +3,8 @@ kind: Component
 metadata:
   name: ${{ values.name }}
   description: Workbench
-  argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
+  annotations:
+    argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
   tags:
     - workbench
 spec:
