@@ -9,3 +9,6 @@ spec:
   type: model-server
   lifecycle: production
   owner: ${{ values.owner }}
+  subcomponentOf: ${{ values.subcomponentOf }}
+  dependsOn:
+    - ${{ values.dependsOn }}

@@ -23,7 +23,7 @@ spec:
   type: DataScience-Project
   parameters:
     - title: DataScience Project Settings
-      ui:group: data-project
+      ui:group: data-science-project
       required:
         - rootSelfServiceRepo
         - projectName

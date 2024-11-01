@@ -29,8 +29,8 @@ spec:
       ui:group: data-workbench
       required:
         - rootSelfServiceRepo
-        - dataConnectorName
         - projectName
+        - dataConnectorName
         - workbenchName
         - storageSize
       properties:
@@ -116,15 +116,15 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName }}/"
+        targetPath: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.workbenchName }}-workbench"
-          namespace: "${{ parameters.projectName }}"
+          namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.19"
-          projectName: "${{ parameters.projectName }}"
+          projectName: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
@@ -132,10 +132,10 @@ spec:
           valuesObject: |
             domain: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.cluster }}
             user: cluster-admin
-            namespace: "${{ parameters.projectName }}"
+            namespace: "${{ parameters.projectName | parseEntityRef | pick('name') }}"
             notebookName: "${{ parameters.workbenchName }}"
             storageSize: "${{ parameters.storageSize }}"
-            dataConnectionName: "${{ parameters.dataConnectorName }}"
+            dataConnectionName: "${{ parameters.dataConnectorName | parseEntityRef | pick('name') }}"
             enabledCUDA: ${{ parameters.enableCUDA }}
             numGPU: "${{ parameters.numGPU }}"
 
@@ -147,8 +147,8 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.workbenchName }}-workbench.yaml"
+          - from: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectName | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -162,8 +162,6 @@ spec:
         description: |
           placeholder
         repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
-        sourcePath: "./projects/${{ parameters.projectName }}"
-        targetPath: "./projects/${{ parameters.projectName }}"
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
