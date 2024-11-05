@@ -61,6 +61,13 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: data-connector
+        workbenchName:
+          title: Workbench Name
+          description: The name of the workbench.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
         enableCUDA:
           title: Enable CUDA
           description: Enables CUDA support for Workbench.
@@ -80,13 +87,6 @@ spec:
             - 2
             - 3
             - 4
-        workbenchName:
-          title: Workbench Name
-          description: The name of the workbench.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
         storageSize:
           title: Storage Size
           description: The storage size of the workbench working directory.
@@ -133,7 +133,7 @@ spec:
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            domain: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.cluster }}
+            domain: main
             user: cluster-admin
             namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
             notebookName: "${{ parameters.workbenchName }}"
@@ -202,8 +202,6 @@ spec:
 
   output:
     links:
-      - title: GitOps Application
-        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
       - title: Open in catalog

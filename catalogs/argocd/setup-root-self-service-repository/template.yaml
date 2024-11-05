@@ -25,21 +25,6 @@ spec:
   type: Service
   parameters:
 
-    - title: ArgoCD Application Information
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          type: string
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          ui:field: EntityPicker
-          ui:options:
-            catalogFilter:
-              - kind: Resource
-                spec.type: argocd
-
     - title: GitLab Repository Information
       required:
         - gitlabInstance
@@ -50,12 +35,8 @@ spec:
         gitlabInstance:
           title: GitLab Instance
           type: string
+          default: gitlab.com
           description: GitLab instance
-          ui:field: EntityPicker
-          ui:options:
-            catalogFilter:
-              - kind: Resource
-                spec.type: gitlab
         gitlabOwner:
           title: GitLab Owner
           type: string
@@ -78,17 +59,6 @@ spec:
     ## Fetch Entities
     #################
 
-    - action: catalog:fetch
-      id: fetchArgoEntity
-      name: Fetch ArgoCD Entity
-      input:
-        entityRef: ${{ parameters.argoInstance }}
-    - action: catalog:fetch
-      id: fetchGitlabEntity
-      name: Fetch Gitlab Entity
-      input:
-        entityRef: ${{ parameters.gitlabInstance }}
-
     ##########################
     ## Template the Repository
     ##########################
@@ -103,13 +73,10 @@ spec:
           - backstage
           - projects
         values:
-          targetRevision: ${{ parameters.gitlabBranch }}
           path: "projects"
           projectName: "default"
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
-          argoCluster: ${{ steps['fetchArgoEntity'].output.entity.spec.cluster }}
-          argoUrl: ${{ steps['fetchArgoEntity'].output.entity.spec.url }}
-          gitlabInstance: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+          gitlabInstance: ${{ parameters.gitlabInstance }}
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
           gitlabBranch: ${{ parameters.gitlabBranch }}
@@ -122,10 +89,10 @@ spec:
       action: publish:gitlab
       input:
         allowedHosts:
-          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+          - ${{ parameters.gitlabInstance }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: ${{ parameters.gitlabInstance }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         defaultBranch: ${{ parameters.gitlabBranch }}
         settings:
           visibility: "public"
@@ -138,7 +105,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: "root-self-service"
-        argoInstance: ${{ steps['fetchArgoEntity'].output.entity.spec.instance }}
+        argoInstance: main
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
         path: "_init_"
@@ -155,8 +122,6 @@ spec:
 
   output:
     links:
-      - title: GitOps Application
-        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: ${{ steps['publish'].output.remoteUrl }}
       - title: Open in catalog

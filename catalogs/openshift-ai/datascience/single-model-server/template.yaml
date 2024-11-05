@@ -50,6 +50,13 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: data-science-project
+        modelName:
+          title: Model Name
+          description: The name of the Model.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
         numGPU:
           title: Number of GPU
           description: The Number of GPUs to provide to running model.
@@ -71,13 +78,6 @@ spec:
           description: The CPU Limit for the running model(1000m).
           type: string
           default: "1000m"
-        modelName:
-          title: Model Name
-          description: The name of the Model.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
 
     - title: Model Serving Settings
       ui:group: data-model-serving
@@ -125,7 +125,7 @@ spec:
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-            model-server: ${{ parameters.modelName }}
+            modelServer: ${{ parameters.modelName }}
           chart:
             name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
@@ -207,8 +207,6 @@ spec:
 
   output:
     links:
-      - title: GitOps Application
-        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
       - title: Open in catalog

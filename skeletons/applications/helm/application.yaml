@@ -12,13 +12,13 @@ metadata:
   {%- if values.labels.project %}
   labels:
     backstage-name: ${{ values.labels.project }}
-    {%- if values.labels.data-connector|length %}
-    data-connector: ${{ values.labels.data-connector }}
+    {%- if values.labels.dataConnector.length %}
+    dataconnector: ${{ values.labels.dataConnector }}
     {%- endif %}
-    {%- if values.labels.model-server|length %}
-    model-server: ${{ values.labels.model-server }}
+    {%- if values.labels.modelServer.length %}
+    modelserver: ${{ values.labels.modelServer }}
     {%- endif %}
-    {%- if values.labels.workbench|length %}
+    {%- if values.labels.workbench.length %}
     workbench: ${{ values.labels.workbench }}
     {%- endif %}
   {%- endif %}

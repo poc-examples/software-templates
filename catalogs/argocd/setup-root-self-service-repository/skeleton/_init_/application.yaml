@@ -13,7 +13,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: "https://${{ values.gitlabInstance }}/${{ values.gitlabOwner }}/${{ values.gitlabRepository }}.git"
-    targetRevision: "${{ values.targetRevision }}"
+    targetRevision: "${{ values.gitlabBranch }}"
     path: "${{ values.path }}"
     directory:
       recurse: true

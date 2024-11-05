@@ -100,7 +100,7 @@ spec:
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-            data-connector: ${{ parameters.dataConnectorName }}
+            dataConnector: ${{ parameters.dataConnectorName }}
           chart:
             name: "data-connector"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
@@ -179,8 +179,6 @@ spec:
 
   output:
     links:
-      - title: GitOps Application
-        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
       - title: Open in catalog

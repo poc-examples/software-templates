@@ -142,8 +142,6 @@ spec:
 
   output:
     links:
-      - title: GitOps Application
-        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.argocd.url }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
         url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
       - title: Open in catalog
