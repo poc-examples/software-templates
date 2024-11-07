@@ -16,6 +16,7 @@ metadata:
     - automation
     - ai-workloads
     - mlops
+    - gitlab
     - argocd
 
 spec:
@@ -24,27 +25,34 @@ spec:
   type: Single-Model-Server
   parameters:
 
-    - title: ArgoCD Selection
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
-          type: string
-
     - title: Model Serving Settings
       ui:group: data-model-serving
       required:
-        - projectName
+        - rootSelfServiceRepo
+        - projectEntity
         - modelName
       properties:
-        projectName:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
+        projectEntity:
           title: Project Name
+          type: string
           description: The project where the data connector is integrated.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-science-project
+        modelName:
+          title: Model Name
+          description: The name of the Model.
           type: string
           pattern: "^[a-z][a-z0-9-]+$"
           minLength: 3
@@ -70,27 +78,22 @@ spec:
           description: The CPU Limit for the running model(1000m).
           type: string
           default: "1000m"
-        modelName:
-          title: Model Name
-          description: The name of the Model.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
 
     - title: Model Serving Settings
       ui:group: data-model-serving
       required:
-        - dataConnectorName
+        - dataConnectorEntity
         - modelPath
       properties:
-        dataConnectorName:
+        dataConnectorEntity:
           title: Data Connector Name
-          description: The name of the data connector.
           type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
+          description: The name of the data connector.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-connector
         modelPath:
           title: Model Path
           description: The path to the Model in Data Connector.
@@ -98,21 +101,15 @@ spec:
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: Fetch Dynamic Data
-      action: http:backstage:request
+    #################
+    ## Fetch Entities
+    #################
+
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
 
     ###########################
     ## Template the Application
@@ -122,15 +119,18 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName }}/"
+        targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.modelName }}-model-server"
-          namespace: "${{ parameters.projectName }}"
+          namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
+          labels:
+            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            modelServer: ${{ parameters.modelName }}
           chart:
             name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.1"
-          projectName: "${{ parameters.projectName }}"
+          projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
@@ -141,11 +141,24 @@ spec:
             replicas: 1
             GPUCount: ${{ parameters.numGPU }}
             dataConnection:
-              name: ${{ parameters.dataConnectorName }}
+              name: ${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}
               modelPath: ${{ parameters.modelPath }}
             resources:
               cpu: "${{ parameters.cpuLimit }}"
               mem: "${{ parameters.memoryLimit }}"
+
+    - id: templateModelServerEntity
+      name: Template Model Server Entity
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/backstage/model-server"
+        targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
+        values:
+          projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+          name: ${{ parameters.modelName }}
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          subcomponentOf: ${{ parameters.projectEntity }}
+          dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
     ##############
     ## Rename File
@@ -155,8 +168,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.modelName }}-model-server.yaml"
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
+
+    - id: changeBackstageTemplateName
+      name: Change Backstage Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/model-server.yaml"
+            to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-model-server.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -166,19 +187,28 @@ spec:
       action: gitlab:repo:push
       input:
         allowedHosts:
-          - 'gitlab.com'
+          - ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}
         description: |
           placeholder
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: "./projects/${{ parameters.projectName }}"
-        targetPath: "./projects/${{ parameters.projectName }}"
-        branchName: main
+        repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
+        branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.modelName }} Model Server"
 
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName}}-model-server.yaml
+
   output:
     links:
-      - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

@@ -16,6 +16,7 @@ metadata:
     - automation
     - data-science
     - ai-workloads
+    - gitlab
     - argocd
 
 spec:
@@ -23,27 +24,50 @@ spec:
   system: self-service
   type: Workbench
   parameters:
-
-    - title: ArgoCD Selection
-      ui:group: argocd
-      required:
-        - argoInstance
-      properties:
-        argoInstance:
-          title: ArgoCD Instance
-          description: The ArgoCD instance that will manage this application. Choose from available instances.
-          enum:
-            - main
-          type: string
-
+                
     - title: Workbench Settings
       ui:group: data-workbench
       required:
-        - dataConnectorName
-        - projectName
+        - rootSelfServiceRepo
+        - projectEntity
+        - dataConnectorEntity
         - workbenchName
         - storageSize
       properties:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
+        projectEntity:
+          title: Project Name
+          type: string
+          description: The project where the data connector is integrated.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-science-project
+        dataConnectorEntity:
+          title: Data Connector Name
+          type: string
+          description: The name of the data connector.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: data-connector
+        workbenchName:
+          title: Workbench Name
+          description: The name of the workbench.
+          type: string
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
         enableCUDA:
           title: Enable CUDA
           description: Enables CUDA support for Workbench.
@@ -63,27 +87,6 @@ spec:
             - 2
             - 3
             - 4
-        dataConnectorName:
-          title: Data Connector Name
-          description: The name of the data connector.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
-        projectName:
-          title: Project Name
-          description: The project where the data connector is integrated.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
-        workbenchName:
-          title: Workbench Name
-          description: The name of the workbench.
-          type: string
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
         storageSize:
           title: Storage Size
           description: The storage size of the workbench working directory.
@@ -95,21 +98,15 @@ spec:
 
   steps:
 
-    #######################
-    ## Request Dynamic Data
-    #######################
-    - id: requestDynamicData
-      name: Fetch Dynamic Data
-      action: http:backstage:request
+    #################
+    ## Fetch Entities
+    #################
+
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
       input:
-        method: 'POST'
-        path: 'proxy/data/fetch'
-        headers:
-          Content-Type: 'application/json'
-        body: |
-          {
-            "request": ["DOMAIN"]
-          }
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
 
     ###########################
     ## Template the Application
@@ -119,29 +116,45 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName }}/"
+        targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.workbenchName }}-workbench"
-          namespace: "${{ parameters.projectName }}"
+          namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
+          labels:
+            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            workbench: ${{ parameters.workbenchName }}
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.19"
-          projectName: "${{ parameters.projectName }}"
+          projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            domain: ${{ steps['requestDynamicData'].output.body["DOMAIN"] }}
+            domain: main
             user: cluster-admin
-            namespace: "${{ parameters.projectName }}"
+            namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
             notebookName: "${{ parameters.workbenchName }}"
             storageSize: "${{ parameters.storageSize }}"
-            dataConnectionName: "${{ parameters.dataConnectorName }}"
+            dataConnectionName: "${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}"
             enabledCUDA: ${{ parameters.enableCUDA }}
             numGPU: "${{ parameters.numGPU }}"
 
+    - id: templateModelServerEntity
+      name: Template Model Server Entity
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/backstage/workbench"
+        targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
+        values:
+          projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+          name: ${{ parameters.workbenchName }}
+          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          subcomponentOf: ${{ parameters.projectEntity }}
+          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+    
     ##############
     ## Rename File
     ##############
@@ -150,8 +163,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.workbenchName }}-workbench.yaml"
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml"
+            to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
+
+    - id: changeBackstageTemplateName
+      name: Change Backstage Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/workbench.yaml"
+            to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName }}-workbench.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -161,19 +182,28 @@ spec:
       action: gitlab:repo:push
       input:
         allowedHosts:
-          - 'gitlab.com'
+          - ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}
         description: |
           placeholder
-        repoUrl: gitlab.com?owner=self-provisioned&repo=manifests
-        sourcePath: "./projects/${{ parameters.projectName }}"
-        targetPath: "./projects/${{ parameters.projectName }}"
-        branchName: main
+        repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
+        branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
 
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.workbenchName}}-workbench.yaml
+
   output:
     links:
-      - title: GitOps Application
-        url: https://openshift-gitops-server-openshift-gitops.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/applications/openshift-gitops/root-self-service
       - title: GitLab Repository
-        url: https://gitlab.apps.${{ steps['requestDynamicData'].output.body["DOMAIN"] }}/self-provisioned/manifests.git
+        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

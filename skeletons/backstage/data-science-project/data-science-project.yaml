@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: Data science project
+  annotations:
+    argocd/app-selector: backstage-name=${{ values.name }}
+  tags:
+    - data-science-project
+spec:
+  type: data-science-project
+  lifecycle: production
+  owner: ${{ values.owner }}
+  dependsOn:
+    - ${{ values.dependsOn }}

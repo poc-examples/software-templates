@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: Workbench
+  annotations:
+    argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
+  tags:
+    - workbench
+spec:
+  type: workbench
+  lifecycle: production
+  owner: ${{ values.owner }}
+  subcomponentOf: ${{ values.subcomponentOf }}
+  dependsOn:
+    - ${{ values.dependsOn }}
