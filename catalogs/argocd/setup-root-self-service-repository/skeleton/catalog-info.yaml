@@ -10,6 +10,8 @@ metadata:
   annotations:
     argocd/app-selector: backstage-name=root-self-service
     backstage.io/techdocs-ref: dir:.
+  tags:
+    - root-self-service-repo
 spec:
   type: self-service
   lifecycle: production

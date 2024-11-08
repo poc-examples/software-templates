@@ -125,7 +125,7 @@ spec:
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-            modelServer: ${{ parameters.modelName }}
+            modelServer: ${{ parameters.modelName }}-model-server
           chart:
             name: "data-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
@@ -136,7 +136,7 @@ spec:
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            serviceName: ${{ parameters.modelName }}
+            serviceName: ${{ parameters.modelName }}-model-server
             servingRuntime: multi-gpu-vllm-runtime
             replicas: 1
             GPUCount: ${{ parameters.numGPU }}
@@ -155,7 +155,7 @@ spec:
         targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-          name: ${{ parameters.modelName }}
+          name: ${{ parameters.modelName }}-model-server
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
@@ -193,7 +193,7 @@ spec:
         repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
-        commitMessage: "Created ${{ parameters.modelName }} Model Server"
+        commitMessage: "Created ${{ parameters.modelName }}-model-server Model Server"
 
     ########################
     ## Register Catalog Info
