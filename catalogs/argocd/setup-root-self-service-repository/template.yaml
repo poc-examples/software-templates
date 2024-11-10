@@ -75,7 +75,8 @@ spec:
         values:
           path: "projects"
           projectName: "default"
-          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          owner: |
+            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           gitlabInstance: ${{ parameters.gitlabInstance }}
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
