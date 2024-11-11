@@ -17,7 +17,7 @@ spec:
   lifecycle: production
   owner: ${{ values.owner }}
   gitlab:
-    instance: ${{ values.gitlabInstance }}
+    remoteUrl: ${{ values.gitlabRemoteUrl }}
     owner: ${{ values.gitlabOwner }}
     repository: ${{ values.gitlabRepository }}
     branch: ${{ values.gitlabBranch }}
