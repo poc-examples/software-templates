@@ -128,7 +128,8 @@ spec:
         values:
           projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
           name: ${{ parameters.dataConnectorName }}-data-connector
-          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          owner: |
+            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
@@ -158,11 +159,9 @@ spec:
       name: Publishing to the Source Code Repository
       action: gitlab:repo:push
       input:
-        allowedHosts:
-          - ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}
         description: |
           placeholder
-        repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
+        repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
         commitMessage: "Created ${{ parameters.dataConnectorName }}-data-connector Data Connector"
@@ -174,13 +173,13 @@ spec:
       name: "Register Catalog Info"
       action: catalog:register
       input:
-        repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
+        repoContentsUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
         catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.dataConnectorName}}-data-connector.yaml
 
   output:
     links:
       - title: GitLab Repository
-        url: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps['publishManifests'].output.projectPath }}
+        url: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps['registerCatalog'].output.entityRef }}

@@ -12,7 +12,7 @@ spec:
     namespace: "openshift-gitops"
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: "https://${{ values.gitlabInstance }}/${{ values.gitlabOwner }}/${{ values.gitlabRepository }}.git"
+    repoURL: "${{ values.gitlabRemoteUrl }}.git"
     targetRevision: "${{ values.gitlabBranch }}"
     path: "${{ values.path }}"
     directory:

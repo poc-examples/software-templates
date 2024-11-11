@@ -27,16 +27,10 @@ spec:
 
     - title: GitLab Repository Information
       required:
-        - gitlabInstance
         - gitlabOwner
         - gitlabRepository
         - gitlabBranch
       properties:
-        gitlabInstance:
-          title: GitLab Instance
-          type: string
-          default: gitlab.com
-          description: GitLab instance
         gitlabOwner:
           title: GitLab Owner
           type: string
@@ -59,6 +53,20 @@ spec:
     ## Fetch Entities
     #################
 
+    #################################
+    ## Create Empty Repository
+    #################################
+    - id: publishEmptyRepo
+      name: "Create Empty Repository"
+      action: publish:gitlab
+      input:
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        defaultBranch: ${{ parameters.gitlabBranch }}
+        settings:
+          visibility: "public"
+
     ##########################
     ## Template the Repository
     ##########################
@@ -77,7 +85,7 @@ spec:
           projectName: "default"
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
-          gitlabInstance: ${{ parameters.gitlabInstance }}
+          gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
           gitlabBranch: ${{ parameters.gitlabBranch }}
@@ -87,16 +95,14 @@ spec:
     #################################
     - id: publish
       name: "Create Self-Service Repository"
-      action: publish:gitlab
+      action: gitlab:repo:push
       input:
-        allowedHosts:
-          - ${{ parameters.gitlabInstance }}
         description: |
           Self-Service Repository
-        repoUrl: ${{ parameters.gitlabInstance }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        defaultBranch: ${{ parameters.gitlabBranch }}
-        settings:
-          visibility: "public"
+        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        branchName: ${{ parameters.gitlabBranch }}
+        commitAction: create
+        commitMessage: "Publish repository skeleton"
 
     #################################
     ## ArgoCD Resources Configuration
@@ -108,7 +114,7 @@ spec:
         appName: "root-self-service"
         argoInstance: main
         namespace: "openshift-gitops"
-        repoUrl: "${{ steps['publish'].output.remoteUrl }}.git"
+        repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
         path: "_init_"
 
     ########################
@@ -118,13 +124,13 @@ spec:
       name: "Register Catalog Info"
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps["publish"].output.repoContentsUrl }}
+        repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
 
   output:
     links:
       - title: GitLab Repository
-        url: ${{ steps['publish'].output.remoteUrl }}
+        url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps['registerCatalog'].output.entityRef }}
