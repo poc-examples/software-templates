@@ -96,11 +96,11 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
-          repoName: "${{ parameters.dataConnectorName }}-dc"
+          repoName: "${{ parameters.dataConnectorName }}-data-connector"
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-            dataConnector: ${{ parameters.dataConnectorName }}
+            dataConnector: ${{ parameters.dataConnectorName }}-data-connector
           chart:
             name: "data-connector"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
@@ -113,7 +113,7 @@ spec:
           valuesObject: |
             clusterSecretStoreName: "kubernetes-secrets-store"
             dataConnection:
-              name: ${{ parameters.dataConnectorName }}
+              name: ${{ parameters.dataConnectorName }}-data-connector
               config:
                 defaultRegion: ${{ parameters.defaultRegion }}
                 bucketName: ${{ parameters.bucketName }}
@@ -127,7 +127,7 @@ spec:
         targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-          name: ${{ parameters.dataConnectorName }}
+          name: ${{ parameters.dataConnectorName }}-data-connector
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
@@ -165,7 +165,7 @@ spec:
         repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
-        commitMessage: "Created ${{ parameters.dataConnectorName }} Data Connector"
+        commitMessage: "Created ${{ parameters.dataConnectorName }}-data-connector Data Connector"
 
     ########################
     ## Register Catalog Info

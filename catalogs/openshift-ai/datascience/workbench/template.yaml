@@ -122,7 +122,7 @@ spec:
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-            workbench: ${{ parameters.workbenchName }}
+            workbench: ${{ parameters.workbenchName }}-workbench
           chart:
             name: "data-workbench"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
@@ -136,7 +136,7 @@ spec:
             domain: main
             user: cluster-admin
             namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
-            notebookName: "${{ parameters.workbenchName }}"
+            notebookName: "${{ parameters.workbenchName }}-workbench"
             storageSize: "${{ parameters.storageSize }}"
             dataConnectionName: "${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}"
             enabledCUDA: ${{ parameters.enableCUDA }}
@@ -150,7 +150,7 @@ spec:
         targetPath: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-          name: ${{ parameters.workbenchName }}
+          name: ${{ parameters.workbenchName }}-workbench
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           subcomponentOf: ${{ parameters.projectEntity }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
@@ -188,7 +188,7 @@ spec:
         repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
-        commitMessage: "Created ${{ parameters.workbenchName }} Workbench"
+        commitMessage: "Created ${{ parameters.workbenchName }}-workbench Workbench"
 
     ########################
     ## Register Catalog Info

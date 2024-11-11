@@ -65,12 +65,12 @@ spec:
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.projectName }}/"
+        targetPath: "projects/${{ parameters.projectName }}-project/"
         values:
-          repoName: "${{ parameters.projectName }}-ds-project"
+          repoName: ${{ parameters.projectName }}-project
           namespace: "openshift-gitops"
           labels:
-            project: ${{ parameters.projectName }}
+            project: ${{ parameters.projectName }}-project
           syncWave: "-1"
           chart:
             name: "data-science-project"
@@ -82,16 +82,16 @@ spec:
             selfHeal: true
           createNamespace: "false"
           valuesObject: |
-            project: ${{ parameters.projectName }}
+            project: ${{ parameters.projectName }}-project
         
     - id: templateProjectEntity
       name: Template Project Entity
       action: fetch:template
       input:
         url: "../../../../skeletons/backstage/data-science-project"
-        targetPath: "backstage/${{ parameters.projectName }}/"
+        targetPath: "backstage/${{ parameters.projectName }}-project/"
         values:
-          name: ${{ parameters.projectName }}
+          name: ${{ parameters.projectName }}-project
           owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
@@ -103,16 +103,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectName }}/application.yaml"
-            to: "projects/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml"
+          - from: "projects/${{ parameters.projectName }}-project/application.yaml"
+            to: "projects/${{ parameters.projectName }}-project/${{ parameters.projectName }}-project.yaml"
 
     - id: changeBackstageTemplateName
       name: Change Backstage Template Name
       action: fs:rename
       input:
         files:
-          - from: "backstage/${{ parameters.projectName }}/data-science-project.yaml"
-            to: "backstage/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml"
+          - from: "backstage/${{ parameters.projectName }}-project/data-science-project.yaml"
+            to: "backstage/${{ parameters.projectName }}-project/${{ parameters.projectName }}-project.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -128,7 +128,7 @@ spec:
         repoUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
-        commitMessage: "Created ${{ parameters.projectName }} Data Science Project"
+        commitMessage: "Created ${{ parameters.projectName }}-project Data Science Project"
 
     ########################
     ## Register Catalog Info
@@ -138,7 +138,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: https://${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.instance }}/${{ steps["publishManifests"].output.projectPath }}
-        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectName }}/${{ parameters.projectName }}-ds-project.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectName }}-project/${{ parameters.projectName }}-project.yaml
 
   output:
     links:
