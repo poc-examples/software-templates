@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-devspaces-collection
+  description: |
+    A collection of Proof-of-Concept Red Hat DevSpaces Software Templates
+    that can be used with Developer Hub for developers to use and adapt.
+spec:
+  type: url
+  targets:
+    - ./continue-workspace/template.yaml

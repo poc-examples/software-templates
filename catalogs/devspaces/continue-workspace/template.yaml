@@ -1,0 +1,144 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: continue-workspace
+  title: Create a User-Scoped AI-Enabled DevWorkspace
+  description: |
+    Deploys a development workspace from Developer Hub with a self-hosted AI model on Red Hat OpenShift AI for code generation.
+  tags:
+    - gitlab
+    - devspaces
+    - automation
+    - devops
+    - poc-examples
+    - self-service
+    - AI
+    - code-generation
+
+spec:
+  owner: devops-team
+  system: self-service
+  type: Service
+  parameters:
+
+    - title: ArgoCD Application Information
+      ui:group: argocd
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: ArgoCD Instance
+          type: string
+          description: The ArgoCD instance that will manage this application. Choose from available instances.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: argocd
+
+    - title: GitLab Repository Information
+      required:
+        - gitlabInstance
+        - gitlabOwner
+        - gitlabRepository
+        - gitlabBranch
+      properties:
+        gitlabInstance:
+          title: GitLab Instance
+          type: string
+          description: GitLab instance
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: gitlab
+        gitlabOwner:
+          title: GitLab Owner
+          type: string
+          default: self-provisioned
+          description: GitLab repository owner
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: manifests
+          description: GitLab self-service repository
+        gitlabBranch:
+          title: GitLab Branch
+          type: string
+          default: main
+          description: GitLab repository branch
+
+  steps:
+
+    - action: catalog:fetch
+      id: fetchArgoEntity
+      name: Fetch ArgoCD Entity
+      input:
+        entityRef: ${{ parameters.argoInstance }}
+
+    - action: catalog:fetch
+      id: fetchGitlabEntity
+      name: Fetch Gitlab Entity
+      input:
+        entityRef: ${{ parameters.gitlabInstance }}
+
+    ###########################
+    ## Template the Application
+    ###########################
+    - id: applicationTemplate
+      name: Template Helm Application
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/applications/helm/"
+        targetPath: "projects/${{ parameters.projectName }}/"
+        values:
+          repoName: "${{ parameters.projectName }}-workspace"
+          namespace: "openshift-gitops"
+          syncWave: "-1"
+          chart:
+            name: "devspace-workspace"
+            chartUrl: "https://poc-examples.github.io/supporting-charts"
+            chartVersion: "0.1.0"
+          projectName: "self-service"
+          automated:
+            prune: false
+            selfHeal: true
+          createNamespace: "false"
+          valuesObject: |
+            project: ${{ parameters.projectName }}
+
+    ##############
+    ## Rename File
+    ##############
+    - id: changeTemplateName
+      name: Change Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "projects/${{ parameters.projectName }}/application.yaml"
+            to: "projects/${{ parameters.projectName }}/${{ parameters.projectName }}-workspace.yaml"
+
+    ##########################
+    ## Push Repository Changes
+    ##########################
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        allowedHosts:
+          - ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}
+        description: |
+          placeholder
+        repoUrl: ${{ steps['fetchGitlabEntity'].output.entity.spec.url }}?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        sourcePath: "./projects/${{ parameters.projectName }}"
+        targetPath: "./projects/${{ parameters.projectName }}"
+        branchName: ${{ parameters.gitlabBranch }}
+        commitAction: create
+        commitMessage: "Created ${{ parameters.projectName }} Data Science Project"
+
+  output:
+    links:
+      - title: GitOps Application
+        url: https://${{ steps['fetchArgoEntity'].output.entity.spec.url }}/applications/openshift-gitops/root-self-service
+      - title: GitLab Repository
+        url: https://${{ steps['fetchGitlabEntity'].output.entity.spec.url }}/${{ steps['publishManifests'].output.projectPath }}
