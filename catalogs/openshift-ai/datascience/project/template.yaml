@@ -92,7 +92,8 @@ spec:
         targetPath: "backstage/${{ parameters.projectName }}-project/"
         values:
           name: ${{ parameters.projectName }}-project
-          owner: user:${{ user.entity.metadata.namespace}}/${{ user.entity.metadata.name }}
+          owner: |
+            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           dependsOn: ${{ parameters.rootSelfServiceRepo }}
 
     ##############
