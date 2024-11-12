@@ -22,7 +22,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: Single-Model-Server
+  type: Model-Server
   parameters:
 
     - title: Model Serving Settings
