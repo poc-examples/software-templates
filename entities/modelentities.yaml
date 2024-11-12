@@ -1,4 +1,7 @@
+apiVersion: backstage.io/v1alpha1
 kind: Resource
+metadata:
+  name: qwen2.5-coder-7b
 spec:
   type: modelentities
   model: Qwen/Qwen2.5-Coder-7B
@@ -6,7 +9,10 @@ spec:
   source: huggingface
   tags: autocomplete, text-generation
 ---
+apiVersion: backstage.io/v1alpha1
 kind: Resource
+metadata:
+  name: mixtral-8x7b-v0.1
 spec:
   type: modelentities
   model: mistralai/Mixtral-8x7B-v0.1
