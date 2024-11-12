@@ -1,23 +1,27 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: qwen2.5-coder-7b
+  name: qwen2.5
+  tags:
+    - autocomplete
+    - text-generation
 spec:
   type: modelentities
   model: Qwen/Qwen2.5-Coder-7B
   commit: 7b0cc3380fe815e6f08fe2f80c03e05a8b1883d8
   source: huggingface
-  tags: autocomplete, text-generation
   owner: data-science
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: mixtral-8x7b-v0.1
+  name: mixtral
+  tags:
+    - text-generation
+    - chat
 spec:
   type: modelentities
   model: mistralai/Mixtral-8x7B-v0.1
   commit: ffe1a706bacbd5abddc5ff99432ee38f7e0662fb
   source: huggingface
-  tags: text-generation, chat
   owner: data-science
