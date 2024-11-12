@@ -12,3 +12,4 @@ spec:
     - ./datascience/project/template.yaml
     - ./datascience/workbench/template.yaml
     - ./datascience/single-model-server/template.yaml
+    - ./datascience/multi-model-server/template.yaml

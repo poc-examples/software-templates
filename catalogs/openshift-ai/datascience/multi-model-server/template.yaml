@@ -1,15 +1,15 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: single-model-server
-  title: Red Hat OpenShift AI - Single Model Server
+  name: multi-model-server
+  title: Red Hat OpenShift AI - Multi Model Server
   description: |
-    This template automates the deployment of a Single Model Server in Red Hat OpenShift AI. 
-    It provides a scalable environment for serving a single AI/ML model, allowing teams to 
+    This template automates the deployment of a Multi Model Server in Red Hat OpenShift AI. 
+    It provides a scalable environment for serving multiple AI/ML models, allowing teams to 
     quickly launch, manage, and scale their AI models in production. The template ensures 
     seamless integration with OpenShift AI services, offering support for continuous 
     deployment, model monitoring, and version management. Ideal for projects focused on 
-    deploying one model at a time with optimized resources.
+    deploying multiple models at a time with optimized resources.
   tags:
     - openshift-ai
     - model-serving
@@ -22,7 +22,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: Single-Model-Server
+  type: Multi-Model-Server
   parameters:
 
     - title: Model Serving Settings
@@ -127,7 +127,7 @@ spec:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
             modelServer: ${{ parameters.modelName }}-model-server
           chart:
-            name: "data-single-model-server"
+            name: "data-multi-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
             chartVersion: "0.1.1"
           projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
@@ -188,7 +188,7 @@ spec:
       action: gitlab:repo:push
       input:
         description: |
-          Publishing single model server to the source code repository
+          Publishing multi model server to the source code repository
         repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create

@@ -123,7 +123,7 @@ spec:
       action: gitlab:repo:push
       input:
         description: |
-          placeholder
+          Publishing data science project to the source code repository
         repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}
         commitAction: create
