@@ -2,10 +2,10 @@ apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
   namespace: default
-  name: resource-configs
-  description: Resource configurations
+  name: modelentities-collection
+  description: Model entities collection
 spec:
   type: url
   owner: devops-team
   targets:
-    - resources.yaml
+    - modelentities.yaml
