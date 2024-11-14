@@ -11,7 +11,7 @@ components:
     container:
       image: 'quay.io/devfile/universal-developer-image:latest'
       memoryLimit: 4Gi
-      cpuLimit: 1000m
+      cpuLimit: "2"
       mountSources: true
       volumeMounts: 
         - name: vscode-extensions
