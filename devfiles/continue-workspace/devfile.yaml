@@ -16,7 +16,12 @@ components:
       volumeMounts: 
         - name: vscode-extensions
           path: /home/user/.vscode/extensions
+        - name: continue
+          path: /home/user/.continue
   - name: vscode-extensions
+    volume:
+      size: 1Gi
+  - name: continue
     volume:
       size: 1Gi
 
