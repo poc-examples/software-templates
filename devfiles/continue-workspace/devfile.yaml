@@ -10,7 +10,7 @@ components:
   - name: vscode-editor
     container:
       image: 'quay.io/devfile/universal-developer-image:latest'
-      memoryLimit: 512Mi
+      memoryLimit: 4Gi
       cpuLimit: 1000m
       mountSources: true
       volumeMounts: 
