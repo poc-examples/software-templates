@@ -110,7 +110,7 @@ spec:
           chart:
             name: "rhoai-sync-model"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.16"
+            chartVersion: "0.1.18"
           projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true
