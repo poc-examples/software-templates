@@ -123,7 +123,7 @@ spec:
               revision: ${{ parameters.modelRevision }}
             dataConnector: aws-connection-${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}
 
-    - id: templateSyncModelServerEntity
+    - id: templateSyncModelEntity
       name: Template Sync Model Entity
       action: fetch:template
       input:
@@ -155,7 +155,7 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/model-server.yaml"
+          - from: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/sync-model.yaml"
             to: "backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName }}-sync-model.yaml"
 
     ##########################
@@ -180,7 +180,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
-        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName}}-model-server.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.modelName}}-sync-model.yaml
 
   output:
     links:
