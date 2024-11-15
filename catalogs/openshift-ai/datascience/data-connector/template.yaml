@@ -96,7 +96,7 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
-          repoName: "${{ parameters.dataConnectorName }}-data-connector"
+          repoName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}-${{ parameters.dataConnectorName }}-data-connector"
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
