@@ -2,13 +2,13 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.name }}
-  description: Workbench
+  description: Sync Model
   annotations:
-    argocd/app-selector: backstage-name=${{ values.projectName }},workbench=${{ values.name }}
+    argocd/app-selector: backstage-name=${{ values.projectName }},syncmodel=${{ values.name }}
   tags:
-    - workbench
+    - sync-model
 spec:
-  type: workbench
+  type: sync-model
   lifecycle: production
   owner: ${{ values.owner }}
   subcomponentOf: ${{ values.subcomponentOf }}
