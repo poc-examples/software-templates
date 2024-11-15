@@ -1,15 +1,15 @@
 {
     "version": "2.0.0",
     "tasks": [
-      {
-        "label": "Copy File",
-        "type": "shell",
-        "command": "cp /tmp/.continue-config/config.json /home/user/.continue/config.json",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": []
-      }
+        {
+            "label": "Copy File",
+            "type": "shell",
+            "command": "cp /tmp/.continue-config/config.json /home/user/.continue/config.json",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
     ]
-  }
+}
