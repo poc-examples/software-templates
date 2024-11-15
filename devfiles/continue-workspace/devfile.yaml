@@ -30,6 +30,10 @@ commands:
       component: vscode-editor
       commandLine: 'cp /tmp/.continue-config/config.json /home/user/.continue/config.json'
       workingDir: /projects/
+  - id: post-start
+    composite:
+      commands:
+        - "configure-continue"
 events: 
-  preStart:
+  postStart:
     - "configure-continue"
