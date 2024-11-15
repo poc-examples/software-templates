@@ -2,13 +2,13 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.name }}
-  description: Sync Model
+  description: Model
   annotations:
-    argocd/app-selector: backstage-name=${{ values.projectName }},syncmodel=${{ values.name }}
+    argocd/app-selector: backstage-name=${{ values.projectName }},model=${{ values.name }}
   tags:
-    - sync-model
+    - model
 spec:
-  type: sync-model
+  type: model
   revision: ${{ values.revision }}
   repository: ${{ values.repository }}
   lifecycle: production

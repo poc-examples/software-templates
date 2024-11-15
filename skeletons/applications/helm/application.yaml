@@ -18,8 +18,8 @@ metadata:
     {%- if values.labels.modelServer.length %}
     modelserver: ${{ values.labels.modelServer }}
     {%- endif %}
-    {%- if values.labels.syncmodel.length %}
-    syncmodel: ${{ values.labels.syncmodel }}
+    {%- if values.labels.model.length %}
+    model: ${{ values.labels.model }}
     {%- endif %}
   {%- endif %}
 spec:
