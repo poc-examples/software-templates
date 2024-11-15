@@ -83,7 +83,7 @@ spec:
       ui:group: data-model-serving
       required:
         - dataConnectorEntity
-        - modelPath
+        - modelEntity
       properties:
         dataConnectorEntity:
           title: Data Connector Name
@@ -94,10 +94,15 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: data-connector
-        modelPath:
-          title: Model Path
-          description: The path to the Model in Data Connector.
+        modelEntity:
+          title: Model Name
           type: string
+          description: The name of the model
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: model
 
   steps:
 
@@ -110,6 +115,12 @@ spec:
       name: Fetch Root Self-Service Repo Entity
       input:
         entityRef: ${{ parameters.rootSelfServiceRepo }}
+
+    - action: catalog:fetch
+      id: fetchModelEntity
+      name: Fetch Model Entity
+      input:
+        entityRef: ${{ parameters.modelEntity }}
 
     ###########################
     ## Template the Application
@@ -142,7 +153,7 @@ spec:
             GPUCount: ${{ parameters.numGPU }}
             dataConnection:
               name: ${{ parameters.dataConnectorEntity | parseEntityRef | pick('name') }}
-              modelPath: ${{ parameters.modelPath }}
+              modelPath: models/${{ steps['fetchModelEntity'].output.entity.spec.repository }}/snapshots/${{ steps['fetchModelEntity'].output.entity.spec.revision }}
             resources:
               cpu: "${{ parameters.cpuLimit }}"
               mem: "${{ parameters.memoryLimit }}"
