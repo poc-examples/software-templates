@@ -9,6 +9,8 @@ metadata:
     - sync-model
 spec:
   type: sync-model
+  revision: ${{ values.revision }}
+  repository: ${{ values.repository }}
   lifecycle: production
   owner: ${{ values.owner }}
   subcomponentOf: ${{ values.subcomponentOf }}
