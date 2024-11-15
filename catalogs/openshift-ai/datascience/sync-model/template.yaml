@@ -65,14 +65,14 @@ spec:
           maxLength: 30
         modelRepository:
           title: Model Repository
-          description: Model repository
+          description: i.e. Qwen/Qwen2.5-Coder-7B
           type: string
           pattern: "^[a-zA-Z][a-zA-Z0-9-/.]+$"
           minLength: 3
           maxLength: 60
         modelRevision:
           title: Model Revision
-          description: Model revision
+          description: i.e. 7b0cc3380fe815e6f08fe2f80c03e05a8b1883d8
           type: string
           pattern: "^[a-z0-9]+$"
           minLength: 3
@@ -132,6 +132,8 @@ spec:
         values:
           projectName: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
           name: ${{ parameters.modelName }}-sync-model
+          revision: ${{ parameters.modelRevision }}
+          repository: ${{ parameters.modelRepository }}
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           subcomponentOf: ${{ parameters.projectEntity }}
