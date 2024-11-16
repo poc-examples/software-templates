@@ -59,6 +59,9 @@ spec:
           title: OpenShift Username 
           type: string 
           description: The openshift username used to login to devspaces 
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
 
   steps:
 
@@ -69,7 +72,7 @@ spec:
       name: Template Helm Application
       action: fetch:template
       input:
-        url: "../../../../skeletons/applications/helm/appset.yaml"
+        url: "../../../../skeletons/applications/appset/"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}-workspace"
