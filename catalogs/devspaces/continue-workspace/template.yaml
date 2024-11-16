@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: continue-workspace
-  title: Create a User-Scoped AI-Enabled DevWorkspace
+  title: DevSpaces - Continue Configuration
   description: |
     Deploys a development workspace from Developer Hub with a self-hosted AI model on Red Hat OpenShift AI for code generation.
   tags:
@@ -93,7 +93,7 @@ spec:
               model:
                 name: ${{ parameters.codingModel | parseEntityRef | pick('name') }}
                 project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-                domain: {{ `{{ {{ .metadata.labels.domain }} }}` }}
+                domain: {{ `{{ .metadata.labels.domain }}` }}
 
     ##############
     ## Rename File
