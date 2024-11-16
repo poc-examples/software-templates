@@ -140,7 +140,7 @@ spec:
           chart:
             name: "rhoai-single-model-server"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.6"
+            chartVersion: "0.1.7"
           projectName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           automated:
             prune: true

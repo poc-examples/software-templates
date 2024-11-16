@@ -25,6 +25,7 @@ spec:
       required:
         - rootSelfServiceRepo
         - projectEntity
+        - openshiftUsername
       properties:
         rootSelfServiceRepo:
           title: Root Self-Service Repository
@@ -44,6 +45,20 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: data-science-project
+        codingModel:
+          title: Coding Model
+          type: string
+          description: The model to use in vscode continue.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: model-server
+        openshiftUsername:
+          title: OpenShift Username 
+          type: string 
+          description: The openshift username used to login to devspaces 
+
 
   steps:
 
@@ -54,23 +69,28 @@ spec:
       name: Template Helm Application
       action: fetch:template
       input:
-        url: "../../../../skeletons/applications/helm/" ### TODO: replace this reference with an AppSet
+        url: "../../../../skeletons/applications/helm/appset.yaml"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
-          repoName: "$${{ parameters.projectEntity | parseEntityRef | pick('name') }}-workspace"
-          namespace: "openshift-gitops"
-          syncWave: "-1"
+          repoName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}-workspace"
+          namespace: "${{ parameters.openshiftUsername }}-devspaces"
+          syncWave: "1"
           chart:
             name: "devspace-workspace"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.0"
+            chartVersion: "0.1.5"
           projectName: "self-service"
           automated:
             prune: false
             selfHeal: true
-          createNamespace: "false"
+          createNamespace: "true"
           valuesObject: |
-            project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+            config:
+              name: continue-cm
+              model:
+                name: ${{ parameters.codingModel | parseEntityRef | pick('name') }}
+                project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
+                domain: {{ `{{ {{ .metadata.labels.domain }} }}` }}
 
     ##############
     ## Rename File
@@ -80,7 +100,7 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/application.yaml" ### TODO: replace this reference with an AppSet
+          - from: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/appset.yaml"
             to: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/${{ parameters.projectEntity | parseEntityRef | pick('name') }}-workspace.yaml"
 
     ##########################
