@@ -12,3 +12,4 @@ spec:
   targets:
     - ./argocd/templates.yaml
     - ./openshift-ai/templates.yaml
+    - ./devspaces/templates.yaml
