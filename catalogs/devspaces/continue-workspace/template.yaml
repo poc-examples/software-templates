@@ -26,6 +26,7 @@ spec:
         - rootSelfServiceRepo
         - projectEntity
         - openshiftUsername
+        - codingModel
       properties:
         rootSelfServiceRepo:
           title: Root Self-Service Repository
@@ -58,7 +59,6 @@ spec:
           title: OpenShift Username 
           type: string 
           description: The openshift username used to login to devspaces 
-
 
   steps:
 
