@@ -70,7 +70,7 @@ spec:
     ## Template the Application
     ###########################
     - id: applicationTemplate
-      name: Template Helm Application
+      name: Template Helm ApplicationSet
       action: fetch:template
       input:
         url: "../../../../skeletons/applications/appset/"
