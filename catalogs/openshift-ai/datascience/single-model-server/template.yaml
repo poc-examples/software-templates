@@ -132,7 +132,7 @@ spec:
         url: "../../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
-          repoName: "${{ parameters.modelName }}-model-server"
+          repoName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}-${{ parameters.modelName }}-model-server"
           namespace: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
           labels:
             project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
