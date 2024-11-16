@@ -45,7 +45,7 @@ ${{ values.valuesObject | safe | indent(20, true) }}
     spec:
       destination:
         namespace: "{{ .namespace }}"
-        server: "{{ `{{ .server }}` }}"
+        server: "{{ .server }}"
       source:
         chart: "{{ .chart.name }}"
         targetRevision: "{{ .chart.version }}"
