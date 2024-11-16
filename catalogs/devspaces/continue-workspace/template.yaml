@@ -66,6 +66,12 @@ spec:
 
   steps:
 
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
+      input:
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
+
     ###########################
     ## Template the Application
     ###########################
@@ -116,7 +122,7 @@ spec:
       input:
         description: |
           Publishing Continue Workspace to the source code repository
-        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         sourcePath: "./projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
         targetPath: "./projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
         branchName: main
