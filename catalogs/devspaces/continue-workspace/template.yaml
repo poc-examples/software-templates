@@ -73,7 +73,7 @@ spec:
       name: Template Helm ApplicationSet
       action: fetch:template
       input:
-        url: "../../../../skeletons/applications/appset/"
+        url: "../../../skeletons/applications/appset/"
         targetPath: "projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}/"
         values:
           repoName: "${{ parameters.projectEntity | parseEntityRef | pick('name') }}-workspace"
