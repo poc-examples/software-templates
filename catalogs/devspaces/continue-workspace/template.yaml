@@ -88,7 +88,7 @@ spec:
           chart:
             name: "devspace-workspace"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.5"
+            chartVersion: "0.1.6"
           projectName: "self-service"
           automated:
             prune: false
