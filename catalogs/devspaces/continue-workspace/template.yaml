@@ -12,7 +12,7 @@ metadata:
     - devops
     - poc-examples
     - self-service
-    - AI
+    - openshift-ai
     - code-generation
 
 spec:
@@ -94,7 +94,7 @@ spec:
               model:
                 name: ${{ parameters.codingModel | parseEntityRef | pick('name') }}
                 project: ${{ parameters.projectEntity | parseEntityRef | pick('name') }}
-
+                domain: {{ `{{ .metadata.labels.domain }}` }}
 
     ##############
     ## Rename File
