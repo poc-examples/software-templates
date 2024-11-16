@@ -41,15 +41,15 @@ spec:
 ${{ values.valuesObject | safe | indent(20, true) }}
   template:
     metadata:
-      name: "{{ `{{ .application }}` }}"
+      name: "{{ .application }}"
     spec:
       destination:
-        namespace: "{{ `{{ .namespace }}` }}"
+        namespace: "{{ .namespace }}"
         server: "{{ `{{ .server }}` }}"
       source:
-        chart: "{{ `{{ .chart.name }}` }}"
-        targetRevision: "{{ `{{ .chart.version }}` }}"
-        repoURL: "{{ `{{ .chart.url }}` }}"
+        chart: "{{ .chart.name }}"
+        targetRevision: "{{ .chart.version }}"
+        repoURL: "{{ .chart.url }}"
       project: system
       syncPolicy:
         automated:
@@ -65,7 +65,7 @@ ${{ values.valuesObject | safe | indent(20, true) }}
     spec:
       source:
         helm:
-        {{ `{{- if (index . "values") }}` }}
+        {{- if (index . "values") }}
           values: |
-            {{ `{{- .values | nindent 12 }}` }}
-        {{ `{{- end }}` }}
+            {{- .values | nindent 12 }}
+        {{- end }}
