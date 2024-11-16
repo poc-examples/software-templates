@@ -119,7 +119,7 @@ spec:
         repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
         sourcePath: "./projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
         targetPath: "./projects/${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
-        branchName: ${{ parameters.gitlabBranch }}
+        branchName: main
         commitAction: create
         commitMessage: "Created Continue Workspace in project ${{ parameters.projectEntity | parseEntityRef | pick('name') }}"
 
