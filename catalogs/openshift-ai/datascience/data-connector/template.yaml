@@ -131,7 +131,9 @@ spec:
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           subcomponentOf: ${{ parameters.projectEntity }}
-          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+          dependsOn:
+            - ${{ parameters.rootSelfServiceRepo }}
+            - ${{ parameters.projectEntity }}
 
     ##############
     ## Rename File

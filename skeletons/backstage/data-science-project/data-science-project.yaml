@@ -12,4 +12,6 @@ spec:
   lifecycle: production
   owner: ${{ values.owner }}
   dependsOn:
-    - ${{ values.dependsOn }}
+    {{ for item in values.dependsOn }}
+      - {{ item }}
+    {{ endfor }}

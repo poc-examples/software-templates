@@ -13,4 +13,6 @@ spec:
   owner: ${{ values.owner }}
   subcomponentOf: ${{ values.subcomponentOf }}
   dependsOn:
-    - ${{ values.dependsOn }}
+    {{ for item in values.dependsOn }}
+      - {{ item }}
+    {{ endfor }}
