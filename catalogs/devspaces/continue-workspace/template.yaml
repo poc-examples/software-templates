@@ -5,6 +5,13 @@ metadata:
   title: DevSpaces - Continue Configuration
   description: |
     Deploys a development workspace from Developer Hub with a self-hosted AI model on Red Hat OpenShift AI for code generation.
+
+    Prerequisites: Run the following templates before using this:
+    - Create a GitLab Root Self-Service Repository (One-Time Use)
+    - Red Hat OpenShift AI - Data Science project
+    - Red Hat OpenShift AI - Data Connector
+    - Red Hat OpenShift AI - Data Science Sync Model
+    - Red Hat OpenShift AI - Single Model Server
   tags:
     - gitlab
     - devspaces
@@ -18,7 +25,7 @@ metadata:
 spec:
   owner: devops-team
   system: self-service
-  type: Service
+  type: service
   parameters:
 
     - title: Deploy a Continue Workspace

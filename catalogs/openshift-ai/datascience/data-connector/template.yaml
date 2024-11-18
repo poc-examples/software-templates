@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: data-connector
+  name: rhoai-data-connector
   title: Red Hat OpenShift AI - Data Connector
   description: |
     This template automates the setup of a Red Hat OpenShift AI Data Connector. It provides a predefined 
@@ -9,6 +9,10 @@ metadata:
     applications and data repositories. The template helps teams easily configure data connections, 
     ensuring that data pipelines are consistently synced with AI workloads and ArgoCD applications 
     for continuous integration and deployment.
+
+    Prerequisites: Run the following templates before using this:
+    - Create a GitLab Root Self-Service Repository (One-Time Use)
+    - Red Hat OpenShift AI - Data Science Project
   tags:
     - openshift-ai
     - data-connector
@@ -21,7 +25,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: Data-Connector
+  type: service
   parameters:
 
     - title: Data Connector Settings

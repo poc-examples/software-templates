@@ -22,7 +22,7 @@ metadata:
 spec:
   owner: devops-team
   system: self-service
-  type: Service
+  type: service
   parameters:
 
     - title: GitLab Repository Information
