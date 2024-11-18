@@ -10,7 +10,7 @@ metadata:
     seamless integration with OpenShift AI services, offering support for continuous 
     deployment, model monitoring, and version management. Ideal for projects focused on 
     deploying one model at a time with optimized resources.
-
+    \r\n<br>
     Prerequisites: Run the following templates before using this:
     - Create a GitLab Root Self-Service Repository (One-Time Use)
     - Red Hat OpenShift AI - Data Science project
