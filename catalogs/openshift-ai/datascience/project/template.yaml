@@ -8,9 +8,11 @@ metadata:
     a unified project for integrating rhoai resources. The template helps teams easily 
     configure datascience projects, ensuring that all resources are consistently are merged 
     together under a unified project.
+    ```
 
     Prerequisites: Run the following template before using this:
-    - Create a GitLab Root Self-Service Repository (One-Time Use)
+    * Create a GitLab Root Self-Service Repository
+    ```
   tags:
     - openshift-ai
     - data-science-project

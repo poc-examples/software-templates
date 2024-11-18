@@ -12,6 +12,4 @@ spec:
   lifecycle: production
   owner: ${{ values.owner }}
   dependsOn:
-    {{ for item in values.dependsOn }}
-      - {{ item }}
-    {{ endfor }}
+    - ${{ values.rootSelfServiceRepo }}

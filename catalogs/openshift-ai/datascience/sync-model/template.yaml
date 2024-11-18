@@ -5,11 +5,13 @@ metadata:
   title: Red Hat OpenShift AI - Data Science Sync Model
   description: |
     This template automates the synchronization of HuggingFace models to S3 buckets.
+    ```
 
     Prerequisites: Run the following templates before using this:
-    - Create a GitLab Root Self-Service Repository (One-Time Use)
-    - Red Hat OpenShift AI - Data Science project
-    - Red Hat OpenShift AI - Data Connector
+    * Create a GitLab Root Self-Service Repository
+    * Red Hat OpenShift AI - Data Science project
+    * Red Hat OpenShift AI - Data Connector
+    ```
   tags:
     - openshift-ai
     - data-science-project
