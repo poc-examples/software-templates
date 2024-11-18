@@ -1,10 +1,17 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: data-science-sync-model
+  name: rhoai-data-science-sync-model
   title: Red Hat OpenShift AI - Data Science Sync Model
   description: |
     This template automates the synchronization of HuggingFace models to S3 buckets.
+    ```
+
+    Prerequisites: Run the following templates before using this:
+    * Create a GitLab Root Self-Service Repository
+    * Red Hat OpenShift AI - Data Science project
+    * Red Hat OpenShift AI - Data Connector
+    ```
   tags:
     - openshift-ai
     - data-science-project
@@ -17,7 +24,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: DataScience-Sync-Model
+  type: service
   parameters:
     - title: DataScience Sync Model Settings
       ui:group: data-science-sync-model
@@ -136,8 +143,9 @@ spec:
           repository: ${{ parameters.modelRepository }}
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
-          subcomponentOf: ${{ parameters.projectEntity }}
-          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+          rootSelfServiceRepo: ${{ parameters.rootSelfServiceRepo }}
+          projectEntity: ${{ parameters.projectEntity }}
+          dataConnectorEntity: ${{ parameters.dataConnectorEntity }}
 
     ##############
     ## Rename File

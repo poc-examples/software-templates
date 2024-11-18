@@ -1,13 +1,18 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: data-science-project
+  name: rhoai-data-science-project
   title: Red Hat OpenShift AI - Data Science Project
   description: |
     This template automates the setup of a Red Hat OpenShift AI Data Science Project. It provides 
     a unified project for integrating rhoai resources. The template helps teams easily 
     configure datascience projects, ensuring that all resources are consistently are merged 
     together under a unified project.
+    ```
+
+    Prerequisites: Run the following template before using this:
+    * Create a GitLab Root Self-Service Repository
+    ```
   tags:
     - openshift-ai
     - data-science-project
@@ -20,7 +25,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: DataScience-Project
+  type: service
   parameters:
     - title: DataScience Project Settings
       ui:group: data-science-project
@@ -94,7 +99,8 @@ spec:
           name: ${{ parameters.projectName }}-project
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
-          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+          rootSelfServiceRepo: ${{ parameters.rootSelfServiceRepo }}
+
 
     ##############
     ## Rename File

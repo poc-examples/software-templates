@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: single-model-server
+  name: rhoai-single-model-server
   title: Red Hat OpenShift AI - Single Model Server
   description: |
     This template automates the deployment of a Single Model Server in Red Hat OpenShift AI. 
@@ -10,6 +10,14 @@ metadata:
     seamless integration with OpenShift AI services, offering support for continuous 
     deployment, model monitoring, and version management. Ideal for projects focused on 
     deploying one model at a time with optimized resources.
+    ```
+
+    Prerequisites: Run the following templates before using this:
+    * Create a GitLab Root Self-Service Repository
+    * Red Hat OpenShift AI - Data Science project
+    * Red Hat OpenShift AI - Data Connector
+    * Red Hat OpenShift AI - Data Science Sync Model
+    ```
   tags:
     - openshift-ai
     - model-serving
@@ -22,7 +30,7 @@ metadata:
 spec:
   owner: data-science
   system: self-service
-  type: Single-Model-Server
+  type: service
   parameters:
 
     - title: Model Serving Settings
@@ -169,8 +177,10 @@ spec:
           name: ${{ parameters.modelName }}-model-server
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
-          subcomponentOf: ${{ parameters.projectEntity }}
-          dependsOn: ${{ parameters.rootSelfServiceRepo }}
+          rootSelfServiceRepo: ${{ parameters.rootSelfServiceRepo }}
+          projectEntity: ${{ parameters.projectEntity }}
+          dataConnectorEntity: ${{ parameters.dataConnectorEntity }}
+          modelEntity: ${{ parameters.modelEntity }}
 
     ##############
     ## Rename File

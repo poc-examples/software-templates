@@ -13,6 +13,8 @@ spec:
   repository: ${{ values.repository }}
   lifecycle: production
   owner: ${{ values.owner }}
-  subcomponentOf: ${{ values.subcomponentOf }}
+  subcomponentOf: ${{ values.projectEntity }}
   dependsOn:
-    - ${{ values.dependsOn }}
+    - ${{ values.rootSelfServiceRepo }}
+    - ${{ values.projectEntity }}
+    - ${{ values.dataConnectorEntity }}

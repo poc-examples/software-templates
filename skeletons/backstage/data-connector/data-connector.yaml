@@ -11,6 +11,7 @@ spec:
   type: data-connector
   lifecycle: production
   owner: ${{ values.owner }}
-  subcomponentOf: ${{ values.subcomponentOf }}
+  subcomponentOf: ${{ values.projectEntity }}
   dependsOn:
-    - ${{ values.dependsOn }}
+    - ${{ values.rootSelfServiceRepo }}
+    - ${{ values.projectEntity }}
