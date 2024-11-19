@@ -78,9 +78,9 @@ spec:
             project: ${{ parameters.projectName }}-project
           syncWave: "-1"
           chart:
-            name: "data-science-project"
+            name: "rhoai-data-science-project"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.1.3"
+            chartVersion: "0.1.10"
           projectName: "self-service"
           automated:
             prune: true
