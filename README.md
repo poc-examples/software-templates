@@ -34,7 +34,7 @@ catalog:
       target: https://github.com/poc-examples/software-templates/blob/main/catalogs/templates.yaml
 ```
 
-See the [documentation](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html/administration_guide_for_red_hat_developer_hub/index#proc-adding-templates_assembly-admin-templates) for more on importing an existing software template.
+Afterwards, recycle the Developer Hub pod so it can read the new `app-config.yaml` configuration file.  See the [documentation](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html/administration_guide_for_red_hat_developer_hub/index#proc-adding-templates_assembly-admin-templates) for more on importing an existing software template.
 
 ## Using the Templates
 
