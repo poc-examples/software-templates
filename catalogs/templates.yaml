@@ -13,3 +13,4 @@ spec:
     - ./argocd/templates.yaml
     - ./openshift-ai/templates.yaml
     - ./devspaces/templates.yaml
+    - ./kafka/templates.yaml
