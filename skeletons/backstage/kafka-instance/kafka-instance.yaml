@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: Kafka Instance
+  annotations:
+    argocd/app-selector: backstage-name=${{ values.name }}
+  tags:
+    - kafka-instance
+spec:
+  type: kafka-instance
+  lifecycle: production
+  owner: ${{ values.owner }}
+  dependsOn:
+    - ${{ values.rootSelfServiceRepo }}
+  kafka:
+    brokerService: ${{ values.brokerService }}
+    bootstrapService: ${{ values.bootstrapService }}
