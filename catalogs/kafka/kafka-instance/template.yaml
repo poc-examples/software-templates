@@ -1,0 +1,158 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: kafka-instance
+  title: Kafka Streaming - Kafka Instance
+  description: |
+    Deploys a kafka instance from Developer Hub creating (3) Kafka Instance & (3) Zookeeper Instances on Red Hat OpenShift in a slected namespace.
+  tags:
+    - gitlab
+    - kafka
+    - zookeeper
+    - automation
+    - devops
+    - poc-examples
+    - self-service
+
+spec:
+  owner: devops-team
+  system: self-service
+  type: service
+  parameters:
+
+    - title: Deploy a Streams for Kafka - Kafka Instance
+      ui:group: instance-config
+      required:
+        - namespace
+        - rootSelfServiceRepo
+        - name
+      properties:
+        rootSelfServiceRepo:
+          title: Root Self-Service Repository
+          type: string
+          description: The root self-service repository that contains artifact deployment configurations.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: self-service
+        namespace:
+          title: Target Namespace
+          type: string
+          description: The target namespace for the kafka deployment.
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+        name:
+          title: Kafka Instance Name
+          type: string
+          description: The name for the kafka deployment.
+          pattern: "^[a-z][a-z0-9-]+$"
+          minLength: 3
+          maxLength: 30
+
+  steps:
+
+    #####################################################
+    ## Fetches the Repo where we will add the helm charts
+    #####################################################
+    - action: catalog:fetch
+      id: fetchSelfServiceEntity
+      name: Fetch Root Self-Service Repo Entity
+      input:
+        entityRef: ${{ parameters.rootSelfServiceRepo }}
+
+    ###########################
+    ## Template the Application
+    ###########################
+    - id: applicationTemplate
+      name: Template Helm ApplicationSet
+      action: fetch:template
+      input:
+        url: "../../../skeletons/applications/helm/"
+        targetPath: "projects/${{ parameters.namespace }}/"
+        values:
+          repoName: "${{ parameters.namespace }}-kafka-instance"
+          namespace: "${{ parameters.namespace }}"
+          syncWave: "1"
+          chart:
+            name: "kafka-instance"
+            chartUrl: "https://poc-examples.github.io/supporting-charts"
+            chartVersion: "0.0.1"
+          projectName: "self-service"
+          automated:
+            prune: true
+            selfHeal: true
+          createNamespace: "true"
+          valuesObject: |
+            name: ${{ parameters.namespace }}
+
+    ############################
+    ## Template the Catalog Info
+    ############################
+    - id: templateKafkaInstanceEntity
+      name: Template Kafka Instance Entity
+      action: fetch:template
+      input:
+        url: "../../../../skeletons/backstage/kafka-instance"
+        targetPath: "backstage/${{ parameters.namespace }}/"
+        values:
+          name: ${{ parameters.dataConnectorName }}-data-connector
+          brokerService: ${{ parameters.name }}-kafka-brokers.${{ parameters.namespace }}.svc.cluster.local
+          bootstrapService: ${{ parameters.name }}-kafka-bootstrap.${{ parameters.namespace }}.svc.cluster.local
+          owner: |
+            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
+          rootSelfServiceRepo: ${{ parameters.rootSelfServiceRepo }}
+
+    ###############
+    ## Rename Files
+    ###############
+    - id: changeTemplateName
+      name: Change Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "projects/${{ parameters.namespace }}/application.yaml"
+            to: "projects/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml"
+
+    - id: changeBackstageTemplateName
+      name: Change Backstage Template Name
+      action: fs:rename
+      input:
+        files:
+          - from: "backstage/${{ parameters.namespace }}/kafka-instance.yaml"
+            to: "backstage/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml"
+
+    ##########################
+    ## Push Repository Changes
+    ##########################
+    - id: publishManifests
+      name: Publishing to the Source Code Repository
+      action: gitlab:repo:push
+      input:
+        description: |
+          Publishing Kafka Instance to the source code repository
+        repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
+        sourcePath: "./projects/${{ parameters.namespace }}"
+        targetPath: "./projects/${{ parameters.namespace }}"
+        branchName: main
+        commitAction: create
+        commitMessage: "Created Kafka Instance in project ${{ parameters.namespace }}"
+
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml
+
+  output:
+    links:
+      - title: GitLab Repository
+        url: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['registerCatalog'].output.entityRef }}

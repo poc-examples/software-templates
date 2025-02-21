@@ -1,4 +1,4 @@
 # Software Templates
 
 ## Quick Links
-- [Placeholder](index.md)
+- [WorkFlows](workshops/rhoai-devex.md)
