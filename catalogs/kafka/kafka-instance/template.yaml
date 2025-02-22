@@ -133,8 +133,6 @@ spec:
         description: |
           Publishing Kafka Instance to the source code repository
         repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
-        sourcePath: "./projects/${{ parameters.namespace }}"
-        targetPath: "./projects/${{ parameters.namespace }}"
         branchName: main
         commitAction: create
         commitMessage: "Created Kafka Instance in project ${{ parameters.namespace }}"
