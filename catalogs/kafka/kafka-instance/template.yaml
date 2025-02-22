@@ -94,10 +94,10 @@ spec:
       name: Template Kafka Instance Entity
       action: fetch:template
       input:
-        url: "../../../../skeletons/backstage/kafka-instance"
+        url: "../../../skeletons/backstage/kafka-instance"
         targetPath: "backstage/${{ parameters.namespace }}/"
         values:
-          name: ${{ parameters.dataConnectorName }}-data-connector
+          name: ${{ parameters.name }}-kafka-instance
           brokerService: ${{ parameters.name }}-kafka-brokers.${{ parameters.namespace }}.svc.cluster.local
           bootstrapService: ${{ parameters.name }}-kafka-bootstrap.${{ parameters.namespace }}.svc.cluster.local
           owner: |
