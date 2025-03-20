@@ -1,5 +1,5 @@
 # Software Templates
-
+#
 The software templates included in this repository are used within [Red Hat Developer Hub](https://developers.redhat.com/rhdh/overview), and allow platform engineering teams to provide developers with supported approaches through a self-service catalog.  Read the upstream Backstage docs for more on [software templates](https://backstage.io/docs/features/software-templates/).
 
 ## Why This Pattern
