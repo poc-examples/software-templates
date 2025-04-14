@@ -148,4 +148,4 @@ spec:
         entityRef: ${{ steps['registerCatalog'].output.entityRef }}
     text:
       - title: "Namespace"
-        text: "${{ user.entity.metadata.name }}-kafka-instance"
+        content: "${{ user.entity.metadata.name }}-kafka-instance"
