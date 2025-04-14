@@ -38,7 +38,7 @@ spec:
                 spec.type: self-service
         namespace:
           title: Target Namespace
-          default: ${ user.entity.metadata.name}-kafka-instance
+          default: ${{ user.entity.metadata.name }}-kafka-instance
           type: string
           description: The target namespace for the kafka deployment.
           ui:disabled: true
