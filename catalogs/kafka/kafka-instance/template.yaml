@@ -23,7 +23,6 @@ spec:
     - title: Deploy a Streams for Kafka - Kafka Instance
       ui:group: instance-config
       required:
-        - namespace
         - rootSelfServiceRepo
         - name
       properties:
@@ -36,12 +35,6 @@ spec:
             catalogFilter:
               - kind: Component
                 spec.type: self-service
-        namespace:
-          title: Target Namespace
-          default: ${{ user.entity.metadata.name }}-kafka-instance
-          type: string
-          description: The target namespace for the kafka deployment.
-          ui:disabled: true
         name:
           title: Kafka Instance Name
           type: string
@@ -69,10 +62,10 @@ spec:
       action: fetch:template
       input:
         url: "../../../skeletons/applications/helm/"
-        targetPath: "projects/${{ parameters.namespace }}/"
+        targetPath: "projects/${{ user.entity.metadata.name }}-kafka-instance/"
         values:
-          repoName: "${{ parameters.namespace }}"
-          namespace: "${{ parameters.namespace }}"
+          repoName: "${{ user.entity.metadata.name }}-kafka-instance"
+          namespace: "${{ user.entity.metadata.name }}-kafka-instance"
           syncWave: "1"
           chart:
             name: "kafka-instance"
@@ -84,7 +77,7 @@ spec:
             selfHeal: true
           createNamespace: "true"
           valuesObject: |
-            name: ${{ parameters.namespace }}
+            name: ${{ user.entity.metadata.name }}-kafka-instance
 
     ############################
     ## Template the Catalog Info
@@ -94,11 +87,11 @@ spec:
       action: fetch:template
       input:
         url: "../../../skeletons/backstage/kafka-instance"
-        targetPath: "backstage/${{ parameters.namespace }}/"
+        targetPath: "backstage/${{ user.entity.metadata.name }}-kafka-instance/"
         values:
           name: ${{ parameters.name }}-kafka-instance
-          brokerService: ${{ parameters.name }}-kafka-brokers.${{ parameters.namespace }}.svc.cluster.local
-          bootstrapService: ${{ parameters.name }}-kafka-bootstrap.${{ parameters.namespace }}.svc.cluster.local
+          brokerService: ${{ parameters.name }}-kafka-brokers.${{ user.entity.metadata.name }}-kafka-instance.svc.cluster.local
+          bootstrapService: ${{ parameters.name }}-kafka-bootstrap.${{ user.entity.metadata.name }}-kafka-instance.svc.cluster.local
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           rootSelfServiceRepo: ${{ parameters.rootSelfServiceRepo }}
@@ -111,16 +104,16 @@ spec:
       action: fs:rename
       input:
         files:
-          - from: "projects/${{ parameters.namespace }}/application.yaml"
-            to: "projects/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml"
+          - from: "projects/${{ user.entity.metadata.name }}-kafka-instance/application.yaml"
+            to: "projects/${{ user.entity.metadata.name }}-kafka-instance/${{ parameters.name }}-kafka-instance.yaml"
 
     - id: changeBackstageTemplateName
       name: Change Backstage Template Name
       action: fs:rename
       input:
         files:
-          - from: "backstage/${{ parameters.namespace }}/kafka-instance.yaml"
-            to: "backstage/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml"
+          - from: "backstage/${{ user.entity.metadata.name }}-kafka-instance/kafka-instance.yaml"
+            to: "backstage/${{ user.entity.metadata.name }}-kafka-instance/${{ parameters.name }}-kafka-instance.yaml"
 
     ##########################
     ## Push Repository Changes
@@ -134,7 +127,7 @@ spec:
         repoUrl: gitlab.com?owner=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.repository }}
         branchName: main
         commitAction: create
-        commitMessage: "Created Kafka Instance in project ${{ parameters.namespace }}"
+        commitMessage: "Created Kafka Instance in project ${{ user.entity.metadata.name }}-kafka-instance"
 
     ########################
     ## Register Catalog Info
@@ -144,7 +137,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.remoteUrl }}
-        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ parameters.namespace }}/${{ parameters.name }}-kafka-instance.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchSelfServiceEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ user.entity.metadata.name }}-kafka-instance/${{ parameters.name }}-kafka-instance.yaml
 
   output:
     links:
@@ -153,3 +146,6 @@ spec:
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps['registerCatalog'].output.entityRef }}
+    text:
+      - title: "Namespace"
+        text: "${{ user.entity.metadata.name }}-kafka-instance"
