@@ -70,7 +70,7 @@ spec:
           chart:
             name: "kafka-instance"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.0.1"
+            chartVersion: "0.0.2"
           projectName: "self-service"
           automated:
             prune: true
@@ -78,6 +78,7 @@ spec:
           createNamespace: "true"
           valuesObject: |
             name: ${{ user.entity.metadata.name }}-kafka-instance
+            userName: ${{ user.entity.metadata.name }}
 
     ############################
     ## Template the Catalog Info
