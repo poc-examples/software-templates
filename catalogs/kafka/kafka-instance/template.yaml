@@ -38,11 +38,10 @@ spec:
                 spec.type: self-service
         namespace:
           title: Target Namespace
+          default: ${ user.entity.metadata.name}-kafka-instance
           type: string
           description: The target namespace for the kafka deployment.
-          pattern: "^[a-z][a-z0-9-]+$"
-          minLength: 3
-          maxLength: 30
+          ui:disabled: true
         name:
           title: Kafka Instance Name
           type: string
@@ -72,7 +71,7 @@ spec:
         url: "../../../skeletons/applications/helm/"
         targetPath: "projects/${{ parameters.namespace }}/"
         values:
-          repoName: "${{ parameters.namespace }}-kafka-instance"
+          repoName: "${{ parameters.namespace }}"
           namespace: "${{ parameters.namespace }}"
           syncWave: "1"
           chart:
