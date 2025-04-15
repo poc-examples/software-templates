@@ -70,7 +70,7 @@ spec:
           chart:
             name: "kafka-instance"
             chartUrl: "https://poc-examples.github.io/supporting-charts"
-            chartVersion: "0.0.2"
+            chartVersion: "0.0.3"
           projectName: "self-service"
           automated:
             prune: true
