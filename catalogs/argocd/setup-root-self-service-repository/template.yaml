@@ -29,7 +29,6 @@ spec:
       required:
         - gitlabOwner
         - gitlabRepository
-        - gitlabBranch
       properties:
         gitlabOwner:
           title: GitLab Owner
@@ -41,11 +40,6 @@ spec:
           type: string
           default: manifests
           description: GitLab self-service repository
-        gitlabBranch:
-          title: GitLab Branch
-          type: string
-          default: main
-          description: GitLab repository branch
 
   steps:
 
@@ -58,28 +52,19 @@ spec:
       input:
         entityRef: resource:default/argocd-instances
 
-    # - action: catalog:fetch
-    #   id: fetchArgoCDInstances
-    #   name: Fetch ArgoCD Instances Entities
-    #   each: >
-    #     ${{ steps['fetchArgoCDSystem'].output.entity.relations 
-    #         | selectattr("target.kind", "equalto", "component") | list }}
-    #   input:
-    #     entityRef: ${{ each.value.targetRef }}
-
-    # #################################
-    # ## Create Empty Repository
-    # #################################
-    # - id: publishEmptyRepo
-    #   name: "Create Empty Repository"
-    #   action: publish:gitlab
-    #   input:
-    #     description: |
-    #       Self-Service Repository
-    #     repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-    #     defaultBranch: ${{ parameters.gitlabBranch }}
-    #     settings:
-    #       visibility: "public"
+    #################################
+    ## Create Empty Repository
+    #################################
+    - id: publishEmptyRepo
+      name: "Create Empty Repository"
+      action: publish:gitlab
+      input:
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        defaultBranch: ${{ parameters.gitlabBranch }}
+        settings:
+          visibility: "public"
 
     # ##########################
     # ## Template the Repository
