@@ -61,6 +61,7 @@ spec:
     - action: catalog:fetch
       id: fetchArgoCDInstances
       name: Fetch ArgoCD Instances Entities
+      if: ${{ each.value.target.kind == "component" }}
       each: ${{ steps['fetchArgoCDSystem'].output.entity.relations }}
       input:
         entityRef: ${{ each.value.targetRef }}
