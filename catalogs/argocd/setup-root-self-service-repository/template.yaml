@@ -133,7 +133,10 @@ spec:
     #     catalogInfoPath: /catalog-info.yaml
 
   output:
-    json: ${{ steps['fetchArgoCDSystem'].output }}
+    text:
+      - title: Output of fetchArgoCDSystem
+        content: |
+          {{ steps.fetchArgoCDSystem.output | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
