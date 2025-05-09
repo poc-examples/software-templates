@@ -1,0 +1,8 @@
+site_name: Root Self Service Repository
+site_description: Home
+
+nav:
+  - Home: index.md
+
+plugins:
+  - techdocs-core

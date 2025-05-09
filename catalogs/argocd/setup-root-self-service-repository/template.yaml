@@ -49,88 +49,103 @@ spec:
 
   steps:
 
-    #################
-    ## Fetch Entities
-    #################
-
-    #################################
-    ## Create Empty Repository
-    #################################
-    - id: publishEmptyRepo
-      name: "Create Empty Repository"
-      action: publish:gitlab
+    ###################################
+    ## Fetch Available ArgoCD Instances
+    ###################################
+    - action: catalog:query:plus
+      id: queryArgoCDInstances
+      name: Query ArgoCD Instances
       input:
-        description: |
-          Self-Service Repository
-        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        defaultBranch: ${{ parameters.gitlabBranch }}
-        settings:
-          visibility: "public"
+        queries:
+          - fields:
+              - metadata.name
+              - spec.clusterDomain
+              - spec.cluster
+            filter:
+              - spec.type: argo-instance
 
-    ##########################
-    ## Template the Repository
-    ##########################
-    - id: pullRepositorySkeleton
-      name: "Pull Self-Service Skeleton"
-      action: fetch:template
-      input:
-        url: './skeleton'
-        copyWithoutTemplating:
-          - README.md
-          - LICENSE
-          - backstage
-          - projects
-        values:
-          path: "projects"
-          projectName: "default"
-          owner: |
-            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
-          gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
-          gitlabOwner: ${{ parameters.gitlabOwner }}
-          gitlabRepository: ${{ parameters.gitlabRepository }}
-          gitlabBranch: ${{ parameters.gitlabBranch }}
+    # #################################
+    # ## Create Empty Repository
+    # #################################
+    # - id: publishEmptyRepo
+    #   name: "Create Empty Repository"
+    #   action: publish:gitlab
+    #   input:
+    #     description: |
+    #       Self-Service Repository
+    #     repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+    #     defaultBranch: ${{ parameters.gitlabBranch }}
+    #     settings:
+    #       visibility: "public"
 
-    #################################
-    ## Create Self-Service Repository
-    #################################
-    - id: publish
-      name: "Create Self-Service Repository"
-      action: gitlab:repo:push
-      input:
-        description: |
-          Self-Service Repository
-        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        branchName: ${{ parameters.gitlabBranch }}
-        commitAction: create
-        commitMessage: "Publish repository skeleton"
+    # ##########################
+    # ## Template the Repository
+    # ##########################
+    # - id: pullRepositorySkeleton
+    #   name: "Pull Self-Service Skeleton"
+    #   action: fetch:template
+    #   input:
+    #     url: './skeleton'
+    #     copyWithoutTemplating:
+    #       - README.md
+    #       - LICENSE
+    #       - backstage
+    #       - projects
+    #     values:
+    #       path: "projects"
+    #       projectName: "default"
+    #       owner: |
+    #         ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
+    #       gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
+    #       gitlabOwner: ${{ parameters.gitlabOwner }}
+    #       gitlabRepository: ${{ parameters.gitlabRepository }}
+    #       gitlabBranch: ${{ parameters.gitlabBranch }}
 
-    #################################
-    ## ArgoCD Resources Configuration
-    #################################
-    - id: createArgocdResources
-      name: "Create ArgoCD Resources"
-      action: argocd:create-resources
-      input:
-        appName: "root-self-service"
-        argoInstance: main
-        namespace: "openshift-gitops"
-        repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
-        path: "_init_"
+    # #################################
+    # ## Create Self-Service Repository
+    # #################################
+    # - id: publish
+    #   name: "Create Self-Service Repository"
+    #   action: gitlab:repo:push
+    #   input:
+    #     description: |
+    #       Self-Service Repository
+    #     repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+    #     branchName: ${{ parameters.gitlabBranch }}
+    #     commitAction: create
+    #     commitMessage: "Publish repository skeleton"
 
-    ########################
-    ## Register Catalog Info
-    ########################
-    - id: registerCatalog
-      name: "Register Catalog Info"
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
-        catalogInfoPath: /catalog-info.yaml
+    # #################################
+    # ## ArgoCD Resources Configuration
+    # #################################
+    # - id: createArgocdResources
+    #   name: "Create ArgoCD Resources"
+    #   action: argocd:create-resources
+    #   input:
+    #     appName: "root-self-service"
+    #     argoInstance: main
+    #     namespace: "openshift-gitops"
+    #     repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
+    #     path: "_init_"
+
+    # ########################
+    # ## Register Catalog Info
+    # ########################
+    # - id: registerCatalog
+    #   name: "Register Catalog Info"
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
+    #     catalogInfoPath: /catalog-info.yaml
 
   output:
-    links:
-      - title: GitLab Repository
-        url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
-      - title: Open in catalog
-        icon: catalog
-        entityRef: ${{ steps['registerCatalog'].output.entityRef }}
+    text:
+      - title: test
+        content: |
+          ${{ steps['queryArgoCDInstances'] }}
+    # links:
+    #   - title: GitLab Repository
+    #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
+    #   - title: Open in catalog
+    #     icon: catalog
+    #     entityRef: ${{ steps['registerCatalog'].output.entityRef }}
