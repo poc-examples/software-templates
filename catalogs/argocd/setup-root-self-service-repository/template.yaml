@@ -54,9 +54,16 @@ spec:
     ###################################
     - action: catalog:fetch
       id: fetchArgoCDSystem
-      name: Fetch ArgoCD System
+      name: Fetch ArgoCD System Entity
       input:
         entityRef: system:default/argocd-appdev
+
+    - action: catalog:fetch
+      id: fetchArgoCDInstances
+      name: Fetch ArgoCD Instances Entities
+      each: ${{ steps['fetchArgoCDSystem'].output.entity.relations }}
+      input:
+        entityRef: ${{ each.targetRef }}
 
     # #################################
     # ## Create Empty Repository
@@ -134,12 +141,12 @@ spec:
 
   output:
     text:
-      - title: Output of fetchArgoCDSystem
+      - title: Output of fetchArgoCDInstances
         content: |
-          ${{ steps['fetchArgoCDSystem'].output.entity.relations | dump }}
+          ${{ steps['fetchArgoCDInstances'].output | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
     #   - title: Open in catalog
     #     icon: catalog
-    #     entityRef: ${{ steps['registerCatalog'].output.entityRef }}
+    #     entityRef: ${{ steps['fetchArgoCDInstances'].output }}
