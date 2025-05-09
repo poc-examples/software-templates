@@ -53,10 +53,10 @@ spec:
     ## Fetch Available ArgoCD Instances
     ###################################
     - action: catalog:fetch
-      id: fetchArgoCDSystem
-      name: Fetch ArgoCD System Entity
+      id: fetchArgoCDInstances
+      name: Fetch ArgoCD Instances
       input:
-        entityRef: system:default/argocd-appdev
+        entityRef: resource:default/argocd-instances
 
     # - action: catalog:fetch
     #   id: fetchArgoCDInstances
@@ -145,7 +145,7 @@ spec:
     text:
       - title: Output of fetchArgoCDInstances
         content: |
-          ${{ steps['fetchArgoCDSystem'].output.entity.relations | selectattr("target", "hasPart") | dump }}
+          ${{ steps['fetchArgoCDInstances'].output | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
