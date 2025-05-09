@@ -62,7 +62,7 @@ spec:
         description: |
           Self-Service Repository
         repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        defaultBranch: ${{ parameters.gitlabBranch }}
+        defaultBranch: main
         settings:
           visibility: "public"
 
@@ -87,7 +87,7 @@ spec:
           gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
-          gitlabBranch: ${{ parameters.gitlabBranch }}
+          gitlabBranch: main
 
     #################################
     ## Create Self-Service Repository
@@ -99,7 +99,7 @@ spec:
         description: |
           Self-Service Repository
         repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
-        branchName: ${{ parameters.gitlabBranch }}
+        branchName: main
         commitAction: create
         commitMessage: "Publish repository skeleton"
 
