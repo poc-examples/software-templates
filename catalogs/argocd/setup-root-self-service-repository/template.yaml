@@ -52,17 +52,11 @@ spec:
     ###################################
     ## Fetch Available ArgoCD Instances
     ###################################
-    - action: catalog:query:plus
-      id: queryArgoCDInstances
-      name: Query ArgoCD Instances
+    - action: catalog:fetch
+      id: fetchArgoCDSystem
+      name: Fetch ArgoCD System
       input:
-        queries:
-          - fields:
-              - metadata.name
-              - spec.clusterDomain
-              - spec.cluster
-            filter:
-              - spec.type: argo-instance
+        entityRef: system:default/argocd-appdev
 
     # #################################
     # ## Create Empty Repository
@@ -142,7 +136,7 @@ spec:
     text:
       - title: test
         content: |
-          ${{ steps['queryArgoCDInstances'] }}
+          ${{ steps['fetchArgoCDSystem'] }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
