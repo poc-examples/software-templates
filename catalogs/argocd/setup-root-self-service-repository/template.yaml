@@ -145,7 +145,7 @@ spec:
     text:
       - title: Output of fetchArgoCDInstances
         content: |
-          ${{ steps['fetchArgoCDSystem'].output.entity.relations | selectattr("target.kind") }}
+          ${{ steps['fetchArgoCDSystem'].output.entity.relations | selectattr("target", "hasPart") | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
