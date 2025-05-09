@@ -145,7 +145,7 @@ spec:
     text:
       - title: Output of fetchArgoCDInstances
         content: |
-          ${{ steps['fetchArgoCDInstances'].output.entity.spec | dump }}
+          ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
