@@ -58,14 +58,14 @@ spec:
       input:
         entityRef: system:default/argocd-appdev
 
-    - action: catalog:fetch
-      id: fetchArgoCDInstances
-      name: Fetch ArgoCD Instances Entities
-      each: >
-        ${{ steps['fetchArgoCDSystem'].output.entity.relations 
-            | selectattr("target.kind", "equalto", "component") | list }}
-      input:
-        entityRef: ${{ each.value.targetRef }}
+    # - action: catalog:fetch
+    #   id: fetchArgoCDInstances
+    #   name: Fetch ArgoCD Instances Entities
+    #   each: >
+    #     ${{ steps['fetchArgoCDSystem'].output.entity.relations 
+    #         | selectattr("target.kind", "equalto", "component") | list }}
+    #   input:
+    #     entityRef: ${{ each.value.targetRef }}
 
     # #################################
     # ## Create Empty Repository
@@ -145,7 +145,7 @@ spec:
     text:
       - title: Output of fetchArgoCDInstances
         content: |
-          ${{ steps['fetchArgoCDInstances'].output | dump }}
+          ${{ steps['fetchArgoCDSystem'].output.entity.relations | selectattr("target.kind", "equalto", "component") | dump }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
