@@ -63,7 +63,7 @@ spec:
       name: Fetch ArgoCD Instances Entities
       each: ${{ steps['fetchArgoCDSystem'].output.entity.relations }}
       input:
-        entityRef: ${{ each.targetRef }}
+        entityRef: ${{ each.value.targetRef }}
 
     # #################################
     # ## Create Empty Repository
