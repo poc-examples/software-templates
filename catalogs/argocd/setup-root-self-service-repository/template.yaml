@@ -136,7 +136,7 @@ spec:
     text:
       - title: test
         content: |
-          ${{ steps['fetchArgoCDSystem'] }}
+          ${{ stringify(steps['fetchArgoCDSystem']) }}
     # links:
     #   - title: GitLab Repository
     #     url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
