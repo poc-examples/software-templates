@@ -128,13 +128,13 @@ spec:
         catalogInfoPath: /catalog-info.yaml
 
   output:
-    text:
-      - title: Output of fetchArgoCDInstances
-        content: |
-          ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances | dump }}
+    # text:
+    #   - title: Output of fetchArgoCDInstances
+    #     content: |
+    #       ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances | dump }}
     links:
       - title: GitLab Repository
         url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps['fetchArgoCDInstances'].output }}
+        entityRef: component:default/root-self-service-repository
