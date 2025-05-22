@@ -116,7 +116,7 @@ spec:
         argoInstance: ${{ each.value.name }}
         namespace: "openshift-gitops"
         repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
-        path: "_init_"
+        path: "_init_/workshop/overlays/${{ each.value.name }}"
 
     ########################
     ## Register Catalog Info

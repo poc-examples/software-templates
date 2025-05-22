@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workshop-orchestrator
+spec:
+  generators:
+    - list:
+        elements:
+          - application: workshop-rollout-controller
+            namespace: openshift-gitops
+            project: controllers
+            wave: "-2"
+            source: |
+              chart: rollout-controller
+              targetRevision: "0.6.69"
+              repoURL: https://poc-examples.github.io/charts
+              helm:
+                values: |
+                  controller:
+                    name: workshop
+                  devspaces:
+                    enabled: true
+                  cluster:
+                    domain: apps.vodlohpo.eastus.aroapp.io
+          - application: self-service-services
+            namespace: openshift-gitops
+            project: self-service
+            wave: "-1"
+            source: |
+              repoURL: "${{ values.gitlabRemoteUrl }}.git"
+              targetRevision: "main"
+              path: "services"
+              directory:
+                recurse: true
+          - application: self-service-applications
+            namespace: openshift-gitops
+            project: self-service
+            wave: "-1"
+            source: |
+              repoURL: "${{ values.gitlabRemoteUrl }}.git"
+              targetRevision: "main"
+              path: "applications"
+              directory:
+                recurse: true

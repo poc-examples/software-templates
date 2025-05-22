@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workshop-orchestrator
+  annotations:
+    argocd.argoproj.io/sync-wave: "-8"
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - "missingkey=error"
+  generators:
+    - list:
+        elements: []
+  template:
+    metadata:
+      name: "{{ .application }}"
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{ .wave }}"
+      labels:
+        backstage-name: workshop-repository
+    spec:
+      destination:
+        namespace: "{{ .namespace }}"
+        server: "https://kubernetes.default.svc"
+      project: "{{ .project }}"
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            argocd.argoproj.io/managed-by: "{{ .namespace }}"
+        syncOptions:
+          - CreateNamespace=true
+          - Validate=false
+  templatePatch: |
+    spec:
+      source:
+        {{- .source | nindent 8 }}
+        {{- if (index . "values") }}
+        helm:
+          values: |
+            {{- .values | nindent 12 }}
+        {{- end }}
