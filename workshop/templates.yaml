@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-workshop-templates
+  description: |
+    A collection of workshop templates.
+spec:
+  type: url
+  targets:
+    - ./developer-experience/template.yaml

@@ -1,0 +1,141 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: developer-experience-workshop
+  title: Workshop - Developer Experience
+  description: |
+    One-Time Use: This template automates the creation of a GitLab root repository from a predefined 
+    skeleton and configures an ArgoCD application to automatically synchronize changes from the 
+    repository. The root repository is intended to serve as the central point for managing applications. 
+    Any team-based self-service repositories will attach their applications to this root repository 
+    and will be synced from it, ensuring a cohesive and streamlined continuous deployment process. 
+    This template is intended for single use to prevent conflicts with the root structure.
+  tags:
+    - gitlab
+    - argocd
+    - automation
+    - devops
+    - poc-examples
+    - self-service
+    - one-time-use
+
+spec:
+  owner: devops
+  system: self-service
+  type: workshop
+  parameters:
+
+    - title: GitLab Repository Information
+      required:
+        - gitlabOwner
+        - gitlabRepository
+      properties:
+        gitlabOwner:
+          title: GitLab Owner
+          type: string
+          default: self-provisioned
+          description: GitLab repository owner
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: workshop-repository
+          description: GitLab self-service repository
+
+  steps:
+
+    ###################################
+    ## Fetch Available ArgoCD Instances
+    ###################################
+    - action: catalog:fetch
+      id: fetchArgoCDInstances
+      name: Fetch ArgoCD Instances
+      input:
+        entityRef: resource:default/argocd-instances
+
+    #################################
+    ## Create Empty Repository
+    #################################
+    - id: publishEmptyRepo
+      name: "Create Empty Repository"
+      action: publish:gitlab
+      input:
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        defaultBranch: main
+        settings:
+          visibility: "public"
+
+    ##########################
+    ## Template the Repository
+    ##########################
+    - id: pullRepositorySkeleton
+      name: "Pull Self-Service Skeleton"
+      action: fetch:template
+      input:
+        url: './skeleton'
+        copyWithoutTemplating:
+          - README.md
+          - LICENSE
+          - backstage
+          - applications
+          - services
+        values:
+          path: "projects"
+          projectName: "default"
+          owner: |
+            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
+          gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
+          gitlabOwner: ${{ parameters.gitlabOwner }}
+          gitlabRepository: ${{ parameters.gitlabRepository }}
+          gitlabBranch: main
+
+    #################################
+    ## Create Self-Service Repository
+    #################################
+    - id: publish
+      name: "Create Self-Service Repository"
+      action: gitlab:repo:push
+      input:
+        description: |
+          Self-Service Repository
+        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        branchName: main
+        commitAction: create
+        commitMessage: "Publish repository skeleton"
+
+    #################################
+    ## ArgoCD Resources Configuration
+    #################################
+    - id: createArgocdResources
+      name: "Create ArgoCD Resources"
+      action: argocd:create-resources
+      each: ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances }}
+      input:
+        appName: "workshop-orchestrator"
+        argoInstance: ${{ each.value.name }}
+        namespace: "openshift-gitops"
+        repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
+        path: "_init_"
+
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    # text:
+    #   - title: Output of fetchArgoCDInstances
+    #     content: |
+    #       ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances | dump }}
+    links:
+      - title: GitLab Repository
+        url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: component:default/root-self-service-repository

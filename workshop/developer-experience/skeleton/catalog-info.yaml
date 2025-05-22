@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: workshop-repository
+  title: Workshop Repository
+  description: |
+    This repository serves as the root workshop repository for GitLab and ArgoCD integration.
+    It enables teams to attach their team-based services and application repositories synchronizing
+    them, ensuring a streamlined continuous deployment process via ArgoCD.
+  annotations:
+    argocd/app-selector: backstage-name=workshop-repository
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - workshop-repository
+spec:
+  type: workshop-repository
+  lifecycle: production
+  owner: ${{ values.owner }}
+  gitlab:
+    remoteUrl: ${{ values.gitlabRemoteUrl }}
+    owner: ${{ values.gitlabOwner }}
+    repository: ${{ values.gitlabRepository }}
+    branch: ${{ values.gitlabBranch }}
