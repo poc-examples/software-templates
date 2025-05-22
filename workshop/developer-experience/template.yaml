@@ -99,7 +99,7 @@ spec:
       action: fetch:template
       input:
         url: "./skeleton/overlays/${{ each.value.name }}"
-        targetPath: "_init_/workshop/overlays/${{ each.value.name }}"
+        targetPath: "./_init_/workshop/overlays/${{ each.value.name }}"
         copyWithoutTemplating:
           - kustomization.yaml
         values:
