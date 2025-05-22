@@ -94,27 +94,24 @@ spec:
     ## Template the Overlays
     ##########################
     - id: generateOverlays
-      name: "Generate Overlays"
+      name: Generate Overlays
       each: ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances }}
-      steps:
-      - id: pullOverlay
-        name: Create ${{ each.value.name }} Overlay
-        action: fetch:template
-        input:
-          url: "./skeleton/overlays/${{ each.value.name }}"
-          targetPath: "_init_/workshop/overlays/${{ each.value.name }}"
-          copyWithoutTemplating:
-            - kustomization.yaml
-          values:
-            gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
-            gitlabBranch: main
-            cluster:
-              domains:
-                local: "apps.${{ each.value.domain }}"
-                shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
-              type: "${{ each.value.type }}"
-            gitlabOwner: ${{ parameters.gitlabOwner }}
-            gitlabRepository: ${{ parameters.gitlabRepository }}
+      action: fetch:template
+      input:
+        url: "./skeleton/overlays/${{ each.value.name }}"
+        targetPath: "_init_/workshop/overlays/${{ each.value.name }}"
+        copyWithoutTemplating:
+          - kustomization.yaml
+        values:
+          gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
+          gitlabBranch: main
+          cluster:
+            domains:
+              local: "apps.${{ each.value.domain }}"
+              shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
+            type: "${{ each.value.type }}"
+          gitlabOwner: ${{ parameters.gitlabOwner }}
+          gitlabRepository: ${{ parameters.gitlabRepository }}
 
     #################################
     ## Create Self-Service Repository
