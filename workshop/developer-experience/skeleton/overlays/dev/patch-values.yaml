@@ -18,6 +18,8 @@ spec:
                 values: |
                   controller:
                     name: workshop
+                  devspaces:
+                    enabled: true
                   cluster:
                     domain: ${{ values.cluster.domains.local }}
                     type: ${{ values.cluster.type }}

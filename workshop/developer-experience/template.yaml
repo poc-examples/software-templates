@@ -152,10 +152,6 @@ spec:
         catalogInfoPath: /catalog-info.yaml
 
   output:
-    # text:
-    #   - title: Output of fetchArgoCDInstances
-    #     content: |
-    #       ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances | dump }}
     links:
       - title: GitLab Repository
         url: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
