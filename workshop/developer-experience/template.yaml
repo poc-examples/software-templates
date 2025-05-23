@@ -127,29 +127,29 @@ spec:
         commitAction: create
         commitMessage: "Publish repository skeleton"
 
-    # #################################
-    # ## ArgoCD Resources Configuration
-    # #################################
-    # - id: createArgocdResources
-    #   name: "Create ArgoCD Resources"
-    #   action: argocd:create-resources
-    #   each: ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances }}
-    #   input:
-    #     appName: "workshop-orchestrator"
-    #     argoInstance: ${{ each.value.name }}
-    #     namespace: "openshift-gitops"
-    #     repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
-    #     path: "_init_/workshop/overlays/${{ each.value.name }}"
+    #################################
+    ## ArgoCD Resources Configuration
+    #################################
+    - id: createArgocdResources
+      name: "Create ArgoCD Resources"
+      action: argocd:create-resources
+      each: ${{ steps['fetchArgoCDInstances'].output.entity.spec.instances }}
+      input:
+        appName: "workshop-orchestrator"
+        argoInstance: ${{ each.value.name }}
+        namespace: "openshift-gitops"
+        repoUrl: "${{ steps['publishEmptyRepo'].output.remoteUrl }}.git"
+        path: "_init_/workshop/overlays/${{ each.value.name }}"
 
-    # ########################
-    # ## Register Catalog Info
-    # ########################
-    # - id: registerCatalog
-    #   name: "Register Catalog Info"
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
-    #     catalogInfoPath: /catalog-info.yaml
+    ########################
+    ## Register Catalog Info
+    ########################
+    - id: registerCatalog
+      name: "Register Catalog Info"
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps["publishEmptyRepo"].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
 
   output:
     # text:
