@@ -12,12 +12,20 @@ spec:
             wave: "-2"
             source: |
               chart: rollout-controller
-              targetRevision: "0.6.70"
+              targetRevision: "0.6.76"
               repoURL: https://poc-examples.github.io/charts
               helm:
                 values: |
                   controller:
                     name: workshop
+                  amq:
+                    enabled: true
+                  opentelemetry:
+                    enabled: true
+                  minio:
+                    enabled: true
+                  serverless: 
+                    enabled: true
                   cluster:
                     domain: ${{ values.cluster.domains.local }}
                     type: ${{ values.cluster.type }}

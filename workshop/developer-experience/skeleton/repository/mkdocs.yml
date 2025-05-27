@@ -1,8 +1,14 @@
-site_name: Root Self Service Repository
+site_name: Developer Experience Workshop
 site_description: Home
 
 nav:
-  - Home: index.md
+  - Overview: index.md
+  - Architecture: architecture.md
+  - "Module 1: Introduction to DeveloperHub": devhub-intro.md
+  - "Module 2: Using DevSpaces": using-devspaces.md
+  - "Module 3: Managing Container Workspaces": container-workspace.md
+  - "Module 4: Serverless Deployments": serverless-deployments.md
+  - "Module 5: Using OpenTelemetry": using-opentelemetry.md
 
 plugins:
   - techdocs-core
