@@ -67,7 +67,8 @@ spec:
         settings:
           visibility: "internal"
         branches:
-          protect: 'true'
+          - name: main
+            protect: 'true'
 
     ##########################
     ## Template the Repository
