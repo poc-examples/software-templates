@@ -1,0 +1,21 @@
+schemaVersion: 2.2.0
+metadata:
+  name: workshop-repository-devspace
+projects:
+  - name: workshop-repository
+    git: 
+      remotes:
+        origin: "${{ values.gitlabRemoteUrl }}.git"
+components:
+  - name: vscode-editor
+    container:
+      image: 'quay.io/devfile/universal-developer-image:latest'
+      memoryLimit: 2Gi
+      cpuLimit: "2"
+      mountSources: true
+      volumeMounts: 
+        - name: vscode-extensions
+          path: /home/user/.vscode/extensions
+  - name: vscode-extensions
+    volume:
+      size: 1Gi
