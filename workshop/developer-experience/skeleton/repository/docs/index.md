@@ -13,10 +13,10 @@ Look around, explore the features, and don't hesitate to ask questions. By the e
 For this workshop, you'll be using several tools which you can familiarize yourself with.  
 Shortcuts to the tools are also available from the OpenShift web console's *Application Menu* (top right corner) and the *Developer Hub* homepage.
 
-[*Openshift Console*](https://console-openshift-console.${{ values.cluster.domains.local }})
+[*Openshift Console*](https://console-openshift-console.${{ values.cluster.domains.shared }})
  
-[*Developer Hub*](https://backstage-developer-hub-backstage.${{ values.cluster.domains.local }})
+[*Developer Hub*](https://backstage-developer-hub-backstage.${{ values.cluster.domains.shared }})
 
-[*Dev Spaces*](https://devspaces.${{ values.cluster.domains.local }})
+*Dev Spaces* - Link in Openshift console of development environment
 
-[*Jaeger UI*](https://?.${{ values.cluster.domains.local }})
+*Jaeger UI* - Link in Openshift console of specific environment

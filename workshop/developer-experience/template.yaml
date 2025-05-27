@@ -93,6 +93,9 @@ spec:
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
           gitlabBranch: main
+          cluster:
+            domains:
+              shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
 
     ##########################
     ## Template the Overlays

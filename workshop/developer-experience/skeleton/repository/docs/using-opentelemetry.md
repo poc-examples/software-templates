@@ -76,9 +76,7 @@ The application has some problems that we would like you to fix:
     > You will also see requests from other users.
 
 3. A centralized Grafana Tempo instance has been deployed for the workshop.  
-   To view web requests, navigate to the OpenShift web console → **Application Menu** → **Jaeger UI**  
-   or open:  
-   `<placeholder link>`
+   To view web requests, navigate to the OpenShift web console → **Application Menu** → **Jaeger UI**
 
 4. The cron job is currently returning an HTTP `500`. Fix the application so that it returns an HTTP `200`.
 
