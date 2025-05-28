@@ -12,40 +12,9 @@ spec:
             wave: "-2"
             source: |
               chart: rollout-controller
-              targetRevision: "0.6.76"
+              targetRevision: "0.6.77"
               repoURL: https://poc-examples.github.io/charts
               helm:
                 values: |
                   controller:
                     name: workshop
-                  amq:
-                    enabled: true
-                  opentelemetry:
-                    enabled: true
-                  minio:
-                    enabled: true
-                  serverless: 
-                    enabled: true
-                  cluster:
-                    domain: ${{ values.cluster.domains.local }}
-                    type: ${{ values.cluster.type }}
-          - application: self-service-services
-            namespace: openshift-gitops
-            project: self-service
-            wave: "-1"
-            source: |
-              repoURL: "${{ values.gitlabRemoteUrl }}.git"
-              targetRevision: "${{ values.gitlabBranch }}"
-              path: "services"
-              directory:
-                recurse: true
-          - application: self-service-applications
-            namespace: openshift-gitops
-            project: self-service
-            wave: "-1"
-            source: |
-              repoURL: "${{ values.gitlabRemoteUrl }}.git"
-              targetRevision: "${{ values.gitlabBranch }}"
-              path: "applications"
-              directory:
-                recurse: true

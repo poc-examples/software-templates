@@ -12,7 +12,7 @@ spec:
             wave: "-2"
             source: |
               chart: rollout-controller
-              targetRevision: "0.6.76"
+              targetRevision: "0.6.77"
               repoURL: https://poc-examples.github.io/charts
               helm:
                 values: |
