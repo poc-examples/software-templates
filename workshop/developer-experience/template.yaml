@@ -20,7 +20,7 @@ metadata:
     - one-time-use
 
 spec:
-  owner: devops
+  owner: cluster-admins
   system: self-service
   type: workshop
   parameters:
@@ -87,8 +87,7 @@ spec:
         values:
           path: "projects"
           projectName: "default"
-          owner: |
-            ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
+          owner: "group:default/cluster-admins"
           gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
           gitlabOwner: ${{ parameters.gitlabOwner }}
           gitlabRepository: ${{ parameters.gitlabRepository }}
