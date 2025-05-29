@@ -1,0 +1,5 @@
+resources:
+  - namespace.yaml
+  - image-stream.yaml
+  - role-binding.yaml
+  - build-config.yaml

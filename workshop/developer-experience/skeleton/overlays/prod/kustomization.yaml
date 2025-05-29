@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - services-applicationset.yaml
 
 patches:
   - path: patch-values.yaml

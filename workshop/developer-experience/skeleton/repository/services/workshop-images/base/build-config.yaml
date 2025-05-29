@@ -1,0 +1,22 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  namespace: devspaces-build
+  name: devspaces-dotnet-python-build
+spec:
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/kevchu3/devspaces-dotnet-python.git'
+    contextDir: /
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      namespace: openshift
+      name: devspaces-dotnet-python:latest
+  triggers:
+    - type: ConfigChange
