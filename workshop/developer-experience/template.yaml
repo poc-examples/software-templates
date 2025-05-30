@@ -56,13 +56,13 @@ spec:
               type: string
               enum: ["Yes", "No"]
               default: "No"
-        endpoint:
+        enableCapacity:
           oneOf:
             - properties:
-                endpoint:
+                enableCapacity:
                   enum: ["No"]
             - properties:
-                endpoint:
+                enableCapacity:
                   enum: ["Yes"]
                 food:
                   title: Capacity
