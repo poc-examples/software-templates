@@ -24,7 +24,7 @@ spec:
   system: self-service
   type: workshop
   parameters:
-    - title: Service Configuration
+    - title: Workshop Configuration
       properties:
         general:
           type: object
@@ -49,21 +49,21 @@ spec:
             enableDevspaces:
               title: Enable Dedicated Capacity?
               type: boolean
-              enum: [True, False]
-              default: False
+              default: false
               description: Toggle to provision dedicated capacity for devspaces.
           dependencies:
             enableDevspaces:
               oneOf:
                 - properties:
                     enableDevspaces:
-                      enum: [False]
+                      const: false
                 - properties:
                     enableDevspaces:
-                      enum: [True]
+                      const: true
                     devspacesMachineCount:
                       title: Machine Count
                       type: integer
+                      minimum: 1
                       default: 1
                       description: Number of nodes dedicated to DevSpaces
                     devspacesMachineType:
@@ -79,21 +79,21 @@ spec:
             enableKafka:
               title: Enable Dedicated Capacity?
               type: boolean
-              enum: [True, False]
-              default: False
+              default: false
               description: Toggle to provision dedicated capacity for kafka.
           dependencies:
             enableKafka:
               oneOf:
                 - properties:
                     enableKafka:
-                      enum: [False]
+                      const: false
                 - properties:
                     enableKafka:
-                      enum: [True]
+                      const: true
                     kafkaMachineCount:
                       title: Machine Count
                       type: integer
+                      minimum: 1
                       default: 1
                       description: Number of nodes dedicated to Kafka
                     kafkaMachineType:
