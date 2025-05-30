@@ -24,74 +24,66 @@ spec:
   system: self-service
   type: workshop
   parameters:
-    - title: Service Configuration
+    - title: Configure Service
       properties:
-        general:
-          type: object
-          title: General Settings
-          properties:
-            gitlabOwner:
-              title: GitLab Owner
-              type: string
-              default: self-provisioned
-            gitlabRepository:
-              title: GitLab Repository
-              type: string
-              default: workshop-repository
+        gitlabOwner:
+          title: GitLab Owner
+          type: string
+          default: self-provisioned
 
-        devspaces:
-          type: object
-          title: DevSpaces Capacity Options
-          properties:
-            enableDevspaces:
-              title: Enable DevSpaces?
-              type: string
-              enum: ["Yes", "No"]
-              default: "No"
-          dependencies:
-            enableDevspaces:
-              oneOf:
-                - properties:
-                    enableDevspaces:
-                      enum: ["No"]
-                - properties:
-                    enableDevspaces:
-                      enum: ["Yes"]
-                    devspacesMachineCount:
-                      title: DevSpaces Machine Count
-                      type: string
-                      default: "1"
-                    devspacesMachineType:
-                      title: DevSpaces Machine Type
-                      type: string
-                      default: Standard_D8s_v3
+        gitlabRepository:
+          title: GitLab Repository
+          type: string
+          default: workshop-repository
 
-        kafka:
-          type: object
-          title: Kafka Capacity Options
-          properties:
-            enableKafka:
-              title: Enable Kafka?
-              type: string
-              enum: ["Yes", "No"]
-              default: "No"
-          dependencies:
-            enableKafka:
-              oneOf:
-                - properties:
-                    enableKafka:
-                      enum: ["No"]
-                - properties:
-                    enableKafka:
-                      enum: ["Yes"]
-                    kafkaMachineCount:
-                      title: Kafka Machine Count
-                      type: string
-                      default: "1"
-                    kafkaMachineType:
-                      title: Kafka Machine Type
-                      type: string
-                      default: Standard_D8s_v3
+        enableDevspaces:
+          title: Enable DevSpaces?
+          type: string
+          enum: ["Yes", "No"]
+          default: "No"
+
+        devspacesMachineCount:
+          title: DevSpaces Machine Count
+          type: string
+          default: "1"
+
+        devspacesMachineType:
+          title: DevSpaces Machine Type
+          type: string
+          default: "Standard_D8s_v3"
+
+        enableKafka:
+          title: Enable Kafka?
+          type: string
+          enum: ["Yes", "No"]
+          default: "No"
+
+        kafkaMachineCount:
+          title: Kafka Machine Count
+          type: string
+          default: "1"
+
+        kafkaMachineType:
+          title: Kafka Machine Type
+          type: string
+          default: "Standard_D8s_v3"
+
+      ui:backstage:
+        groups:
+          - title: General Settings
+            fields:
+              - gitlabOwner
+              - gitlabRepository
+          - title: DevSpaces Capacity Options
+            fields:
+              - enableDevspaces
+              - devspacesMachineCount
+              - devspacesMachineType
+          - title: Kafka Capacity Options
+            fields:
+              - enableKafka
+              - kafkaMachineCount
+              - kafkaMachineType
 
   steps:
 
