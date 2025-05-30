@@ -40,7 +40,7 @@ spec:
               title: GitLab Repository Name
               type: string
               default: workshop-repository
-              description: Repository name to scaffold your project into
+              description: Repository name used to initialize workshop
 
         devspaces:
           type: object
@@ -51,7 +51,7 @@ spec:
               type: boolean
               enum: [True, False]
               default: False
-              description: Toggle to provision OpenShift Dev Spaces for this service
+              description: Toggle to provision extra dedicated capacity for devspaces.
           dependencies:
             enableDevspaces:
               oneOf:
@@ -62,15 +62,15 @@ spec:
                     enableDevspaces:
                       enum: [True]
                     devspacesMachineCount:
-                      title: DevSpaces Machine Count
+                      title: Machine Count
                       type: integer
                       default: 1
-                      description: Number of virtual machines for DevSpaces
+                      description: Number of nodes dedicated to DevSpaces
                     devspacesMachineType:
-                      title: DevSpaces Machine Type
+                      title: Machine SKU
                       type: string
                       default: Standard_D8s_v3
-                      description: VM flavor used to provision DevSpaces machines
+                      description: Virtual Machine SKU used to provision DevSpaces nodes
 
         kafka:
           type: object
@@ -81,6 +81,7 @@ spec:
               type: boolean
               enum: [True, False]
               default: False
+              description: Toggle to provision extra dedicated capacity for kafka.
           dependencies:
             enableKafka:
               oneOf:
@@ -91,15 +92,15 @@ spec:
                     enableKafka:
                       enum: [True]
                     kafkaMachineCount:
-                      title: Kafka Machine Count
+                      title: Machine Count
                       type: integer
                       default: 1
-                      description: Number of virtual machines for Kafka
+                      description: Number of nodes dedicated to Kafka
                     kafkaMachineType:
-                      title: Kafka Machine Type
+                      title: Machine SKU
                       type: string
                       default: Standard_D8s_v3
-                      description: VM flavor used to provision Kafka machines
+                      description: Virtual Machine SKU used to provision Kafka nodes
 
   steps:
 
