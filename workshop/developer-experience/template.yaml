@@ -41,7 +41,14 @@ spec:
           type: string
           default: workshop-repository
           description: GitLab self-service repository
-        showCapacity:
+        showDevspacesCapacityOptions:
+          type: boolean
+          default: true
+          ui:widget: hidden
+          ui:backstage:
+            review:
+              show: false
+        showKafkaCapacityOptions:
           type: boolean
           default: true
           ui:widget: hidden
@@ -49,24 +56,52 @@ spec:
             review:
               show: false
       dependencies:
-        showCapacity:
+        showDevspacesCapacityOptions:
           properties:
-            enableCapacity: 
-              title: Enable capacity options?
+            enableDevspacesCapacityOptions: 
+              title: Enable Devspaces capacity options?
               type: string
               enum: ["Yes", "No"]
               default: "No"
-        enableCapacity:
+        showKafkaCapacityOptions:
+          properties:
+            enableKafkaCapacityOptions: 
+              title: Enable Kafka capacity options?
+              type: string
+              enum: ["Yes", "No"]
+              default: "No"
+        enableDevspacesCapacityOptions:
           oneOf:
             - properties:
-                enableCapacity:
+                enableDevspacesCapacityOptions:
                   enum: ["No"]
             - properties:
-                enableCapacity:
+                enableDevspacesCapacityOptions:
                   enum: ["Yes"]
-                food:
-                  title: Capacity
+                devspacesMachineCount:
+                  title: Devspaces Machine Count
                   type: string
+                  default: "1"
+                devspacesMachineType:
+                  title: Devspaces Machine Type
+                  type: string
+                  default: "Standard_D8s_v3"
+        enableKafkaCapacityOptions:
+          oneOf:
+            - properties:
+                enableKafkaCapacityOptions:
+                  enum: ["No"]
+            - properties:
+                enableKafkaCapacityOptions:
+                  enum: ["Yes"]
+                kafkaMachineCount:
+                  title: Kafka Machine Count
+                  type: string
+                  default: "1"
+                kafkaMachineType:
+                  title: Kafka Machine Type
+                  type: string
+                  default: "Standard_D8s_v3"
 
   steps:
 
