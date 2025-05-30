@@ -24,7 +24,6 @@ spec:
   system: self-service
   type: workshop
   parameters:
-
     - title: GitLab Repository Information
       required:
         - gitlabOwner
@@ -36,11 +35,13 @@ spec:
           default: self-provisioned
           description: GitLab repository owner
           ui:widget: hidden
+
         gitlabRepository:
           title: GitLab Repository
           type: string
           default: workshop-repository
           description: GitLab self-service repository
+
         showDevspacesCapacityOptions:
           type: boolean
           default: true
@@ -48,6 +49,7 @@ spec:
           ui:backstage:
             review:
               show: false
+
         showKafkaCapacityOptions:
           type: boolean
           default: true
@@ -55,21 +57,26 @@ spec:
           ui:backstage:
             review:
               show: false
+
       dependencies:
         showDevspacesCapacityOptions:
           properties:
-            enableDevspacesCapacityOptions: 
-              title: Enable Devspaces capacity options?
+            enableDevspacesCapacityOptions:
+              title: Enable DevSpaces capacity options?
               type: string
               enum: ["Yes", "No"]
               default: "No"
+
         showKafkaCapacityOptions:
           properties:
-            enableKafkaCapacityOptions: 
+            enableKafkaCapacityOptions:
               title: Enable Kafka capacity options?
               type: string
               enum: ["Yes", "No"]
               default: "No"
+
+    - title: DevSpaces Capacity Options
+      dependencies:
         enableDevspacesCapacityOptions:
           oneOf:
             - properties:
@@ -79,13 +86,16 @@ spec:
                 enableDevspacesCapacityOptions:
                   enum: ["Yes"]
                 devspacesMachineCount:
-                  title: Devspaces Machine Count
+                  title: DevSpaces Machine Count
                   type: string
                   default: "1"
                 devspacesMachineType:
-                  title: Devspaces Machine Type
+                  title: DevSpaces Machine Type
                   type: string
                   default: "Standard_D8s_v3"
+
+    - title: Kafka Capacity Options
+      dependencies:
         enableKafkaCapacityOptions:
           oneOf:
             - properties:
