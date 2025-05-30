@@ -41,13 +41,7 @@ spec:
           type: string
           default: workshop-repository
           description: GitLab self-service repository
-        enableCapacityOptions:
-          type: boolean
-          title: Enable capacity options?
-
-    - title: Settings
-      properties:
-        showEndpoint:
+        showCapacity:
           type: boolean
           default: true
           ui:widget: hidden
@@ -55,10 +49,10 @@ spec:
             review:
               show: false
       dependencies:
-        showEndpoint:
+        showCapacity:
           properties:
-            endpoint: 
-              title: Endpoint?
+            enableCapacity: 
+              title: Enable capacity options?
               type: string
               enum: ["Yes", "No"]
               default: "No"
@@ -71,7 +65,7 @@ spec:
                 endpoint:
                   enum: ["Yes"]
                 food:
-                  title: Food
+                  title: Capacity
                   type: string
 
   steps:
