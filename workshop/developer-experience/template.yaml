@@ -45,15 +45,34 @@ spec:
           type: boolean
           title: Enable capacity options?
 
-    - title: Capacity Options
-      if:
-        properties:
-          enableCapacityOptions:
-            const: true
+    - title: Settings
       properties:
-        extraConfig:
-          type: string
-          title: Extra Config Value
+        showEndpoint:
+          type: boolean
+          default: true
+          ui:widget: hidden
+          ui:backstage:
+            review:
+              show: false
+      dependencies:
+        showEndpoint:
+          properties:
+            endpoint: 
+              title: Endpoint?
+              type: string
+              enum: ["Yes", "No"]
+              default: "No"
+        endpoint:
+          oneOf:
+            - properties:
+                endpoint:
+                  enum: ["No"]
+            - properties:
+                endpoint:
+                  enum: ["Yes"]
+                food:
+                  title: Food
+                  type: string
 
   steps:
 
