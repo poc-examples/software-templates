@@ -81,9 +81,6 @@ spec:
               default: "No"
               ui:group: kafka
 
-    - title: DevSpaces Capacity Options
-      ui:group: devspaces
-      dependencies:
         enableDevspacesCapacityOptions:
           oneOf:
             - properties:
@@ -101,9 +98,7 @@ spec:
                   type: string
                   default: "Standard_D8s_v3"
 
-    - title: Kafka Capacity Options
-      ui:group: kafka
-      dependencies:
+
         enableKafkaCapacityOptions:
           oneOf:
             - properties:
