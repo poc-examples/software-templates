@@ -51,7 +51,7 @@ spec:
               type: boolean
               enum: [True, False]
               default: False
-              description: Toggle to provision extra dedicated capacity for devspaces.
+              description: Toggle to provision dedicated capacity for devspaces.
           dependencies:
             enableDevspaces:
               oneOf:
@@ -81,7 +81,7 @@ spec:
               type: boolean
               enum: [True, False]
               default: False
-              description: Toggle to provision extra dedicated capacity for kafka.
+              description: Toggle to provision dedicated capacity for kafka.
           dependencies:
             enableKafka:
               oneOf:
