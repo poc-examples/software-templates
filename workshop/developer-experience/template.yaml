@@ -41,6 +41,19 @@ spec:
           type: string
           default: workshop-repository
           description: GitLab self-service repository
+        enableCapacityOptions:
+          type: boolean
+          title: Enable capacity options?
+
+    - title: Capacity Options
+      if:
+        properties:
+          enableCapacityOptions:
+            const: true
+      properties:
+        extraConfig:
+          type: string
+          title: Extra Config Value
 
   steps:
 
