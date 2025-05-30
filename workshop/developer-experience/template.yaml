@@ -44,7 +44,7 @@ spec:
 
         devspaces:
           type: object
-          title: DevSpaces Capacity Options
+          title: DevSpaces Dedicated Capacity
           properties:
             enableDevspaces:
               title: Enable Dedicated Capacity?
@@ -74,10 +74,10 @@ spec:
 
         kafka:
           type: object
-          title: Kafka Capacity Options
+          title: Kafka Dedicated Capacity
           properties:
             enableKafka:
-              title: Enable Kafka?
+              title: Enable Dedicated Capacity?
               type: boolean
               enum: [True, False]
               default: False
