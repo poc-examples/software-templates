@@ -24,66 +24,97 @@ spec:
   system: self-service
   type: workshop
   parameters:
-    - title: Configure Service
+    - title: GitLab Repository Information
+      ui:group: respository
+      required:
+        - gitlabOwner
+        - gitlabRepository
       properties:
         gitlabOwner:
           title: GitLab Owner
           type: string
           default: self-provisioned
+          description: GitLab repository owner
+          ui:widget: hidden
 
         gitlabRepository:
           title: GitLab Repository
           type: string
           default: workshop-repository
+          description: GitLab self-service repository
 
-        enableDevspaces:
-          title: Enable DevSpaces?
-          type: string
-          enum: ["Yes", "No"]
-          default: "No"
+        showDevspacesCapacityOptions:
+          type: boolean
+          default: true
+          ui:widget: hidden
+          ui:backstage:
+            review:
+              show: false
 
-        devspacesMachineCount:
-          title: DevSpaces Machine Count
-          type: string
-          default: "1"
+        showKafkaCapacityOptions:
+          type: boolean
+          default: true
+          ui:widget: hidden
+          ui:backstage:
+            review:
+              show: false
 
-        devspacesMachineType:
-          title: DevSpaces Machine Type
-          type: string
-          default: "Standard_D8s_v3"
+      dependencies:
+        showDevspacesCapacityOptions:
+          properties:
+            enableDevspacesCapacityOptions:
+              title: Enable DevSpaces capacity options?
+              type: string
+              enum: ["Yes", "No"]
+              default: "No"
 
-        enableKafka:
-          title: Enable Kafka?
-          type: string
-          enum: ["Yes", "No"]
-          default: "No"
+        showKafkaCapacityOptions:
+          properties:
+            enableKafkaCapacityOptions:
+              title: Enable Kafka capacity options?
+              type: string
+              enum: ["Yes", "No"]
+              default: "No"
 
-        kafkaMachineCount:
-          title: Kafka Machine Count
-          type: string
-          default: "1"
+    - title: DevSpaces Capacity Options
+      ui:group: devspaces
+      dependencies:
+        enableDevspacesCapacityOptions:
+          oneOf:
+            - properties:
+                enableDevspacesCapacityOptions:
+                  enum: ["No"]
+            - properties:
+                enableDevspacesCapacityOptions:
+                  enum: ["Yes"]
+                devspacesMachineCount:
+                  title: DevSpaces Machine Count
+                  type: string
+                  default: "1"
+                devspacesMachineType:
+                  title: DevSpaces Machine Type
+                  type: string
+                  default: "Standard_D8s_v3"
 
-        kafkaMachineType:
-          title: Kafka Machine Type
-          type: string
-          default: "Standard_D8s_v3"
-
-      ui:backstage:
-        groups:
-          - title: General Settings
-            fields:
-              - gitlabOwner
-              - gitlabRepository
-          - title: DevSpaces Capacity Options
-            fields:
-              - enableDevspaces
-              - devspacesMachineCount
-              - devspacesMachineType
-          - title: Kafka Capacity Options
-            fields:
-              - enableKafka
-              - kafkaMachineCount
-              - kafkaMachineType
+    - title: Kafka Capacity Options
+      ui:group: kafka
+      dependencies:
+        enableKafkaCapacityOptions:
+          oneOf:
+            - properties:
+                enableKafkaCapacityOptions:
+                  enum: ["No"]
+            - properties:
+                enableKafkaCapacityOptions:
+                  enum: ["Yes"]
+                kafkaMachineCount:
+                  title: Kafka Machine Count
+                  type: string
+                  default: "1"
+                kafkaMachineType:
+                  title: Kafka Machine Type
+                  type: string
+                  default: "Standard_D8s_v3"
 
   steps:
 
