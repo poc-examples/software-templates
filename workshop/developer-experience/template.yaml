@@ -24,97 +24,82 @@ spec:
   system: self-service
   type: workshop
   parameters:
-    - title: GitLab Repository Information
-      required:
-        - gitlabOwner
-        - gitlabRepository
+    - title: Service Configuration
       properties:
-        gitlabOwner:
-          title: GitLab Owner
-          type: string
-          default: self-provisioned
-          description: GitLab repository owner
-          ui:widget: hidden
-          ui:group: respository
-
-        gitlabRepository:
-          ui:group: respository
-          title: GitLab Repository
-          type: string
-          default: workshop-repository
-          description: GitLab self-service repository
-
-        showDevspacesCapacityOptions:
-          type: boolean
-          default: true
-          ui:widget: hidden
-          ui:group: devspaces
-          ui:backstage:
-            review:
-              show: false
-
-        showKafkaCapacityOptions:
-          type: boolean
-          default: true
-          ui:widget: hidden
-          ui:group: kafka
-          ui:backstage:
-            review:
-              show: false
-
-      dependencies:
-        showDevspacesCapacityOptions:
+        general:
+          type: object
+          title: General Settings
           properties:
-            enableDevspacesCapacityOptions:
-              title: Enable DevSpaces capacity options?
+            gitlabOwner:
+              title: GitLab Owner
               type: string
-              enum: ["Yes", "No"]
-              default: "No"
-              ui:group: devspaces
+              default: self-provisioned
+              description: GitLab group or username that owns the repository
+              ui:widget: hidden
+            gitlabRepository:
+              title: GitLab Repository Name
+              type: string
+              default: workshop-repository
+              description: Repository name to scaffold your project into
 
-        showKafkaCapacityOptions:
+        devspaces:
+          type: object
+          title: DevSpaces Capacity Options
           properties:
-            enableKafkaCapacityOptions:
-              title: Enable Kafka capacity options?
-              type: string
-              enum: ["Yes", "No"]
-              default: "No"
-              ui:group: kafka
+            enableDevspaces:
+              title: Enable Dedicated Capacity?
+              type: boolean
+              enum: [True, False]
+              default: False
+              description: Toggle to provision OpenShift Dev Spaces for this service
+          dependencies:
+            enableDevspaces:
+              oneOf:
+                - properties:
+                    enableDevspaces:
+                      enum: [False]
+                - properties:
+                    enableDevspaces:
+                      enum: [True]
+                    devspacesMachineCount:
+                      title: DevSpaces Machine Count
+                      type: integer
+                      default: 1
+                      description: Number of virtual machines for DevSpaces
+                    devspacesMachineType:
+                      title: DevSpaces Machine Type
+                      type: string
+                      default: Standard_D8s_v3
+                      description: VM flavor used to provision DevSpaces machines
 
-        enableDevspacesCapacityOptions:
-          oneOf:
-            - properties:
-                enableDevspacesCapacityOptions:
-                  enum: ["No"]
-            - properties:
-                enableDevspacesCapacityOptions:
-                  enum: ["Yes"]
-                devspacesMachineCount:
-                  title: DevSpaces Machine Count
-                  type: string
-                  default: "1"
-                devspacesMachineType:
-                  title: DevSpaces Machine Type
-                  type: string
-                  default: "Standard_D8s_v3"
-
-
-        enableKafkaCapacityOptions:
-          oneOf:
-            - properties:
-                enableKafkaCapacityOptions:
-                  enum: ["No"]
-            - properties:
-                enableKafkaCapacityOptions:
-                  enum: ["Yes"]
-                kafkaMachineCount:
-                  title: Kafka Machine Count
-                  type: string
-                  default: "1"
-                kafkaMachineType:
-                  title: Kafka Machine Type
-                  type: string
-                  default: "Standard_D8s_v3"
+        kafka:
+          type: object
+          title: Kafka Capacity Options
+          properties:
+            enableKafka:
+              title: Enable Kafka?
+              type: boolean
+              enum: [True, False]
+              default: False
+          dependencies:
+            enableKafka:
+              oneOf:
+                - properties:
+                    enableKafka:
+                      enum: [False]
+                - properties:
+                    enableKafka:
+                      enum: [True]
+                    kafkaMachineCount:
+                      title: Kafka Machine Count
+                      type: integer
+                      default: 1
+                      description: Number of virtual machines for Kafka
+                    kafkaMachineType:
+                      title: Kafka Machine Type
+                      type: string
+                      default: Standard_D8s_v3
+                      description: VM flavor used to provision Kafka machines
 
   steps:
 
