@@ -25,7 +25,6 @@ spec:
   type: workshop
   parameters:
     - title: GitLab Repository Information
-      ui:group: respository
       required:
         - gitlabOwner
         - gitlabRepository
@@ -36,8 +35,10 @@ spec:
           default: self-provisioned
           description: GitLab repository owner
           ui:widget: hidden
+          ui:group: respository
 
         gitlabRepository:
+          ui:group: respository
           title: GitLab Repository
           type: string
           default: workshop-repository
@@ -47,6 +48,7 @@ spec:
           type: boolean
           default: true
           ui:widget: hidden
+          ui:group: devspaces
           ui:backstage:
             review:
               show: false
@@ -55,6 +57,7 @@ spec:
           type: boolean
           default: true
           ui:widget: hidden
+          ui:group: kafka
           ui:backstage:
             review:
               show: false
@@ -67,6 +70,7 @@ spec:
               type: string
               enum: ["Yes", "No"]
               default: "No"
+              ui:group: devspaces
 
         showKafkaCapacityOptions:
           properties:
@@ -75,6 +79,7 @@ spec:
               type: string
               enum: ["Yes", "No"]
               default: "No"
+              ui:group: kafka
 
     - title: DevSpaces Capacity Options
       ui:group: devspaces
