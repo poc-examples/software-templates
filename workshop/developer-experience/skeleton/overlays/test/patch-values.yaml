@@ -18,10 +18,11 @@ spec:
                 values: |
                   controller:
                     name: workshop
-                  devspaces:
-                    enabled: true
                   amq:
                     enabled: true
+                    enableCapacity: ${{ values.amq.enableCapacity }}
+                    count: ${{ values.amq.count }}
+                    sku: ${{ values.amq.sku }}
                   opentelemetry:
                     enabled: true
                   minio:
