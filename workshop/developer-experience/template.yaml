@@ -122,7 +122,7 @@ spec:
       input:
         description: |
           Self-Service Repository
-        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: gitlab.com?owner=${{ parameters.general.gitlabOwner }}&repo=${{ parameters.general.gitlabRepository }}
         defaultBranch: main
         settings:
           visibility: "internal"
@@ -149,8 +149,8 @@ spec:
           projectName: "default"
           owner: "group:default/cluster-admins"
           gitlabRemoteUrl: ${{ steps['publishEmptyRepo'].output.remoteUrl }}
-          gitlabOwner: ${{ parameters.gitlabOwner }}
-          gitlabRepository: ${{ parameters.gitlabRepository }}
+          gitlabOwner: ${{ parameters.general.gitlabOwner }}
+          gitlabRepository: ${{ parameters.general.gitlabRepository }}
           gitlabBranch: main
           cluster:
             domains:
@@ -176,7 +176,7 @@ spec:
               local: "apps.${{ each.value.domain }}"
               shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
             type: "${{ each.value.type }}"
-          gitlabOwner: ${{ parameters.gitlabOwner }}
+          gitlabOwner: ${{ parameters.general.gitlabOwner }}
           devspaces:
             sku: ${{ parameters.devspaces.devspacesMachineType }}
             enableCapacity: ${{ parameters.devspaces.enableDevspaces }}
@@ -185,7 +185,7 @@ spec:
             sku: ${{ parameters.kafka.kafkaMachineType }}
             enableCapacity: ${{ parameters.kafka.enableKafka }}
             count: ${{ parameters.kafka.kafkaMachineCount }}
-          gitlabRepository: ${{ parameters.gitlabRepository }}
+          gitlabRepository: ${{ parameters.general.gitlabRepository }}
 
     #################################
     ## Create Self-Service Repository
@@ -196,7 +196,7 @@ spec:
       input:
         description: |
           Self-Service Repository
-        repoUrl: gitlab.com?owner=${{ parameters.gitlabOwner }}&repo=${{ parameters.gitlabRepository }}
+        repoUrl: gitlab.com?owner=${{ parameters.general.gitlabOwner }}&repo=${{ parameters.general.gitlabRepository }}
         branchName: main
         commitAction: create
         commitMessage: "Publish repository skeleton"
