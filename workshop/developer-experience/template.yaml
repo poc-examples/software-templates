@@ -154,6 +154,11 @@ spec:
           cluster:
             domains:
               shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
+          settings:
+            amq:
+              capacityEnabled: ${{ parameters.kafka.enableKafka }}
+            devspaces:
+              capacityEnabled: ${{ parameters.devspaces.enableDevspaces }}
 
     ##########################
     ## Template the Overlays

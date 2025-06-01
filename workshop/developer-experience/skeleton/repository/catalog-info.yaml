@@ -21,3 +21,8 @@ spec:
     owner: ${{ values.gitlabOwner }}
     repository: ${{ values.gitlabRepository }}
     branch: ${{ values.gitlabBranch }}
+  settings:
+    amq:
+      capacityEnabled: ${{ values.settings.amq.capacityEnabled }}
+    devspaces:
+      capacityEnabled: ${{ values.settings.devspaces.capacityEnabled }}
