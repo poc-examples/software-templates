@@ -27,9 +27,15 @@ spec:
             env: '{{.path.basename}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{.path.basename}}'
+        namespace: '{{.values.service}}'
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            argocd.argoproj.io/managed-by: "openshift-gitops"
+        syncOptions:
+          - CreateNamespace=true
+          - Validate=false
 
