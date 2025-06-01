@@ -143,7 +143,6 @@ spec:
           - LICENSE
           - backstage
           - applications
-          - services
         values:
           path: "projects"
           projectName: "default"

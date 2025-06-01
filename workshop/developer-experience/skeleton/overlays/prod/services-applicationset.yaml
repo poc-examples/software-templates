@@ -10,9 +10,9 @@ spec:
         repoURL: ${{ values.gitlabRemoteUrl }}.git
         revision: HEAD
         directories:
-          - path: services/*/overlays/prod
+          - path: services/*/*/overlays/prod
         values:
-          service: "{{index .path.segments 1}}"
+          service: "{{index .path.segments 1}}-{{index .path.segments 2}}"
   template:
     metadata:
       name: "{{.values.service}}-service"
