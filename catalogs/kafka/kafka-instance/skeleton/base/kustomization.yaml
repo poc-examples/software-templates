@@ -1,8 +1,9 @@
 helmCharts:
   - name: "kafka-instance"
     repo: "https://poc-examples.github.io/supporting-charts"
-    version: "0.0.4"
+    version: "0.0.5"
     namespace: "${{ values.name }}-kafka"
     valuesInline:
       name: ${{ values.name }}-instance
       userName: ${{ values.name }}
+      capacityEnabled: ${{ values.capacityEnabled }}

@@ -86,6 +86,7 @@ spec:
         targetPath: "./services/${{ user.entity.metadata.name }}/kafka/base"
         values:
           name: ${{ user.entity.metadata.name }}
+          capacityEnabled: ${{ steps['fetchWorkshopEntity'].output.entity.spec.settings.amq.capacityEnabled }}
 
     ############################
     ## Template the Catalog Info
