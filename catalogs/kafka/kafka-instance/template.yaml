@@ -73,7 +73,7 @@ spec:
         - kustomization.yaml
       input:
         url: "./skeleton/overlays/${{ each.value.name }}"
-        targetPath: "./services/kafka/${{ user.entity.metadata.name }}/overlays/${{ each.value.name }}"
+        targetPath: "./services/${{ user.entity.metadata.name }}/kafka/overlays/${{ each.value.name }}"
 
     ###########################
     ## Template the Application
@@ -83,7 +83,7 @@ spec:
       action: fetch:template
       input:
         url: "./skeleton/base/"
-        targetPath: "./services/kafka/${{ user.entity.metadata.name }}/base"
+        targetPath: "./services/${{ user.entity.metadata.name }}/kafka/base"
         values:
           name: ${{ user.entity.metadata.name }}
 
@@ -95,7 +95,7 @@ spec:
       action: fetch:template
       input:
         url: "../../../skeletons/backstage/kafka-instance"
-        targetPath: "backstage/kafka/${{ user.entity.metadata.name }}/"
+        targetPath: "backstage/${{ user.entity.metadata.name }}/kafka"
         values:
           name: ${{ parameters.name }}-kafka
           brokerService: ${{ parameters.name }}-kafka-brokers.${{ user.entity.metadata.name }}-kafka.svc.cluster.local
@@ -116,7 +116,7 @@ spec:
         repoUrl: gitlab.com?owner=${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.owner }}&repo=${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.repository }}
         branchName: main
         commitAction: create
-        commitMessage: "Created Kafka Instance in folder kafka/${{ user.entity.metadata.name }}"
+        commitMessage: "Created Kafka Instance in folder services/${{ user.entity.metadata.name }}/kafka"
 
     ########################
     ## Register Catalog Info
@@ -126,7 +126,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.remoteUrl }}
-        catalogInfoPath: /-/blob/${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.branch }}/backstage/kafka/${{ user.entity.metadata.name }}/kafka-instance.yaml
+        catalogInfoPath: /-/blob/${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.branch }}/backstage/${{ user.entity.metadata.name }}/kafka/kafka-instance.yaml
 
   output:
     links:
