@@ -13,6 +13,10 @@ spec:
   owner: ${{ values.owner }}
   dependsOn:
     - ${{ values.rootSelfServiceRepo }}
+  links:
+    - url: https://devspaces.apps.${{values.devspaces.domain}}/#${{ values.gitlabRemoteUrl }}
+      title: "DevSpaces: Open Deployment Manifests"
+      icon: web
   kafka:
     brokerService: ${{ values.brokerService }}
     bootstrapService: ${{ values.bootstrapService }}

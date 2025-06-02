@@ -104,6 +104,9 @@ spec:
           owner: |
             ${{ "user:" + user.entity.metadata.namespace + "/" + user.entity.metadata.name if user.entity.metadata.namespace else "default/guest" }}
           rootSelfServiceRepo: ${{ parameters.workshopRepo }}
+          devspaces:
+            domain: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.devspaces.domain }}
+          gitlabRemoteUrl: ${{ steps['fetchWorkshopEntity'].output.entity.spec.gitlab.remoteUrl }}
 
     ##########################
     ## Push Repository Changes
