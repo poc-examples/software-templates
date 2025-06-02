@@ -12,6 +12,10 @@ metadata:
     backstage.io/techdocs-ref: dir:.
   tags:
     - workshop-repository
+  links:
+    - url: https://devspaces.apps.${{values.devspaces.domain}}/#${{ values.gitlabRemoteUrl }}
+      title: "DevSpaces: Open Deployment Manifests"
+      icon: web
 spec:
   type: workshop-repository
   lifecycle: production

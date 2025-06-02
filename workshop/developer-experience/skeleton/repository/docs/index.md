@@ -17,6 +17,6 @@ Shortcuts to the tools are also available from the OpenShift web console's *Appl
  
 [*Developer Hub*](https://backstage-developer-hub-backstage.${{ values.cluster.domains.shared }})
 
-*Dev Spaces* - Link in Openshift console of development environment
+[*Dev Spaces*](https://devspaces.apps.${{values.devspaces.domain}})
 
 *Jaeger UI* - Link in Openshift console of specific environment

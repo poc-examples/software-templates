@@ -151,6 +151,8 @@ spec:
           gitlabOwner: ${{ parameters.general.gitlabOwner }}
           gitlabRepository: ${{ parameters.general.gitlabRepository }}
           gitlabBranch: main
+          devspaces:
+            domain: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.devspaces.domain }}
           cluster:
             domains:
               shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
