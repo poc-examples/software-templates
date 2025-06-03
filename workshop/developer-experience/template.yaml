@@ -152,7 +152,7 @@ spec:
           gitlabRepository: ${{ parameters.general.gitlabRepository }}
           gitlabBranch: main
           devspaces:
-            domain: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.devspaces.domain }}
+            domain: ${{ steps['fetchArgoCDInstances'].output.entity.spec.devspaces.domain }}
           cluster:
             domains:
               shared: ${{ steps['fetchArgoCDInstances'].output.entity.spec.services.domain }}
