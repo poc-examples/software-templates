@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: poc-examples-orchestrator-collection
+  description: |
+    A collection of Proof-of-Concept Red Hat DevSpaces Software Templates
+    that can be used with Orchestrator Sonataflow for administrators to use and adapt.
+spec:
+  type: url
+  targets:
+    - ./greeting/template.yaml

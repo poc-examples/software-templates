@@ -1,0 +1,45 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: greeting-workflow
+  title: Run Greeting Workflow
+  description: Triggers greeting workflow using Orchestrator
+  tags:
+    - orchestrator
+    - workflow
+    - greeting
+spec:
+  owner: cluster-admins
+  system: self-service
+  type: workflow
+
+  parameters:
+    - title: Greeting Input
+      required:
+        - language
+      properties:
+        language:
+          type: string
+          title: Language
+          description: Language to greet in
+          enum:
+            - English
+            - Spanish
+          default: English
+
+  steps:
+
+    ########################
+    ## RUN A WORKFLOW
+    ########################
+    - id: runWorkflow
+      name: Run workflow
+      action: orchestrator:workflow:run
+      input:
+        workflow_id: greeting
+        parameters: ${{ parameters }}
+
+  output:
+    text:
+      - "Greeting workflow triggered with language: ${{ parameters.language }}"
+

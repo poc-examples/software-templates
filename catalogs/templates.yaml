@@ -14,3 +14,4 @@ spec:
     - ./openshift-ai/templates.yaml
     - ./devspaces/templates.yaml
     - ./kafka/templates.yaml
+    - ./orchestrator/templates.yaml
