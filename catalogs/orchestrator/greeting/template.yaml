@@ -41,5 +41,6 @@ spec:
 
   output:
     text:
-      - "Greeting workflow triggered with language: ${{ parameters.language }}"
+      - title: status
+        text: "Greeting workflow triggered with language: ${{ parameters.language }}"
 
