@@ -37,7 +37,8 @@ spec:
       action: orchestrator:workflow:run
       input:
         workflow_id: greeting
-        parameters: ${{ parameters }}
+        parameters: 
+          language: ${{ parameters.language }}
 
   output:
     text:
