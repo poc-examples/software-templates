@@ -11,3 +11,4 @@ spec:
   type: url
   targets:
     - ./setup-root-self-service-repository/template.yaml
+    - ./test/template.yaml
