@@ -1,0 +1,40 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: validate-kebabcase-test
+  title: ValidateKebabCase — Test Template
+  description: Minimal template to test the ValidateKebabCase custom field extension
+spec:
+  owner: group:default/team-a
+  type: service
+
+  parameters:
+    - title: Try the custom field
+      required:
+        - name
+      properties:
+        name:
+          title: Name (kebab-case)
+          type: string
+          description: Must match ^[a-z0-9-_]+$
+          ui:field: ValidateKebabCase
+        note:
+          title: Plain note (optional)
+          type: string
+
+  steps:
+    - id: show
+      name: Show Inputs
+      action: debug:log
+      input:
+        message: |
+          Received:
+            name = ${{ parameters.name }}
+            note = ${{ parameters.note | default("<none>") }}
+
+  output:
+    text:
+      - title: Name
+        content: ${{ parameters.name }}
+      - title: Note
+        content: ${{ parameters.note | default("n/a") }}
