@@ -12,12 +12,23 @@ spec:
             wave: "-2"
             source: |
               chart: rollout-controller
-              targetRevision: "0.6.80"
+                # Update targetRevision to match the latest chart version: https://github.com/poc-examples/charts/blob/main/charts/rollout-controller/Chart.yaml
+              targetRevision: "0.6.109"
               repoURL: https://poc-examples.github.io/charts
               helm:
                 values: |
                   controller:
                     name: workshop
+                  cluster:
+                    domain: ${{ values.cluster.domains.local }}
+                    type: ${{ values.cluster.type }}
+                  # Reference list of available charts: https://github.com/poc-examples/charts/tree/main/charts
+                  # The default enabled charts in values.yaml: https://github.com/poc-examples/charts/blob/main/charts/rollout-controller/values.yaml
+                  devspaces:
+                    enabled: true
+                    enableCapacity: ${{ values.devspaces.enableCapacity }}
+                    count: ${{ values.devspaces.count }}
+                    sku: ${{ values.devspaces.sku }}
                   amq:
                     enabled: true
                     enableCapacity: ${{ values.amq.enableCapacity }}
@@ -29,6 +40,3 @@ spec:
                     enabled: true
                   serverless: 
                     enabled: true
-                  cluster:
-                    domain: ${{ values.cluster.domains.local }}
-                    type: ${{ values.cluster.type }}
