@@ -9,10 +9,19 @@ spec:
   tags:
   - from:
       kind: DockerImage
-      name: registry.redhat.io/devspaces/udi-rhel9:3.22
+      name: registry.redhat.io/devspaces/udi-rhel9:3.23
     importPolicy:
       importMode: Legacy
       scheduled: true
-    name: "3.22"
+    name: "3.23"
+    referencePolicy:
+      type: Source
+  - from:
+      kind: DockerImage
+      name: registry.redhat.io/devspaces/udi-rhel9:latest
+    importPolicy:
+      importMode: Legacy
+      scheduled: true
+    name: latest
     referencePolicy:
       type: Source
