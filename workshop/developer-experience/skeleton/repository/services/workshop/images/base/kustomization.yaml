@@ -1,5 +1,6 @@
 resources:
   - namespace.yaml
-  - image-stream.yaml
+  - dotnet-python-imagestream.yaml
+  - udi-rhel9-imagestream.yaml
   - role-binding.yaml
   - build-config.yaml
