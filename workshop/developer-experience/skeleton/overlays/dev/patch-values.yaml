@@ -13,7 +13,7 @@ spec:
             source: |
               chart: rollout-controller
                 # Update targetRevision to match the latest chart version: https://github.com/poc-examples/charts/blob/main/charts/rollout-controller/Chart.yaml
-              targetRevision: "0.6.112"
+              targetRevision: "0.6.115"
               repoURL: https://poc-examples.github.io/charts
               helm:
                 values: |
